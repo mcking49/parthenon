@@ -1,0 +1,25 @@
+.about {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+
+  > .main-image {
+    display: flex;
+    justify-content: center;
+
+    > img {
+      width: 1000px;
+      height: 400px;
+    }
+  }
+
+  > .about-content-images {
+    display: flex;
+    justify-content: space-evenly;
+
+    > img {
+      width: 300px;
+      height: 300px;
+    }
+  }
+}
