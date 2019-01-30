@@ -12,9 +12,7 @@ import { PortfolioComponent } from './portfolio/portfolio.component';
 import { CvComponent } from './cv/cv.component';
 import { ContactComponent } from './contact/contact.component';
 import { HomeComponent } from './home/home.component';
-// import {
-
-// } from '@angular/material';
+import { MatToolbarModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -30,7 +28,8 @@ import { HomeComponent } from './home/home.component';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    RoutingModule
+    RoutingModule,
+    MatToolbarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
