@@ -1,0 +1,17 @@
+.nav-toolbar {
+  display: flex;
+
+  > .nav-logo {
+    height: 50px;
+  }
+
+  > .nav-links {
+    display: flex;
+    justify-content: space-around;
+    flex-grow: 1;
+
+    > .nav-link-item {
+      text-decoration: none;
+    }
+  }
+}
