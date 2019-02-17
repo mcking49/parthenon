@@ -5,6 +5,7 @@
   align-items: center;
   text-align: center;
   align-content: center;
-
-  // TODO: Add background-image when asset is available.
+  background-image: url("../../assets/img/home-bg.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
