@@ -1,3 +1,9 @@
-<p>
-  portfolio works!
-</p>
+<div class="portfolio">
+  <h1 class="title">Projects</h1>
+
+  <mat-grid-list class="grid" cols="4" gutterSize="50px">
+    <mat-grid-tile class="project-tile" *ngFor="let project of projects">
+      {{project.title}}
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
