@@ -13,6 +13,8 @@ import { CvComponent } from './cv/cv.component';
 import { ContactComponent } from './contact/contact.component';
 import { HomeComponent } from './home/home.component';
 import { MatToolbarModule, MatGridListModule } from '@angular/material';
+import { ProjectComponent } from './project/project.component';
+import { SmoothScrollDirective } from './smooth-scroll.directive';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { MatToolbarModule, MatGridListModule } from '@angular/material';
     PortfolioComponent,
     CvComponent,
     ContactComponent,
-    HomeComponent
+    HomeComponent,
+    ProjectComponent,
+    SmoothScrollDirective
   ],
   imports: [
     BrowserModule,
