@@ -1,17 +1,30 @@
 .nav-toolbar {
+  // Keep navbar sticky to the top and alwasy on top.
+  position: fixed;
+  z-index: 999;
+
   display: flex;
+  justify-content: space-evenly;
+
+  background: transparent;
 
   > .nav-logo {
-
+    flex-grow: 1;
+    text-align: center;
   }
 
   > .nav-links {
     display: flex;
     justify-content: space-around;
-    flex-grow: 1;
+    flex-grow: 2;
 
     > .nav-link-item {
       text-decoration: none;
+      color: white;
     }
+  }
+
+  > .nav-links-padding {
+    flex-grow: 1;
   }
 }
