@@ -1,10 +1,17 @@
 <div id="portfolio" appSmoothScroll>
   <h1 class="title" id="portfolio"appSmoothScroll>Projects</h1>
 
-  <mat-grid-list class="grid" cols="3" gutterSize="100px">
+  <mat-grid-list class="grid" cols="4" gutterSize="20px">
     <mat-grid-tile class="project-tile" *ngFor="let project of projects">
-      <p class="project-title">{{project.title}}</p>
-      <img [src]="project.logo" class="project-logo">
+      <a routerLink="/project/{{project.url}}">
+        <div class="titles">
+          <p class="project-title">{{project.title}}</p>
+          <hr class="underline">
+          <p class="project-year">{{project.year}}</p>
+          <p class="project-category">{{project.category}}</p>
+        </div>
+        <img [src]="project.logo" class="project-logo">
+      </a>
     </mat-grid-tile>
   </mat-grid-list>
 </div>

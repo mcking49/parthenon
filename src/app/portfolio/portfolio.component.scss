@@ -7,33 +7,65 @@
     text-align: center;
   }
 
-  .project-title {
-    opacity: 0;
-    font-size: 22px;
-    font-weight: 500;
-  }
 
   .project-tile {
     border: 1px solid black;
     border-radius: 5px;
     text-align: center;
 
-    .project-logo {
+    a {
       height: 100%;
-      position: absolute;
+      width: 100%;
+
+      .titles {
+        height: 100%;
+        width: 100%;
+        opacity: 0;
+        font-size: 16px;
+        font-weight: 300;
+        color: white;
+        text-transform: none;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .project-title {
+          font-size: 20px;
+          font-weight: 500;
+          margin: 0;
+        }
+
+        .underline {
+          width: 30%;
+        }
+
+        .project-year {
+          margin: 5px;
+        }
+
+        .project-category {
+          margin: 0;
+        }
+      }
+
+      .project-logo {
+        height: 100%;
+      }
     }
+
 
     &:hover {
       transition: transform .2s;
       transform: scale(1.5);
       z-index: 1;
-      .project-title {
-        opacity: 1;
+
+      .titles {
+        opacity: 1 !important;
         z-index: 1;
+        background-color: rgba(0, 0, 0, 0.5);
       }
     }
-  }
-
-  .grid {
   }
 }
