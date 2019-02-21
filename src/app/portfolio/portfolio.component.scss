@@ -6,19 +6,24 @@
   .title {
     text-align: center;
   }
+  
+  .project-title {
+    opacity: 0;
+    font-size: 22px;
+    font-weight: 500;
+  }
 
   .project-tile {
     border: 1px solid black;
     border-radius: 5px;
     text-align: center;
-
-    .project-logo {
-      position: absolute;
-      height: 100%;
-    }
-
+    
     &:hover {
-      color: red;
+      transition: transform .2s;
+      transform: scale(1.2);
+      .project-title {
+        opacity: 1
+      }
     }
   }
 
