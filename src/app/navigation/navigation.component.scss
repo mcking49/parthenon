@@ -6,7 +6,9 @@
   display: flex;
   justify-content: space-evenly;
 
-  background: transparent;
+  // TODO: remove background color and make nav bar transparent.
+  // background: transparent;
+  background-color: black;
 
   > .nav-logo {
     display: flex;
