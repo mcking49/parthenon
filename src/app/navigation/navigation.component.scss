@@ -9,17 +9,20 @@
   background: transparent;
 
   > .nav-logo {
-    flex-grow: 1;
-    text-align: center;
-    object-fit: contain;
-    max-height: 100%;
-    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    width: 15%;
+
+    > img {
+      height: 100%;
+    }
   }
 
   > .nav-links {
     display: flex;
     justify-content: space-around;
-    flex-grow: 2;
+    width: 60%;
 
     > .nav-link-item {
       text-decoration: none;
@@ -28,6 +31,6 @@
   }
 
   > .nav-links-padding {
-    flex-grow: 1;
+    width: 15%;
   }
 }
