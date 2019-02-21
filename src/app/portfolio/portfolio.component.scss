@@ -12,6 +12,11 @@
     border-radius: 5px;
     text-align: center;
 
+    .project-logo {
+      position: absolute;
+      height: 100%;
+    }
+
     &:hover {
       color: red;
     }
