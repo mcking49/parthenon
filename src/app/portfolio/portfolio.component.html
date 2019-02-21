@@ -1,9 +1,9 @@
 <div id="portfolio" appSmoothScroll>
   <h1 class="title" id="portfolio"appSmoothScroll>Projects</h1>
 
-  <mat-grid-list class="grid" cols="6" gutterSize="20px">
+  <mat-grid-list class="grid" cols="3" gutterSize="100px">
     <mat-grid-tile class="project-tile" *ngFor="let project of projects">
-      {{project.title}}
+      <p class="project-title">{{project.title}}</p>
       <img [src]="project.logo" class="project-logo">
     </mat-grid-tile>
   </mat-grid-list>
