@@ -11,6 +11,9 @@
   > .nav-logo {
     flex-grow: 1;
     text-align: center;
+    object-fit: contain;
+    max-height: 100%;
+    max-width: 100%;
   }
 
   > .nav-links {
