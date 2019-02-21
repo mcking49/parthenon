@@ -6,7 +6,7 @@
   .title {
     text-align: center;
   }
-  
+
   .project-title {
     opacity: 0;
     font-size: 22px;
@@ -17,12 +17,19 @@
     border: 1px solid black;
     border-radius: 5px;
     text-align: center;
-    
+
+    .project-logo {
+      height: 100%;
+      position: absolute;
+    }
+
     &:hover {
       transition: transform .2s;
-      transform: scale(1.2);
+      transform: scale(1.5);
+      z-index: 1;
       .project-title {
-        opacity: 1
+        opacity: 1;
+        z-index: 1;
       }
     }
   }
