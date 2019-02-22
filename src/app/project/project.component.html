@@ -1,3 +1,21 @@
-<p>
-  project works!
-</p>
+<div id="project">
+  <div class="images">
+    <img *ngFor="let image of project.images" [src]="image">
+  </div>
+
+  <h1 class="brief-title">Brief</h1>
+  <div class="column-text">
+    <p *ngFor="let paragraph of project.brief" class="paragraph">
+      {{paragraph}}
+    </p>
+  </div>
+
+  <div class="conclusion-container" *ngIf="!!project.conclusion">
+    <h1 class="conclusion-title">Conclusion</h1>
+    <div class="column-text">
+      <p *ngFor="let paragraph of project.conclusion" class="paragraph">
+        {{paragraph}}
+      </p>
+    </div>
+  </div>
+</div>
