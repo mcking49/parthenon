@@ -1,19 +1,10 @@
 <div id="about" appSmoothScroll>
   <h1 class="title">About</h1>
-
-  <div class="main-image">
-    <!-- TODO: Replace with real image. -->
-    <img src="../../assets/img/about-main.jpg" />
-  </div>
+  <hr class="underline">
 
   <div class="bio">
-    {{bio}}
-  </div>
-
-  <div class="about-content-images">
-    <!-- TODO: Replace with real images. -->
-    <img src="../../assets/img/placeholder.jpg" />
-    <img src="../../assets/img/placeholder.jpg" />
-    <img src="../../assets/img/placeholder.jpg" />
+    <p *ngFor="let paragraph of bio" class="paragraph">
+      {{paragraph}}
+    </p>
   </div>
 </div>
