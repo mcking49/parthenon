@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ProjectsService, IProject } from '../projects.service';
 
 @Component({
   selector: 'app-project',
@@ -7,9 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProjectComponent implements OnInit {
 
-  constructor() { }
+  // TODO: Change this to be the project that is passed into this component.
+  project: IProject;
+
+  constructor(private projectsService: ProjectsService) { }
 
   ngOnInit() {
+    this.initProjects();
+  }
+
+  private initProjects(): void {
+    this.project = this.projectsService.projects[0];
   }
 
 }
