@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { StorageService } from './../storage.service';
 
 @Component({
   selector: 'app-contact',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ContactComponent implements OnInit {
 
-  constructor() { }
+  constructor(private storage: StorageService) { }
 
   ngOnInit() {
+  }
+
+  downloadCv() {
+    this.storage.downloadCv();
   }
 
 }
