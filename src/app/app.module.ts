@@ -11,7 +11,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { PortfolioComponent } from './portfolio/portfolio.component';
 import { ContactComponent } from './contact/contact.component';
 import { HomeComponent } from './home/home.component';
-import { MatToolbarModule, MatGridListModule } from '@angular/material';
+import { MatToolbarModule, MatGridListModule, MatButtonModule } from '@angular/material';
 import { ProjectComponent } from './project/project.component';
 import { SmoothScrollDirective } from './smooth-scroll.directive';
 
@@ -32,7 +32,8 @@ import { SmoothScrollDirective } from './smooth-scroll.directive';
     BrowserAnimationsModule,
     RoutingModule,
     MatToolbarModule,
-    MatGridListModule
+    MatGridListModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
