@@ -5,6 +5,7 @@
   width: 70%;
   margin-left: auto;
   margin-right: auto;
+  align-items: center;
 
   > .title {
     text-align: center;
@@ -20,5 +21,20 @@
     &.full {
       width: 100%;
     }
+  }
+
+  > .contact-item {
+    padding: 10px;
+
+    > i {
+      padding-right: 10px;
+    }
+  }
+
+  > .download-btn {
+    width: 50%;
+    margin: 10px;
+    color: white;
+    background-color: black;
   }
 }
