@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { ProjectsService, IProject } from '../projects.service';
 
@@ -8,17 +9,20 @@ import { ProjectsService, IProject } from '../projects.service';
 })
 export class ProjectComponent implements OnInit {
 
-  // TODO: Change this to be the project that is passed into this component.
   project: IProject;
 
-  constructor(private projectsService: ProjectsService) { }
+  constructor(
+    private projectsService: ProjectsService,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
     this.initProjects();
   }
 
   private initProjects(): void {
-    this.project = this.projectsService.projects[0];
+    const url = this.route.snapshot.paramMap.get('url');
+    this.project = this.projectsService.getProject(url);
   }
 
 }

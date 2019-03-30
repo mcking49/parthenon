@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as _ from 'lodash';
 
 export interface IProject {
   title: string;
@@ -24,6 +25,10 @@ export class ProjectsService {
 
   constructor() {
     this.initProjects();
+  }
+
+  public getProject(url: string): IProject {
+    return _.find(this.projects, {url: url});
   }
 
   private initProjects() {
