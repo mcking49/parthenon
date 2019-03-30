@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,6 +14,8 @@ import { HomeComponent } from './home/home.component';
 import { MatToolbarModule, MatGridListModule, MatButtonModule } from '@angular/material';
 import { ProjectComponent } from './project/project.component';
 import { SmoothScrollDirective } from './smooth-scroll.directive';
+
+import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -33,9 +35,11 @@ import { SmoothScrollDirective } from './smooth-scroll.directive';
     RoutingModule,
     MatToolbarModule,
     MatGridListModule,
-    MatButtonModule
+    MatButtonModule,
+    NgbCarouselModule
   ],
   providers: [],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
