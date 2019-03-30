@@ -1,7 +1,9 @@
 <div id="project">
-  <div class="images">
-    <img *ngFor="let image of project.images" [src]="image">
-  </div>
+  <ngb-carousel *ngIf="project.images" interval="3000">
+    <ng-template *ngFor="let image of project.images" ngbSlide>
+      <img [src]="image"/>
+    </ng-template>
+  </ngb-carousel>
 
   <h1 class="brief-title">Brief</h1>
   <div class="column-text">
