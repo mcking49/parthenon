@@ -5,9 +5,7 @@
 
   <mat-grid-list class="grid" cols="4" gutterSize="20px">
     <mat-grid-tile class="project-tile" *ngFor="let project of projects">
-      <!-- TODO: Need to pass the project as a variable here. -->
-      <!-- TODO: Each project should have a unique url -->
-      <a routerLink="/project">
+      <a (click)="openProject(project.url)">
         <div class="titles">
           <p class="project-title">{{project.title}}</p>
           <hr class="underline">
