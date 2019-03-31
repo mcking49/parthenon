@@ -1,5 +1,5 @@
 <div id="project">
-  <ngb-carousel *ngIf="project.images" interval="3000">
+  <ngb-carousel *ngIf="project.images" interval="3000" class="slideshow">
     <ng-template *ngFor="let image of project.images" ngbSlide>
       <img [src]="image"/>
     </ng-template>
