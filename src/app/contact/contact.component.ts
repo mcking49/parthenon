@@ -21,8 +21,8 @@ export class ContactComponent implements OnInit {
   async downloadCv() {
     this.downloadInProgress = true;
     let dialogRef = this.dialog.open(DownloadSpinnerModalComponent, {
-      height: '250px',
-      width: '250px',
+      height: '150px',
+      width: '150px',
     });
     await this.storage.downloadCv();
     dialogRef.close();
