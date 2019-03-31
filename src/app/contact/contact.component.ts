@@ -1,5 +1,8 @@
+import { AboutComponent } from './../about/about.component';
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from './../storage.service';
+import { MatDialog } from '@angular/material';
+import { DownloadSpinnerModalComponent } from '../download-spinner-modal/download-spinner-modal.component';
 
 @Component({
   selector: 'app-contact',
@@ -8,13 +11,22 @@ import { StorageService } from './../storage.service';
 })
 export class ContactComponent implements OnInit {
 
-  constructor(private storage: StorageService) { }
+  downloadInProgress = false;
+
+  constructor(private storage: StorageService, private dialog: MatDialog) { }
 
   ngOnInit() {
   }
 
-  downloadCv() {
-    this.storage.downloadCv();
+  async downloadCv() {
+    this.downloadInProgress = true;
+    let dialogRef = this.dialog.open(DownloadSpinnerModalComponent, {
+      height: '250px',
+      width: '250px',
+    });
+    await this.storage.downloadCv();
+    dialogRef.close();
+    this.downloadInProgress = false;
   }
 
 }
