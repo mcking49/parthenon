@@ -1,19 +1,25 @@
 <div id="project">
+  <h1 class="project-title">{{project.title}}</h1>
+  <h3>{{project.category}}</h3>
+  <h3>{{project.year}}</h3>
+
   <ngb-carousel *ngIf="project.images" interval="3000" class="slideshow">
     <ng-template *ngFor="let image of project.images" ngbSlide>
       <img [src]="image"/>
     </ng-template>
   </ngb-carousel>
 
-  <h1 class="brief-title">Brief</h1>
-  <div class="column-text">
-    <p *ngFor="let paragraph of project.brief" class="paragraph">
-      {{paragraph}}
-    </p>
+  <div class="section-container">
+    <h2 class="section-title">Brief</h2>
+    <div class="column-text">
+      <p *ngFor="let paragraph of project.brief" class="paragraph">
+        {{paragraph}}
+      </p>
+    </div>
   </div>
 
-  <div class="conclusion-container" *ngIf="!!project.conclusion">
-    <h1 class="conclusion-title">Conclusion</h1>
+  <div class="section-container" *ngIf="!!project.conclusion">
+    <h2 class="section-title">Conclusion</h2>
     <div class="column-text">
       <p *ngFor="let paragraph of project.conclusion" class="paragraph">
         {{paragraph}}
