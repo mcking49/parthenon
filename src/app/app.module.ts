@@ -11,11 +11,18 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { PortfolioComponent } from './portfolio/portfolio.component';
 import { ContactComponent } from './contact/contact.component';
 import { HomeComponent } from './home/home.component';
-import { MatToolbarModule, MatGridListModule, MatButtonModule } from '@angular/material';
+import {
+  MatToolbarModule,
+  MatGridListModule,
+  MatButtonModule,
+  MatProgressSpinnerModule,
+  MatDialogModule
+} from '@angular/material';
 import { ProjectComponent } from './project/project.component';
 import { SmoothScrollDirective } from './smooth-scroll.directive';
 
 import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
+import { DownloadSpinnerModalComponent } from './download-spinner-modal/download-spinner-modal.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +33,8 @@ import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
     ContactComponent,
     HomeComponent,
     ProjectComponent,
-    SmoothScrollDirective
+    SmoothScrollDirective,
+    DownloadSpinnerModalComponent
   ],
   imports: [
     BrowserModule,
@@ -36,10 +44,13 @@ import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
     MatToolbarModule,
     MatGridListModule,
     MatButtonModule,
+    MatProgressSpinnerModule,
+    MatDialogModule,
     NgbCarouselModule
   ],
   providers: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [DownloadSpinnerModalComponent]
 })
 export class AppModule { }
