@@ -13,8 +13,8 @@ export class StorageService {
     this.initialiseFirebaseStorage();
   }
 
-  public downloadCv() {
-    this.cvRef.getDownloadURL()
+  public downloadCv(): Promise<any> {
+    return this.cvRef.getDownloadURL()
       .then((url) => {
         window.open(url, '_blank');
       })
