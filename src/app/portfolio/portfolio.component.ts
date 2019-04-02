@@ -21,7 +21,7 @@ export class PortfolioComponent implements OnInit {
   }
 
   public openProject(url: string): void {
-    this.router.navigate([`/project/${url}`]);
+    this.router.navigate([`/project/${url}`], {fragment: 'project'});
   }
 
   private initProjects() {
