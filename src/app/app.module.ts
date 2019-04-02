@@ -3,7 +3,6 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { RoutingModule } from './routing/routing.module';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AboutComponent } from './about/about.component';
@@ -19,7 +18,6 @@ import {
   MatDialogModule
 } from '@angular/material';
 import { ProjectComponent } from './project/project.component';
-import { SmoothScrollDirective } from './smooth-scroll.directive';
 
 import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 import { DownloadSpinnerModalComponent } from './download-spinner-modal/download-spinner-modal.component';
@@ -33,14 +31,12 @@ import { DownloadSpinnerModalComponent } from './download-spinner-modal/download
     ContactComponent,
     HomeComponent,
     ProjectComponent,
-    SmoothScrollDirective,
     DownloadSpinnerModalComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    RoutingModule,
     MatToolbarModule,
     MatGridListModule,
     MatButtonModule,
