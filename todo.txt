@@ -1,0 +1,6 @@
+- Mobile responsiveness (dont forget on hover behaviour of logos)
+- Need a padding below brief.
+- Add out transition on project logo hover.
+- Change contact details to a footer?
+- Need to open project images to open them and view them in more detail.
+- Condense text?
