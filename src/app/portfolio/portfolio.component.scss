@@ -22,6 +22,7 @@
 
   .project-tile {
     text-align: center;
+    transition: transform .2s;
 
     a {
       height: 100%;
@@ -63,7 +64,6 @@
 
 
     &:hover {
-      transition: transform .2s;
       transform: scale(1.5);
       z-index: 1;
 
