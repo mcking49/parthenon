@@ -2,3 +2,17 @@
 - Change contact details to a footer?
 - Need to open project images to open them and view them in more detail.
 - Condense text?
+- onmouseover on slideshow pauses but there is no user feeback
+- size of slideshow needs adjusting
+- fragment navigation bug when navigating from project page to home fragment
+- navigation says "Portfolio", heading of section says "Projects"
+- outline onFocus on slideshow should be removed
+- projects need a sensible ordering (probably newest to oldest)
+- Too many words, needs to be more concise
+- Move Portfolio section about the about section
+- project section could show only 3 rows initially and then a "more" button or something like that
+- missing apostrophe in it's .... Whether its short road trips up
+- contact section needs better alignment with icon and text
+- add linkedin to contact
+- Remove "home" link from nav bar. The icon is enough.
+- Longer transition times for slideshow.
