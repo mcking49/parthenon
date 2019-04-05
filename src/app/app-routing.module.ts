@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ProjectComponent } from './project/project.component';
-import { HomeComponent } from './home/home.component';
+import { ProjectComponent } from './components/project/project.component';
+import { HomeComponent } from './components/home/home.component';
 import { CommonModule } from '@angular/common';
-import { AboutComponent } from './about/about.component';
-import { PortfolioComponent } from './portfolio/portfolio.component';
-import { ContactComponent } from './contact/contact.component';
+import { AboutComponent } from './components/about/about.component';
+import { PortfolioComponent } from './components/portfolio/portfolio.component';
+import { ContactComponent } from './components/contact/contact.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
