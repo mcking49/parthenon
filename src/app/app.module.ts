@@ -15,12 +15,16 @@ import {
   MatGridListModule,
   MatButtonModule,
   MatProgressSpinnerModule,
-  MatDialogModule
+  MatDialogModule,
+  MatSidenavModule,
+  MatIconModule,
+  MatListModule
 } from '@angular/material';
 import { ProjectComponent } from './project/project.component';
 
 import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 import { DownloadSpinnerModalComponent } from './download-spinner-modal/download-spinner-modal.component';
+import { LayoutModule } from '@angular/cdk/layout';
 
 @NgModule({
   declarations: [
@@ -42,7 +46,11 @@ import { DownloadSpinnerModalComponent } from './download-spinner-modal/download
     MatButtonModule,
     MatProgressSpinnerModule,
     MatDialogModule,
-    NgbCarouselModule
+    NgbCarouselModule,
+    LayoutModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule
   ],
   providers: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
