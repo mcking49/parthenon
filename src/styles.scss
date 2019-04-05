@@ -71,3 +71,27 @@ ngb-carousel {
 .carousel-indicators{
   z-index: 20;
 }
+
+// ========================================================================= //
+// Angular Material Custom Styles
+// ========================================================================= //
+
+// Menu
+// ========================================================================= //
+.menu-custom-backdrop {
+  background-color: black !important;
+  opacity: 0.4 !important;
+  transition: opacity 4s ease-in-out !important;
+}
+
+.cdk-overlay-pane {
+  height: 100% !important;
+  top: 0 !important;
+  right: 0 !important;
+
+  .menu-custom-container {
+    max-height: 100% !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+  }
+}

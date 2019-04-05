@@ -11,11 +11,13 @@ import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { HomeComponent } from './components/home/home.component';
 import {
-  MatToolbarModule,
-  MatGridListModule,
   MatButtonModule,
+  MatDialogModule,
+  MatGridListModule,
+  MatIconModule,
+  MatMenuModule,
   MatProgressSpinnerModule,
-  MatDialogModule
+  MatToolbarModule,
 } from '@angular/material';
 import { ProjectComponent } from './components/project/project.component';
 
@@ -35,14 +37,16 @@ import { DownloadSpinnerModalComponent } from './components/download-spinner-mod
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
-    MatToolbarModule,
-    MatGridListModule,
     MatButtonModule,
-    MatProgressSpinnerModule,
     MatDialogModule,
-    NgbCarouselModule
+    MatGridListModule,
+    MatIconModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
+    MatToolbarModule,
+    NgbCarouselModule,
+    AppRoutingModule
   ],
   providers: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
