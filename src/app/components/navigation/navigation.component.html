@@ -1,45 +1,14 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav
-    #drawer
-    class="sidenav"
-    fixedInViewport="false"
-    attr.role="dialog"
-    mode="over"
-    position="end">
-    <mat-toolbar>Menu</mat-toolbar>
-    <mat-nav-list>
-      <a mat-list-item routerLink="" class="nav-link-item">Home</a>
-      <a mat-list-item routerLink="/home" (click)="drawer.close()" fragment="about" class="nav-link-item">About</a>
-      <a mat-list-item routerLink="/home" (click)="drawer.close()" fragment="portfolio" class="nav-link-item">Portfolio</a>
-      <a mat-list-item routerLink="/home" (click)="drawer.close()" fragment="contact" class="nav-link-item">Contact & CV</a>
-    </mat-nav-list>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <mat-toolbar color="primary" class="nav-toolbar" [class.handset-mode]="isHandset$ | async">
-      <a routerLink="" class="nav-logo">
-        <img src="../../assets/img/logo-white.png">
-      </a>
+<mat-toolbar class="nav-toolbar" color="primary">
+  <a routerLink="" class="nav-logo">
+    <img src="../../assets/img/logo-white.png">
+  </a>
 
-      <div class="nav-links" *ngIf="!(isHandset$ | async)">
-        <a routerLink="" class="nav-link-item">Home</a>
-        <a routerLink="/home" fragment="about" class="nav-link-item">About</a>
-        <a routerLink="/home" fragment="portfolio" class="nav-link-item">Portfolio</a>
-        <a routerLink="/home" fragment="contact" class="nav-link-item">Contact & CV</a>
-      </div>
+  <div class="nav-links">
+    <a routerLink="" class="nav-link-item">Home</a>
+    <a routerLink="/home" fragment="about" class="nav-link-item">About</a>
+    <a routerLink="/home" fragment="portfolio" class="nav-link-item">Portfolio</a>
+    <a routerLink="/home" fragment="contact" class="nav-link-item">Contact & CV</a>
+  </div>
 
-      <div class="nav-links-padding" *ngIf="!(isHandset$ | async)"></div>
-
-      <button
-        type="button"
-        aria-label="Toggle sidenav"
-        mat-icon-button
-        (click)="drawer.toggle()"
-        class="menu-button"
-        *ngIf="isHandset$ | async">
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-      </button>
-    </mat-toolbar>
-    <!-- TODO: Add Content Here -->
-    <!-- <ng-content></ng-content> -->
-  </mat-sidenav-content>
-</mat-sidenav-container>
+  <div class="nav-links-padding"></div>
+</mat-toolbar>
