@@ -6,14 +6,9 @@
   display: flex;
   justify-content: space-evenly;
 
+  // TODO: remove background color and make nav bar transparent.
+  // background: transparent;
   background-color: black;
-
-  &.handset-mode {
-    > .menu-button {
-      position: absolute;
-      right: 12px;
-    }
-  }
 
   > .nav-logo {
     display: flex;
@@ -40,22 +35,4 @@
   > .nav-links-padding {
     width: 15%;
   }
-}
-
-.sidenav-container {
-  height: 100%;
-}
-
-.sidenav {
-  width: 200px;
-}
-
-.sidenav .mat-toolbar {
-  background: inherit
-}
-
-.mat-toolbar.mat-primary {
-  position: sticky;
-  top: 0;
-  z-index: 1;
 }
