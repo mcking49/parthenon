@@ -1,4 +1,3 @@
-- outline onFocus on slideshow should be removed
 - fragment navigation bug when navigating from project page to home fragment
 - size of slideshow needs adjusting
 - Responsive design of portfolio logos
