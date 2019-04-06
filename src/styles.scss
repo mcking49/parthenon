@@ -64,6 +64,10 @@ body {
 ngb-carousel {
   width: inherit;
   height: inherit;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .carousel-inner {
