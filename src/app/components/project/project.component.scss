@@ -26,14 +26,9 @@
     margin-left: auto;
   }
 
-  .column-text {
-    column-count: 2;
-    column-gap: 40px;
-
-    > .paragraph {
-      margin: 0;
-      margin-bottom: 24px;
-      line-height: 24px;
-    }
+  .paragraph {
+    margin: 0;
+    margin-bottom: 24px;
+    line-height: 24px;
   }
 }

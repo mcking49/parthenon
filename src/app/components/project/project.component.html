@@ -11,7 +11,7 @@
 
   <div class="section-container">
     <h2 class="section-title">Brief</h2>
-    <div class="column-text">
+    <div class="column-text-container" [class.handset-mode]="isHandset | async">
       <p *ngFor="let paragraph of project.brief" class="paragraph">
         {{paragraph}}
       </p>
@@ -20,7 +20,7 @@
 
   <div class="section-container" *ngIf="!!project.conclusion">
     <h2 class="section-title">Conclusion</h2>
-    <div class="column-text">
+    <div class="column-text-container" [class.handset-mode]="isHandset | async">
       <p *ngFor="let paragraph of project.conclusion" class="paragraph">
         {{paragraph}}
       </p>

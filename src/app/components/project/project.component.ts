@@ -1,6 +1,8 @@
+import { ResponsiveService } from './../../services/responsive.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { ProjectsService, IProject } from '../../services/projects.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-project',
@@ -9,15 +11,18 @@ import { ProjectsService, IProject } from '../../services/projects.service';
 })
 export class ProjectComponent implements OnInit {
 
+  isHandset: Observable<boolean>;
   project: IProject;
 
   constructor(
     private projectsService: ProjectsService,
+    private responsiveService: ResponsiveService,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
     this.initProjects();
+    this.isHandset = this.responsiveService.isHandset;
   }
 
   private initProjects(): void {
