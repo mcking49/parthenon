@@ -1,13 +1,8 @@
 .nav-toolbar {
-  // Keep navbar sticky to the top and alwasy on top.
   position: fixed;
   z-index: 999;
-
   display: flex;
   justify-content: space-evenly;
-
-  // TODO: remove background color and make nav bar transparent.
-  // background: transparent;
   background-color: black;
 
   > .nav-logo {
@@ -34,5 +29,15 @@
 
   > .nav-links-padding {
     width: 15%;
+  }
+
+  > .menu-button {
+    position: absolute;
+    right: 0;
+    margin-right: 12px;
+
+    &:focus {
+      outline: none;
+    }
   }
 }

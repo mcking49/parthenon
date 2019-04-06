@@ -29,9 +29,25 @@ $parthenon-theme: mat-light-theme($parthenon-primary, $parthenon-accent, $parthe
 @include angular-material-theme($parthenon-theme);
 
 /* You can add global styles to this file, and also import other style files */
+@import './variables.scss';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+  min-width: $mobile-medium-screen;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.column-text-container {
+  column-count: 2;
+  column-gap: 40px;
+
+  &.handset-mode {
+    column-count: 1;
+  }
+}
 
 // ========================================================================= //
 // Carousel Slide Animation
@@ -94,5 +110,11 @@ ngb-carousel {
     max-height: 100% !important;
     width: 100% !important;
     border-radius: 0 !important;
+
+    button {
+      &:focus {
+        outline: none;
+      }
+    }
   }
 }
