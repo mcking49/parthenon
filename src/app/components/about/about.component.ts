@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ResponsiveService } from 'src/app/services/responsive.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-about',
@@ -8,11 +10,13 @@ import { Component, OnInit } from '@angular/core';
 export class AboutComponent implements OnInit {
 
   public bio: string[];
+  public isHandset: Observable<boolean>;
 
-  constructor() { }
+  constructor(private responsiveService: ResponsiveService) { }
 
   ngOnInit() {
     this.initBio();
+    this.isHandset = this.responsiveService.isHandset;
   }
 
   public initBio(): void {
