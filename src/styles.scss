@@ -29,7 +29,7 @@ $parthenon-theme: mat-light-theme($parthenon-primary, $parthenon-accent, $parthe
 @include angular-material-theme($parthenon-theme);
 
 /* You can add global styles to this file, and also import other style files */
-@import './variables.scss';
+@import './styles/variables.scss';
 
 html, body {
   height: 100%;
