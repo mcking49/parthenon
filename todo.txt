@@ -14,3 +14,6 @@
 - Too many words, needs to be more concise
 - Condense text?
 - Change contact details to a footer?
+
+- Install AngularFire and replace firebase methods in service
+- Create firebase data service
