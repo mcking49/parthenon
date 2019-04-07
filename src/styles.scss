@@ -33,7 +33,7 @@ $parthenon-theme: mat-light-theme($parthenon-primary, $parthenon-accent, $parthe
 
 html, body {
   height: 100%;
-  min-width: $mobile-medium-screen;
+  min-width: $mobile-screen-medium;
 }
 
 body {
@@ -53,7 +53,7 @@ body {
 .responsive-width {
   width: 70%;
 
-  @media screen and (max-width: $tablet-normal-screen) {
+  @media screen and (max-width: $tablet-screen-normal) {
     width: 90%;
   }
 }
