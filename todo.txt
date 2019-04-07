@@ -1,0 +1,22 @@
+
+// Fixme: Bugs
+
+// FIXME: Things for Austin to consider
+- Too many words, needs to be more concise
+- Condense text?
+- Change contact details to a footer?
+- missing apostrophe in it's .... Whether its short road trips up
+
+// TODO: Features need to implement
+- Install AngularFire and replace firebase methods in service
+- Create firebase data service
+
+// TODO: Feature requests (need approval)
+- Need to open project images to open them and view them in more detail.
+- project section could show only 3 rows initially and then a "more" button or something like that?
+- onmouseover on slideshow pauses but there is no user feeback
+- Remove "home" link from nav bar. The icon is enough.
+- Add titles to tiles.
+
+// FIXME: Bugs: need to research how to fix.
+- fragment navigation bug when navigating from project page to home fragment

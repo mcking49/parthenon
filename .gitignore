@@ -43,3 +43,4 @@ testem.log
 .DS_Store
 Thumbs.db
 .firebase/hosting.ZGlzdFxwYXJ0aGVub24.cache
+*.cache
