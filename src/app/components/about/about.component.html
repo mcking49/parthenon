@@ -1,0 +1,10 @@
+<div id="about" class="responsive-width">
+  <h1 class="title">About</h1>
+  <hr class="underline">
+
+  <div class="column-text-container" [class.handset-mode]="isHandset | async">
+    <p *ngFor="let paragraph of bio" class="paragraph">
+      {{paragraph}}
+    </p>
+  </div>
+</div>

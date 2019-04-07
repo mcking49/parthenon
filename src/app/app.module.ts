@@ -1,18 +1,29 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { RoutingModule } from './routing/routing.module';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AboutComponent } from './about/about.component';
-import { NavigationComponent } from './navigation/navigation.component';
-import { PortfolioComponent } from './portfolio/portfolio.component';
-import { CvComponent } from './cv/cv.component';
-import { ContactComponent } from './contact/contact.component';
-import { HomeComponent } from './home/home.component';
-import { MatToolbarModule } from '@angular/material';
+import { AboutComponent } from './components/about/about.component';
+import { NavigationComponent } from './components/navigation/navigation.component';
+import { PortfolioComponent } from './components/portfolio/portfolio.component';
+import { ContactComponent } from './components/contact/contact.component';
+import { HomeComponent } from './components/home/home.component';
+import {
+  MatButtonModule,
+  MatDialogModule,
+  MatGridListModule,
+  MatIconModule,
+  MatListModule,
+  MatMenuModule,
+  MatProgressSpinnerModule,
+  MatToolbarModule,
+} from '@angular/material';
+import { ProjectComponent } from './components/project/project.component';
+
+import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
+import { DownloadSpinnerModalComponent } from './components/download-spinner-modal/download-spinner-modal.component';
 
 @NgModule({
   declarations: [
@@ -20,18 +31,28 @@ import { MatToolbarModule } from '@angular/material';
     AboutComponent,
     NavigationComponent,
     PortfolioComponent,
-    CvComponent,
     ContactComponent,
-    HomeComponent
+    HomeComponent,
+    ProjectComponent,
+    DownloadSpinnerModalComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
-    RoutingModule,
-    MatToolbarModule
+    MatButtonModule,
+    MatDialogModule,
+    MatGridListModule,
+    MatIconModule,
+    MatListModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
+    MatToolbarModule,
+    NgbCarouselModule,
+    AppRoutingModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  bootstrap: [AppComponent],
+  entryComponents: [DownloadSpinnerModalComponent]
 })
 export class AppModule { }

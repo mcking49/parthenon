@@ -4,6 +4,8 @@
 @import '~@angular/material/theming';
 // Plus imports for other components in your app.
 
+@import '~bootstrap/dist/css/bootstrap.min.css';
+
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
@@ -27,6 +29,115 @@ $parthenon-theme: mat-light-theme($parthenon-primary, $parthenon-accent, $parthe
 @include angular-material-theme($parthenon-theme);
 
 /* You can add global styles to this file, and also import other style files */
+@import './styles/variables.scss';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+  min-width: $mobile-screen-medium;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.column-text-container {
+  column-count: 2;
+  column-gap: 40px;
+
+  &.handset-mode {
+    column-count: 1;
+  }
+}
+
+.responsive-width {
+  width: 70%;
+
+  @media screen and (max-width: $tablet-screen-normal) {
+    width: 90%;
+  }
+}
+
+// ========================================================================= //
+// Carousel Slide Animation
+// ========================================================================= //
+ngb-carousel {
+  width: inherit;
+  height: inherit;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.carousel-inner {
+  overflow: visible;
+}
+
+.carousel-item {
+  display: flex !important;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1.2s ease-in-out, visibility 1.2s;
+  z-index: -1;
+  position: absolute;
+}
+
+.carousel-item.active{
+  opacity: 1;
+  visibility: visible;
+  z-index: 10;
+}
+
+.carousel-control-prev {
+   z-index: 20;
+}
+
+
+.carousel-control-next {
+   z-index: 20;
+}
+
+.carousel-indicators{
+  z-index: 20;
+}
+
+// ========================================================================= //
+// Angular Material Custom Styles
+// ========================================================================= //
+
+// List
+// ========================================================================= //
+.mat-list-item-content {
+  padding: 0 !important;
+}
+
+.mat-list-text {
+  order: 1;
+}
+
+// Menu
+// ========================================================================= //
+.menu-custom-backdrop {
+  background-color: black !important;
+  opacity: 0.4 !important;
+  transition: opacity 4s ease-in-out !important;
+}
+
+.cdk-overlay-pane {
+  height: 100% !important;
+  top: 0 !important;
+  right: 0 !important;
+
+  .menu-custom-container {
+    max-height: 100% !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+
+    button {
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
