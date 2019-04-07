@@ -1,4 +1,5 @@
-- fragment navigation bug when navigating from project page to home fragment
+- fragment navigation bug when navigating from project page to home fragment???
+
 - Responsive design of portfolio logos
 - Need to open project images to open them and view them in more detail.
 - onmouseover on slideshow pauses but there is no user feeback
@@ -13,7 +14,6 @@
 - Replace <hr> with a border-top.
 - Add titles to tiles.
 - Download cv button should be taller and shorter
-- hovering on a portfolio should change cursor to a hand to indicate it can be clicked on
 
 - Too many words, needs to be more concise
 - Condense text?
