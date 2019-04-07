@@ -1,6 +1,8 @@
+import { ResponsiveService } from './../../services/responsive.service';
 import { Component, OnInit } from '@angular/core';
 import { ProjectsService, IProject } from '../../services/projects.service';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-portfolio',
@@ -9,15 +11,19 @@ import { Router } from '@angular/router';
 })
 export class PortfolioComponent implements OnInit {
 
+  public isHandset: Observable<boolean>;
+
   public projects: IProject[] = [];
 
   constructor(
+    private projectService: ProjectsService,
+    private responsiveService: ResponsiveService,
     private router: Router,
-    private projectService: ProjectsService
   ) { }
 
   ngOnInit() {
     this.initProjects();
+    this.isHandset = this.responsiveService.isHandset;
   }
 
   public openProject(url: string): void {

@@ -19,6 +19,11 @@
     margin: 40px 0 0;
   }
 
+  .project-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0;
+  }
 
   .project-tile {
     text-align: center;
@@ -41,12 +46,6 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-
-        .project-title {
-          font-size: 20px;
-          font-weight: 500;
-          margin: 0;
-        }
 
         .project-year {
           margin: 5px;
@@ -72,6 +71,22 @@
         opacity: 1 !important;
         z-index: 1;
         background-color: rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
+
+  mat-action-list {
+    > button {
+      text-align: left;
+      height: 100px;
+      margin: 20px 0 20px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      border-radius: 2px;
+      overflow: hidden;
+
+      .project-logo {
+        height: 100%;
+        margin-right: 20px;
       }
     }
   }
