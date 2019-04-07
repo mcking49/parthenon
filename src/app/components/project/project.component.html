@@ -3,9 +3,9 @@
   <h3>{{project.category}}</h3>
   <h3>{{project.year}}</h3>
 
-  <ngb-carousel *ngIf="project.images" interval="6000" class="slideshow">
+  <ngb-carousel *ngIf="project.images" interval="6000" class="slideshow slide-size">
     <ng-template *ngFor="let image of project.images" ngbSlide>
-      <img [src]="image"/>
+      <img [src]="image" class="slide-image slide-size"/>
     </ng-template>
   </ngb-carousel>
 

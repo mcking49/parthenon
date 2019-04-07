@@ -1,3 +1,5 @@
+@import '../../../styles/variables.scss';
+
 #project {
   padding-top: 64px;
   margin-left: auto;
@@ -12,15 +14,43 @@
     margin-top: 20px;
   }
 
-  .slideshow {
+  .slide-size {
+    max-height: 1080px;
+    max-width: 1920px;
     height: 500px;
-    width: 100%;
+    width: 889px;
+
+    @media screen and (max-width: $mobile-screen-large) {
+      height: 190px;
+      width: 338px;
+    }
+
+    @media screen and (min-width: $mobile-screen-large + 1) and (max-width: $tablet-screen-normal) {
+      height: 211px;
+      width: 375px;
+    }
+
+    @media screen and (min-width: $tablet-screen-normal + 1) and (max-width: $laptop-screen-normal) {
+      height: 304px;
+      width: 540px;
+    }
+
+    @media screen and (min-width: $laptop-screen-normal + 1) and (max-width: $laptop-screen-large) {
+      height: 402px;
+      width: 715px;
+    }
+
+    @media screen and (min-width: $laptop-screen-large + 1) and (max-width: $desktop-screen-4k) {
+      height: 565px;
+      width: 1005px;
+    }
+  }
+
+  .slideshow {
     margin: 25px;
   }
 
-  img {
-    max-width: 100%;
-    max-height: 500px;
+  .slide-image {
     display: block;
     margin-right: auto;
     margin-left: auto;
