@@ -32,7 +32,7 @@ export class ProjectsService {
   }
 
   private initProjects() {
-    this.projects = [
+    const projectsList = [
       {
         title: 'Hutt Attacks',
         url: '2014-hutt-attacks',
@@ -525,5 +525,6 @@ export class ProjectsService {
         ]
       },
     ];
+    this.projects = _.orderBy(projectsList, ['year', 'title'], ['desc', 'asc']);
   }
 }
