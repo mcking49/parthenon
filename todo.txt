@@ -7,13 +7,10 @@
 - Move Portfolio section above the about section?
 - project section could show only 3 rows initially and then a "more" button or something like that?
 - missing apostrophe in it's .... Whether its short road trips up
-- contact section needs better alignment with icon and text
-- add linkedin to contact
 - Remove "home" link from nav bar. The icon is enough.
 - Add more space between section.
 - Replace <hr> with a border-top.
 - Add titles to tiles.
-- Download cv button should be taller and shorter
 
 - Too many words, needs to be more concise
 - Condense text?

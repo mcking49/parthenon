@@ -24,14 +24,21 @@
 
   > .contact-item {
     padding: 10px;
+    display: flex;
 
-    > i {
+    > a {
+      color: black;
+    }
+
+    > .contact-logo {
+      height: 24px;
       padding-right: 10px;
     }
   }
 
   > .download-btn {
-    width: 50%;
+    width: 125px;
+    height: 50px;
     margin: 10px;
     color: white;
     background-color: black;
