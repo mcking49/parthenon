@@ -1,7 +1,6 @@
 
 // FIXME: Bugs
 - Responsive design of portfolio logos
-- Add more space between section.
 - Replace <hr> with a border-top.
 
 // FIXME: Things for Austin to consider
