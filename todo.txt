@@ -1,7 +1,6 @@
 
 // FIXME: Bugs
 - Responsive design of portfolio logos
-- Replace <hr> with a border-top.
 
 // FIXME: Things for Austin to consider
 - Too many words, needs to be more concise
