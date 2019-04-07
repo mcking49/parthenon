@@ -76,6 +76,7 @@ ngb-carousel {
 
 .carousel-item {
   display: flex !important;
+  justify-content: center;
   opacity: 0;
   visibility: hidden;
   transition: opacity 1.2s ease-in-out, visibility 1.2s;
