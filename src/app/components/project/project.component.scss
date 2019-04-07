@@ -19,31 +19,31 @@
     max-height: 1080px;
     max-width: 1920px;
     height: 500px;
-    width: 889px;
+    max-width: 889px;
 
     @media screen and (max-width: $mobile-screen-large) {
       height: 190px;
-      width: 338px;
+      max-width: 338px;
     }
 
     @media screen and (min-width: $mobile-screen-large + 1) and (max-width: $tablet-screen-normal) {
       height: 211px;
-      width: 375px;
+      max-width: 375px;
     }
 
     @media screen and (min-width: $tablet-screen-normal + 1) and (max-width: $laptop-screen-normal) {
       height: 304px;
-      width: 540px;
+      max-width: 540px;
     }
 
     @media screen and (min-width: $laptop-screen-normal + 1) and (max-width: $laptop-screen-large) {
       height: 402px;
-      width: 715px;
+      max-width: 715px;
     }
 
     @media screen and (min-width: $laptop-screen-large + 1) and (max-width: $desktop-screen-4k) {
       height: 565px;
-      width: 1005px;
+      max-width: 1005px;
     }
   }
 
