@@ -1,20 +1,26 @@
-- fragment navigation bug when navigating from project page to home fragment???
 
+// FIXME: Bugs
 - Responsive design of portfolio logos
-- Need to open project images to open them and view them in more detail.
-- onmouseover on slideshow pauses but there is no user feeback
-- projects need a sensible ordering (probably newest to oldest)
-- Move Portfolio section above the about section?
-- project section could show only 3 rows initially and then a "more" button or something like that?
-- missing apostrophe in it's .... Whether its short road trips up
-- Remove "home" link from nav bar. The icon is enough.
 - Add more space between section.
 - Replace <hr> with a border-top.
-- Add titles to tiles.
 
+// FIXME: Things for Austin to consider
 - Too many words, needs to be more concise
 - Condense text?
 - Change contact details to a footer?
+- missing apostrophe in it's .... Whether its short road trips up
 
+// TODO: Features need to implement
 - Install AngularFire and replace firebase methods in service
 - Create firebase data service
+
+// TODO: Feature requests (need approval)
+- Need to open project images to open them and view them in more detail.
+- Projects need a sensible ordering (probably newest to oldest)
+- project section could show only 3 rows initially and then a "more" button or something like that?
+- onmouseover on slideshow pauses but there is no user feeback
+- Remove "home" link from nav bar. The icon is enough.
+- Add titles to tiles.
+
+// FIXME: Bugs: need to research how to fix.
+- fragment navigation bug when navigating from project page to home fragment
