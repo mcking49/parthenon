@@ -13,8 +13,8 @@ export class StorageService {
     this.initialiseFirebaseStorage();
   }
 
-  public downloadCv(): Promise<any> {
-    return this.cvRef.getDownloadURL()
+  public downloadCv(language: string): Promise<any> {
+    return this.getCvRef(language).getDownloadURL()
       .then((url) => {
         window.open(url, '_blank');
       })
@@ -27,7 +27,7 @@ export class StorageService {
     this.storageRef = firebase.storage().ref();
   }
 
-  get cvRef() {
-    return this.storageRef.child('cv/Dsouza_Austin-CV19-Web.pdf');
+  private getCvRef(language: string): firebase.storage.Reference {
+    return this.storageRef.child(`cv/Dsouza_Austin-CV19-${language}.pdf`);
   }
 }

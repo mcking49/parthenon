@@ -18,13 +18,13 @@ export class ContactComponent implements OnInit {
   ngOnInit() {
   }
 
-  async downloadCv() {
+  async downloadCv(language: string) {
     this.downloadInProgress = true;
     const dialogRef = this.dialog.open(DownloadSpinnerModalComponent, {
       height: '150px',
       width: '150px',
     });
-    await this.storage.downloadCv();
+    await this.storage.downloadCv(language);
     dialogRef.close();
     this.downloadInProgress = false;
   }
