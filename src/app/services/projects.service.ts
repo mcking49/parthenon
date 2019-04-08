@@ -420,7 +420,7 @@ export class ProjectsService {
         ],
         logo: `${ImgRoot.PATH}2017-athens-intervention/logo.png`,
         brief: [
-          "This project completed at the Technical University of Munich was a studio project based in the suburb of Victoria in Athens, Greece. In this studio we travelled to Athens to get an understanding pf what and who we were developing for, taking in the knowledge and culture of the Greeks. This design proposal is in collaboration with Din Sterain from the University of Tel Aviv, and focuses on the rejuvenation of an old Polykatoikia – a traditional Greek apartment building. In this design we explore the possibility to transform this unoccupied building into a large community hub, where a different range of programs serve a variance of age groups in the neighbourhood."
+          "This project completed at the Technical University of Munich was a studio project based in the suburb of Victoria in Athens, Greece. In this studio we travelled to Athens to get an understanding of what and who we were developing for, taking in the knowledge and culture of the Greeks. This design proposal is in collaboration with Din Sterain from the University of Tel Aviv, and focuses on the rejuvenation of an old Polykatoikia – a traditional Greek apartment building. In this design we explore the possibility to transform this unoccupied building into a large community hub, where a different range of programs serve a variance of age groups in the neighbourhood."
         ]
       },
       {
@@ -440,7 +440,7 @@ export class ProjectsService {
         ],
         logo: `${ImgRoot.PATH}2017-athens-urban/logo.png`,
         brief: [
-          "This project completed at the Technical University of Munich was a studio project based in the suburb of Victoria in Athens, Greece. In this studio we travelled to Athens to get an understanding pf what and who we were developing for, taking in the knowledge and culture of the Greeks. This urban design proposal is in collaboration with Din Sterain from the University of Tel Aviv."
+          "This project completed at the Technical University of Munich was a studio project based in the suburb of Victoria in Athens, Greece. In this studio we travelled to Athens to get an understanding of what and who we were developing for, taking in the knowledge and culture of the Greeks. This urban design proposal is in collaboration with Din Sterain from the University of Tel Aviv."
         ]
       },
       {
