@@ -13,7 +13,6 @@
 - missing apostrophe in it's .... Whether its short road trips up
 
 // TODO: Features need to implement
-- Install AngularFire and replace firebase methods in service
 - Create firebase data service
 - Count number of button clicks for CV's (track downloads)
 .
