@@ -15,14 +15,17 @@
 
   .title {
     text-align: center;
-    font-size: 52px;
     margin: 40px 0 0;
   }
 
   .project-title {
     font-size: 20px;
-    font-weight: 500;
+    font-weight: 300;
     margin: 0;
+  }
+
+  .project-year, .project-category {
+    font-weight: 300;
   }
 
   .project-tile {
