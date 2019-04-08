@@ -28,6 +28,9 @@ $parthenon-theme: mat-light-theme($parthenon-primary, $parthenon-accent, $parthe
 // that you are using.
 @include angular-material-theme($parthenon-theme);
 
+// Google Fonts
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:300');
+
 /* You can add global styles to this file, and also import other style files */
 @import './styles/variables.scss';
 
@@ -38,19 +41,31 @@ html, body {
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  text-align: justify;
 }
 
-.column-text-container {
-  column-count: 2;
-  column-gap: 40px;
+h1 {
+  font-weight: 300;
+  font-size: 40px;
+}
 
-  &.handset-mode {
-    column-count: 1;
-  }
+h2, h3 {
+  font-weight: 300;
+}
+
+a {
+  font-weight: 300;
+}
+
+button {
+  font-weight: 300;
 }
 
 .responsive-width {
+  max-width: 900px;
   width: 70%;
 
   @media screen and (max-width: $tablet-screen-normal) {
@@ -117,6 +132,10 @@ ngb-carousel {
   order: 1;
 }
 
+.mat-line {
+  font-weight: 300;
+}
+
 // Menu
 // ========================================================================= //
 .menu-custom-backdrop {
@@ -136,9 +155,16 @@ ngb-carousel {
     border-radius: 0 !important;
 
     button {
+      font-weight: 300;
       &:focus {
         outline: none;
       }
     }
   }
+}
+
+// Toolbar
+// ========================================================================= //
+mat-toolbar {
+  font-weight: 300 !important;
 }

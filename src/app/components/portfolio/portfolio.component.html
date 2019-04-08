@@ -4,7 +4,7 @@
   <hr class="underline">
 
   <!-- Desktop design -->
-  <mat-grid-list class="grid" cols="4" gutterSize="20px" *ngIf="!(isHandset | async)">
+  <mat-grid-list class="grid" cols="4" gutterSize="50px" *ngIf="!(isHandset | async)">
     <mat-grid-tile class="project-tile" *ngFor="let project of projects">
       <a (click)="openProject(project.url)">
         <div class="titles">
