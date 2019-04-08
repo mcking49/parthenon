@@ -1,5 +1,10 @@
 
-// Fixme: Bugs
+// TODO: Austin's Changes
+- Align slideshow properly with the text.
+- Slideshow buttons need to always be visible.
+- On mouse hover show a dimmed pause overlay.
+- See how navigation bar looks when it's only as wide as the text with austin's name next to it in black.
+
 
 // FIXME: Things for Austin to consider
 - Too many words, needs to be more concise
@@ -10,7 +15,8 @@
 // TODO: Features need to implement
 - Install AngularFire and replace firebase methods in service
 - Create firebase data service
-
+- Count number of button clicks for CV's (track downloads)
+.
 // TODO: Feature requests (need approval)
 - Need to open project images to open them and view them in more detail.
 - project section could show only 3 rows initially and then a "more" button or something like that?
