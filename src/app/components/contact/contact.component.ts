@@ -1,4 +1,3 @@
-import { AboutComponent } from './../about/about.component';
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from '../../services/storage.service';
 import { MatDialog } from '@angular/material';

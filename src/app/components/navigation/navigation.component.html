@@ -1,6 +1,7 @@
-<mat-toolbar class="nav-toolbar" color="primary">
-  <a routerLink="" class="nav-logo">
-    <img src="../../assets/img/logo-white.png">
+<mat-toolbar class="nav-toolbar" [class.handset-mode]="isHandset | async" color="primary">
+  <a routerLink="" class="title-container">
+    <span class="title-name">Austin</span>
+    <span class="title-name">D'Souza</span>
   </a>
 
   <div class="nav-links" *ngIf="!(isHandset | async)">
