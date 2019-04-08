@@ -1,33 +1,41 @@
 import { Injectable } from '@angular/core';
-import * as firebase from 'firebase/app';
-import 'firebase/storage';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StorageService {
 
-  private storageRef: firebase.storage.Reference;
+  constructor(private storage: AngularFireStorage) { }
 
-  constructor() {
-    this.initialiseFirebaseStorage();
+  /**
+   * Download the CV.
+   *
+   * @param {string} language - The language of the CV to download. Only accepts 'en' or 'de'.
+   */
+  public downloadCv(language: string): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      this.getCvDownloadUrl(language).subscribe(
+        (url: string) => {
+          window.open(url, '_blank');
+          resolve(true);
+        },
+        (error: Error) => {
+          reject(error);
+        }
+      );
+    });
   }
 
-  public downloadCv(language: string): Promise<any> {
-    return this.getCvRef(language).getDownloadURL()
-      .then((url) => {
-        window.open(url, '_blank');
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
-  private initialiseFirebaseStorage() {
-    this.storageRef = firebase.storage().ref();
-  }
-
-  private getCvRef(language: string): firebase.storage.Reference {
-    return this.storageRef.child(`cv/Dsouza_Austin-CV19-${language}.pdf`);
+  /**
+   * Get the CV downloadUrl observable.
+   *
+   * @param {string} language - The language of the CV to download.
+   *
+   * @returns {Observable<string>} - The downloadURL Observable.
+   */
+  private getCvDownloadUrl(language: string): Observable<string> {
+    return this.storage.ref(`cv/Dsouza_Austin-CV19-${language}.pdf`).getDownloadURL();
   }
 }

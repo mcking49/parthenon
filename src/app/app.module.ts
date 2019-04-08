@@ -4,6 +4,10 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { firebaseConfig } from './config/firebase';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AboutComponent } from './components/about/about.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
@@ -37,6 +41,8 @@ import { DownloadSpinnerModalComponent } from './components/download-spinner-mod
     DownloadSpinnerModalComponent
   ],
   imports: [
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireStorageModule,
     BrowserModule,
     BrowserAnimationsModule,
     MatButtonModule,
