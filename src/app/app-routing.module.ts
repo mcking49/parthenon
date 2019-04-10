@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 const routes: Routes = [
   { path: '', redirectTo: 'austin', pathMatch: 'full' },
   { path: 'austin', loadChildren: './austin/austin.module#AustinModule' },
+  { path: 'admin', loadChildren: './admin/admin.module#AdminModule' }
 ];
 
 @NgModule({
