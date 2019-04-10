@@ -6,9 +6,9 @@
 
   <div class="nav-links" *ngIf="!(isHandset | async)">
     <a routerLink="" class="nav-link-item">Home</a>
-    <a routerLink="/home" fragment="about" class="nav-link-item">About</a>
-    <a routerLink="/home" fragment="portfolio" class="nav-link-item">Portfolio</a>
-    <a routerLink="/home" fragment="contact" class="nav-link-item">Contact & CV</a>
+    <a routerLink="home" fragment="about" class="nav-link-item">About</a>
+    <a routerLink="home" fragment="portfolio" class="nav-link-item">Portfolio</a>
+    <a routerLink="home" fragment="contact" class="nav-link-item">Contact & CV</a>
   </div>
 
   <div class="nav-links-padding" *ngIf="!(isHandset | async)"></div>
@@ -29,7 +29,7 @@
   class="menu-custom-container">
   <mat-toolbar>Menu</mat-toolbar>
   <button mat-menu-item routerLink="" class="nav-link-item">Home</button>
-  <button mat-menu-item routerLink="/home" fragment="about" class="nav-link-item">About</button>
-  <button mat-menu-item routerLink="/home" fragment="portfolio" class="nav-link-item">Portfolio</button>
-  <button mat-menu-item routerLink="/home" fragment="contact" class="nav-link-item">Contact & CV</button>
+  <button mat-menu-item routerLink="home" fragment="about" class="nav-link-item">About</button>
+  <button mat-menu-item routerLink="home" fragment="portfolio" class="nav-link-item">Portfolio</button>
+  <button mat-menu-item routerLink="home" fragment="contact" class="nav-link-item">Contact & CV</button>
 </mat-menu>

@@ -20,6 +20,23 @@
     }
   }
 
+  .section-title {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 24px;
+
+    .paragraph {
+      margin: 0;
+      margin-bottom: 24px;
+      line-height: 24px;
+    }
+  }
+
+  .slide-image {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+  }
 
   .slide-size {
     max-height: 1080px;
@@ -54,23 +71,5 @@
 
   .slideshow {
     margin: 25px;
-  }
-
-  .slide-image {
-    display: block;
-    margin-right: auto;
-    margin-left: auto;
-  }
-
-  .paragraph {
-    margin: 0;
-    margin-bottom: 24px;
-    line-height: 24px;
-  }
-
-  .section-title {
-    text-align: center;
-    margin: 20px 0;
-    font-size: 24px;
   }
 }

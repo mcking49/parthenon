@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class NavigationComponent implements OnInit {
 
-  isHandset: Observable<boolean>;
+  public isHandset: Observable<boolean>;
 
   constructor(private responsiveService: ResponsiveService) { }
 

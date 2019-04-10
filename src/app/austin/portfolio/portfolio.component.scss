@@ -13,18 +13,28 @@
     }
   }
 
-  .title {
+  mat-action-list {
+    > button {
+      text-align: left;
+      height: 100px;
+      margin: 20px 0 20px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      border-radius: 2px;
+      overflow: hidden;
+
+      .project-logo {
+        height: 100%;
+        margin-right: 20px;
+      }
+    }
+  }
+
+  > .title {
     text-align: center;
     margin: 40px 0 0;
   }
 
-  .project-title {
-    font-size: 20px;
-    font-weight: 300;
-    margin: 0;
-  }
-
-  .project-year, .project-category {
+  .project-subtitle {
     font-weight: 300;
   }
 
@@ -36,7 +46,11 @@
       height: 100%;
       width: 100%;
 
-      .titles {
+      > .project-logo {
+        height: 100%;
+      }
+
+      > .titles {
         height: 100%;
         width: 100%;
         padding: 5px;
@@ -62,10 +76,10 @@
         .project-category {
           margin: 0;
         }
-      }
 
-      .project-logo {
-        height: 100%;
+        > .project-year {
+          margin: 5px;
+        }
       }
     }
 
@@ -83,20 +97,10 @@
     }
   }
 
-  mat-action-list {
-    > button {
-      text-align: left;
-      height: 100px;
-      margin: 20px 0 20px;
-      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-      border-radius: 2px;
-      overflow: hidden;
-
-      .project-logo {
-        height: 100%;
-        margin-right: 20px;
-      }
-    }
+  .project-title {
+    font-size: 20px;
+    font-weight: 300;
+    margin: 0;
   }
 
   > .thesis-logo-button {
