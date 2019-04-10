@@ -50,7 +50,7 @@ const routes: Routes = [
         path: 'projects',
         component: ProjectsComponent,
         canActivate: [AuthGuard]
-      },
+      }
     ]
   }
 ];
