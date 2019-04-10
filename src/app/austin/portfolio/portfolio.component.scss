@@ -3,14 +3,29 @@
   margin-right: auto;
   margin-bottom: 40px;
 
+  mat-action-list {
+    > button {
+      text-align: left;
+      height: 100px;
+      margin: 20px 0 20px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      border-radius: 2px;
+      overflow: hidden;
+
+      .project-logo {
+        height: 100%;
+        margin-right: 20px;
+      }
+    }
+  }
+
   .underline {
     width: 50%;
     margin: 0;
     background-color: white;
 
-      &.full {
-        width: 100%;
-      }
+    &.full {
+      width: 100%;
     }
   }
 
