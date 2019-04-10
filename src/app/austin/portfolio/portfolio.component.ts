@@ -1,7 +1,7 @@
 import { ResponsiveService } from './../../services/responsive.service';
 import { Component, OnInit } from '@angular/core';
 import { ProjectsService, IProject } from '../../services/projects.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -12,13 +12,13 @@ import { Observable } from 'rxjs';
 export class PortfolioComponent implements OnInit {
 
   public isHandset: Observable<boolean>;
-
-  public projects: IProject[] = [];
+  public projects: IProject[];
 
   constructor(
+    private activatedRoute: ActivatedRoute,
     private projectService: ProjectsService,
     private responsiveService: ResponsiveService,
-    private router: Router,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -27,10 +27,10 @@ export class PortfolioComponent implements OnInit {
   }
 
   public openProject(url: string): void {
-    this.router.navigateByUrl(`/project/${url}`);
+    this.router.navigate([`../project/${url}`], {relativeTo: this.activatedRoute});
   }
 
-  private initProjects() {
+  private initProjects(): void {
     this.projects = this.projectService.projects;
   }
 

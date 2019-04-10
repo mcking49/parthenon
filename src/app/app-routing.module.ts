@@ -1,13 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ProjectComponent } from './components/project/project.component';
-import { HomeComponent } from './components/home/home.component';
 import { CommonModule } from '@angular/common';
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: 'project/:url', component: ProjectComponent },
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '', redirectTo: 'austin', pathMatch: 'full' },
+  { path: 'austin', loadChildren: './austin/austin.module#AustinModule' },
+  { path: 'admin', loadChildren: './admin/admin.module#AdminModule' }
 ];
 
 @NgModule({
