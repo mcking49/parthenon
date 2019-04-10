@@ -8,7 +8,7 @@
   align-content: center;
   background-color: black;
 
-  .image-container {
+  > .image-container {
     height: 350px;
     width: 350px;
     position: relative;
@@ -26,22 +26,22 @@
     }
   }
 
-  .title {
+  > .subtitle {
+    color: white;
+    font-weight: 100;
+    font-size: 36px;
+    margin: 20px 0;
+  }
+
+  > .title {
     color: white;
     font-weight: bold;
     margin: 40px 0 20px;
   }
 
-  .underline {
+  > .underline {
     background-color: white;
     margin: 0;
     width: 20%;
-  }
-
-  .subtitle {
-    color: white;
-    font-weight: 100;
-    font-size: 36px;
-    margin: 20px 0;
   }
 }

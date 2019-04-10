@@ -11,8 +11,8 @@ import { Observable } from 'rxjs';
 })
 export class ProjectComponent implements OnInit {
 
-  isHandset: Observable<boolean>;
-  project: IProject;
+  public isHandset: Observable<boolean>;
+  public project: IProject;
 
   constructor(
     private projectsService: ProjectsService,
