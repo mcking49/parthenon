@@ -1,6 +1,7 @@
 import { ResponsiveService } from './../../services/responsive.service';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ProjectsService, IProject } from '../../services/projects.service';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { DownloadSpinnerModalComponent } from '../download-spinner-modal/download-spinner-modal.component';
 import { MatDialog } from '@angular/material';
@@ -17,14 +18,12 @@ export class PortfolioComponent implements OnInit {
   public downloadInProgress: boolean;
   public isHandset: Observable<boolean>;
   public projects: IProject[];
-  public readonly thesisLogoPath = '../../../assets/img/projects/2019-masters-thesis/main-logo.png';
 
   constructor(
-    private dialog: MatDialog,
+    private activatedRoute: ActivatedRoute,
     private projectService: ProjectsService,
     private responsiveService: ResponsiveService,
-    private router: Router,
-    private storage: StorageService
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -35,7 +34,7 @@ export class PortfolioComponent implements OnInit {
   }
 
   public openProject(url: string): void {
-    this.router.navigateByUrl(`/project/${url}`);
+    this.router.navigate([`../project/${url}`], {relativeTo: this.activatedRoute});
   }
 
   public openThesis() {
