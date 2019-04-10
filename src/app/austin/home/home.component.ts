@@ -7,8 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  title = `Austin D'Souza`;
-  subtitle = 'Graduate Architect';
+  public readonly title = `Austin D'Souza`;
+  public readonly subtitle = 'Graduate Architect';
 
   constructor() { }
 
