@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 // Components
 import { AdminComponent } from './admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { LoginComponent } from './login/login.component';
 
 // Angular Material + Layout
 import { LayoutModule } from '@angular/cdk/layout';
@@ -19,7 +20,11 @@ import {
 import { AdminRoutingModule } from './admin-routing.module';
 
 @NgModule({
-  declarations: [AdminComponent, DashboardComponent],
+  declarations: [
+    AdminComponent,
+    DashboardComponent,
+    LoginComponent
+  ],
   imports: [
     CommonModule,
     LayoutModule,
