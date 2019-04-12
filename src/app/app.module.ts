@@ -17,6 +17,7 @@ import { HomeComponent } from './components/home/home.component';
 import { ThesisComponent } from './components/thesis/thesis.component';
 import {
   MatButtonModule,
+  MatCardModule,
   MatDialogModule,
   MatGridListModule,
   MatIconModule,
@@ -48,6 +49,7 @@ import { DownloadSpinnerModalComponent } from './components/download-spinner-mod
     BrowserModule,
     BrowserAnimationsModule,
     MatButtonModule,
+    MatCardModule,
     MatDialogModule,
     MatGridListModule,
     MatIconModule,
