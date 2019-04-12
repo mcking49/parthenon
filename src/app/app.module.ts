@@ -14,6 +14,7 @@ import { NavigationComponent } from './components/navigation/navigation.componen
 import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { HomeComponent } from './components/home/home.component';
+import { ThesisComponent } from './components/thesis/thesis.component';
 import {
   MatButtonModule,
   MatDialogModule,
@@ -38,7 +39,8 @@ import { DownloadSpinnerModalComponent } from './components/download-spinner-mod
     ContactComponent,
     HomeComponent,
     ProjectComponent,
-    DownloadSpinnerModalComponent
+    DownloadSpinnerModalComponent,
+    ThesisComponent
   ],
   imports: [
     AngularFireModule.initializeApp(firebaseConfig),
