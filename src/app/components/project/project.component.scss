@@ -11,10 +11,15 @@
   justify-content: center;
   align-items: center;
 
-  > .project-title {
-    margin-bottom: 10px;
-    margin-top: 40px;
+  > .project-header {
+    text-align: center;
+
+    > .project-title {
+      margin-bottom: 10px;
+      margin-top: 40px;
+    }
   }
+
 
   .slide-size {
     max-height: 1080px;
