@@ -4,6 +4,15 @@
   <hr class="underline">
 
   <!-- Desktop design -->
+  <a (click)="openThesis()" class="thesis-logo-button" *ngIf="!(isHandset | async)">
+    <img [src]="thesisLogoPath" class="project-logo"/>
+    <div class="hover-overlay">
+      <p class="project-title" mat-line>The Togetherness of Strangers</p>
+      <p class="project-year" mat-line>2019</p>
+      <p class="project-category" mat-line>Master Thesis</p>
+    </div>
+  </a>
+
   <mat-grid-list class="grid" cols="4" gutterSize="50px" *ngIf="!(isHandset | async)">
     <mat-grid-tile class="project-tile" *ngFor="let project of projects">
       <a (click)="openProject(project.url)">
@@ -19,6 +28,22 @@
   </mat-grid-list>
 
   <!-- Mobile Design -->
+  <mat-card class="thesis-card" *ngIf="isHandset | async">
+    <button (click)="openThesis()" mat-item>
+      <mat-card-header>
+        <mat-card-title>The Togetherness of Strangers</mat-card-title>
+        <mat-card-subtitle>Master Thesis</mat-card-subtitle>
+      </mat-card-header>
+      <img mat-card-image [src]="thesisLogoPath">
+      <mat-card-content>
+        <p>
+          A 120-point thesis submitted to the Victoria University of Wellington in partial fulfilment of the requirements for the
+          degree of Master of Architecture (Professional).
+        </p>
+      </mat-card-content>
+    </button>
+  </mat-card>
+
   <mat-action-list *ngIf="isHandset | async">
     <button *ngFor="let project of projects" (click)="openProject(project.url)" mat-list-item>
       <img [src]="project.logo" class="project-logo"/>

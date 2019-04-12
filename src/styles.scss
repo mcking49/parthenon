@@ -122,6 +122,39 @@ ngb-carousel {
 // Angular Material Custom Styles
 // ========================================================================= //
 
+// Card
+// ========================================================================= //
+.mat-card {
+  padding: 0 !important;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+
+  > button {
+    padding: 0;
+    border: none;
+    border-radius: 2px;
+    background-color: white;
+
+    > img {
+      max-width: 100%;
+      margin: 0;
+      margin-bottom: 16px;
+    }
+
+    > .mat-card-content {
+      margin: 0 16px 16px;
+    }
+
+    .mat-card-header-text {
+      margin: 0 auto !important;
+      font-family: 'Josefin Sans', sans-serif;
+
+      > .mat-card-title {
+        margin-top: 12px;
+      }
+    }
+  }
+}
+
 // List
 // ========================================================================= //
 .mat-list-item-content {

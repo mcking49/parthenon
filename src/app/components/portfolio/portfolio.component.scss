@@ -93,4 +93,50 @@
       }
     }
   }
+
+  > .thesis-logo-button {
+    display: inline-block;
+    background: cover;
+    margin: 20px 0 50px;
+    position: relative;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    > img {
+      width: 100%;
+    }
+
+    > .hover-overlay {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      transition: opacity .2s;
+      opacity: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      &:hover {
+        opacity: 1;
+      }
+
+      > [class^="project-"] {
+        font-size: 40px;
+      }
+
+      > .project-category {
+        margin: 0;
+      }
+
+      > .project-title, > .project-year {
+        margin-bottom: 10px;
+      }
+    }
+  }
 }

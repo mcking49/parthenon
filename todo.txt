@@ -4,13 +4,7 @@
 - Slideshow buttons need to always be visible.
 - On mouse hover show a dimmed pause overlay.
 - See how navigation bar looks when it's only as wide as the text with austin's name next to it in black.
-
-
-// FIXME: Things for Austin to consider
-- Too many words, needs to be more concise
-- Condense text?
-- Change contact details to a footer?
-- missing apostrophe in it's .... Whether its short road trips up
+- Move projects out of "img" folder in assets
 
 // TODO: Features need to implement
 - Create firebase data service
