@@ -14,7 +14,7 @@ export interface IProject {
 
 enum ImgRoot {
   PATH = '../../assets/img/projects/',
-};
+}
 
 @Injectable({
   providedIn: 'root'

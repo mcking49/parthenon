@@ -4,6 +4,15 @@
   <hr class="underline">
 
   <!-- Desktop design -->
+  <a (click)="openThesis()" class="thesis-logo-button">
+    <img [src]="thesisLogoPath" class="project-logo"/>
+    <div class="hover-overlay">
+      <p class="project-title" mat-line>The Togetherness of Strangers</p>
+      <p class="project-year" mat-line>2019</p>
+      <p class="project-category" mat-line>Master Thesis</p>
+    </div>
+  </a>
+
   <mat-grid-list class="grid" cols="4" gutterSize="50px" *ngIf="!(isHandset | async)">
     <mat-grid-tile class="project-tile" *ngFor="let project of projects">
       <a (click)="openProject(project.url)">
