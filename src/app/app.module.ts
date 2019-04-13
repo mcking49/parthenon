@@ -3,10 +3,11 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 // Components
 import { AppComponent } from './app.component';
-import { DownloadSpinnerModalComponent } from './components/download-spinner-modal/download-spinner-modal.component';
+import { LoadingSpinnerModalComponent } from './components/loading-spinner-modal/loading-spinner-modal.component';
 
 // AngularFire
 import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { firebaseConfig } from './config/firebase';
 
@@ -23,10 +24,11 @@ import { AppRoutingModule } from './app-routing.module';
 @NgModule({
   declarations: [
     AppComponent,
-    DownloadSpinnerModalComponent
+    LoadingSpinnerModalComponent
   ],
   imports: [
     AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireAuthModule,
     AngularFireStorageModule,
     BrowserModule,
     BrowserAnimationsModule,
@@ -37,6 +39,6 @@ import { AppRoutingModule } from './app-routing.module';
   providers: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent],
-  entryComponents: [DownloadSpinnerModalComponent]
+  entryComponents: [LoadingSpinnerModalComponent]
 })
 export class AppModule { }

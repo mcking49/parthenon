@@ -2,7 +2,7 @@ import { ResponsiveService } from './../../services/responsive.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { DownloadSpinnerModalComponent } from '../../components/download-spinner-modal/download-spinner-modal.component';
+import { LoadingSpinnerModalComponent } from '../../components/loading-spinner-modal/loading-spinner-modal.component';
 import { MatDialog } from '@angular/material';
 import { ProjectsService, IProject } from 'src/app/services/projects.service';
 import { StorageService } from 'src/app/services/storage.service';
@@ -14,7 +14,7 @@ import { StorageService } from 'src/app/services/storage.service';
 })
 export class PortfolioComponent implements OnInit {
 
-  public downloadInProgress: boolean;
+  public showLoading: boolean;
   public isHandset: Observable<boolean>;
   public projects: IProject[];
   public readonly thesisLogoPath = '../../../assets/img/projects/2019-masters-thesis/main-logo.png';
@@ -31,7 +31,7 @@ export class PortfolioComponent implements OnInit {
   ngOnInit() {
     this.projects = [];
     this.initProjects();
-    this.downloadInProgress = false;
+    this.showLoading = false;
     this.isHandset = this.responsiveService.isHandset;
   }
 
@@ -47,15 +47,15 @@ export class PortfolioComponent implements OnInit {
   }
 
   public async downloadThesis() {
-    this.downloadInProgress = true;
-    const dialogRef = this.dialog.open(DownloadSpinnerModalComponent, {
+    this.showLoading = true;
+    const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
       maxHeight: '150px',
       height: '150px',
       width: '150px',
     });
     await this.storage.downloadThesis();
     dialogRef.close();
-    this.downloadInProgress = false;
+    this.showLoading = false;
   }
 
   private initProjects() {
