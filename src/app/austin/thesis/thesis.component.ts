@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DownloadSpinnerModalComponent } from '../download-spinner-modal/download-spinner-modal.component';
+import { DownloadSpinnerModalComponent } from '../../components/download-spinner-modal/download-spinner-modal.component';
 import { StorageService } from 'src/app/services/storage.service';
 import { MatDialog } from '@angular/material';
 
