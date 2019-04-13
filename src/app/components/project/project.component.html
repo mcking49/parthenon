@@ -7,6 +7,7 @@
 
   <ngb-carousel *ngIf="project.images" interval="6000" class="slideshow slide-size">
     <ng-template *ngFor="let image of project.images" ngbSlide>
+      <i class="material-icons pause-on-hover-icon">pause</i>
       <img [src]="image" class="slide-image slide-size"/>
     </ng-template>
   </ngb-carousel>
