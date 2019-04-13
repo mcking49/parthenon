@@ -4,9 +4,9 @@
   margin-bottom: 40px;
 
   .underline {
-    width: 20%;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    width: 50%;
+    margin: 0;
+    background-color: white;
 
     &.full {
       width: 100%;
@@ -39,8 +39,9 @@
       .titles {
         height: 100%;
         width: 100%;
+        padding: 5px;
         opacity: 0;
-        font-size: 16px;
+        font-size: 1vw;
         font-weight: 300;
         color: white;
         text-transform: none;
@@ -49,6 +50,10 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+
+        .project-title {
+          font-size: 1.5vw;
+        }
 
         .project-year {
           margin: 5px;
