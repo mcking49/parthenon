@@ -17,6 +17,7 @@ export class PortfolioComponent implements OnInit {
   public downloadInProgress: boolean;
   public isHandset: Observable<boolean>;
   public projects: IProject[];
+  public readonly thesisLogoPath = '../../../assets/img/projects/2019-masters-thesis/main-logo.png';
 
   constructor(
     private activatedRoute: ActivatedRoute,
