@@ -9,9 +9,11 @@ import { HomeComponent } from './home/home.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { PortfolioComponent } from './portfolio/portfolio.component';
 import { ProjectComponent } from './project/project.component';
+import { ThesisComponent } from './thesis/thesis.component';
 
 // Angular Material + Bootstrap
 import {
+  MatCardModule,
   MatButtonModule,
   MatGridListModule,
   MatIconModule,
@@ -32,10 +34,12 @@ import { AustinRoutingModule } from './austin-routing.module';
     HomeComponent,
     NavigationComponent,
     PortfolioComponent,
-    ProjectComponent
+    ProjectComponent,
+    ThesisComponent
   ],
   imports: [
     CommonModule,
+    MatCardModule,
     MatButtonModule,
     MatGridListModule,
     MatIconModule,

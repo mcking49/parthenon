@@ -1,11 +1,10 @@
 import { ResponsiveService } from './../../services/responsive.service';
 import { Component, OnInit } from '@angular/core';
-import { ProjectsService, IProject } from '../../services/projects.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { DownloadSpinnerModalComponent } from '../download-spinner-modal/download-spinner-modal.component';
+import { DownloadSpinnerModalComponent } from '../../components/download-spinner-modal/download-spinner-modal.component';
 import { MatDialog } from '@angular/material';
-import { ProjectsService, IProject } from '../../services/projects.service';
+import { ProjectsService, IProject } from 'src/app/services/projects.service';
 import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
@@ -18,12 +17,15 @@ export class PortfolioComponent implements OnInit {
   public downloadInProgress: boolean;
   public isHandset: Observable<boolean>;
   public projects: IProject[];
+  public readonly thesisLogoPath = '../../../assets/img/projects/2019-masters-thesis/main-logo.png';
 
   constructor(
     private activatedRoute: ActivatedRoute,
+    private dialog: MatDialog,
     private projectService: ProjectsService,
     private responsiveService: ResponsiveService,
-    private router: Router
+    private router: Router,
+    private storage: StorageService
   ) { }
 
   ngOnInit() {
@@ -38,7 +40,10 @@ export class PortfolioComponent implements OnInit {
   }
 
   public openThesis() {
-    this.router.navigateByUrl('/master-thesis/2019-the-togetherness-of-strangers');
+    this.router.navigate(
+      ['../master-thesis/2019-the-togetherness-of-strangers'],
+      {relativeTo: this.activatedRoute}
+    );
   }
 
   public async downloadThesis() {
