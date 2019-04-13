@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from '../../services/storage.service';
 import { MatDialog } from '@angular/material';
-import { DownloadSpinnerModalComponent } from 'src/app/components/download-spinner-modal/download-spinner-modal.component';
+import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
 
 @Component({
   selector: 'app-contact',
@@ -10,7 +10,7 @@ import { DownloadSpinnerModalComponent } from 'src/app/components/download-spinn
 })
 export class ContactComponent implements OnInit {
 
-  public downloadInProgress = false;
+  public showLoading = false;
 
   constructor(private dialog: MatDialog, private storage: StorageService) { }
 
@@ -18,8 +18,8 @@ export class ContactComponent implements OnInit {
   }
 
   public async downloadCv(language: string): Promise<void> {
-    this.downloadInProgress = true;
-    const dialogRef = this.dialog.open(DownloadSpinnerModalComponent, {
+    this.showLoading = true;
+    const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
       maxHeight: '150px',
       height: '150px',
       width: '150px'
@@ -30,7 +30,7 @@ export class ContactComponent implements OnInit {
       console.error(error);
     } finally {
       dialogRef.close();
-      this.downloadInProgress = false;
+      this.showLoading = false;
     }
   }
 
