@@ -38,29 +38,10 @@
     margin-left: auto;
   }
 
-  .section-title {
-    text-align: center;
-    margin: 20px 0;
-    font-size: 24px;
-
-    .paragraph {
-      margin: 0;
-      margin-bottom: 24px;
-      line-height: 24px;
-    }
-  }
-
-  .slide-image {
-    display: block;
-    margin-right: auto;
-    margin-left: auto;
-  }
-
   .slide-size {
     max-height: 1080px;
-    max-width: 1920px;
     height: 500px;
-    max-width: 889px;
+    max-width: 900px;
 
     @media screen and (max-width: $mobile-screen-large) {
       height: 190px;
@@ -83,8 +64,8 @@
     }
 
     @media screen and (min-width: $laptop-screen-large + 1) and (max-width: $desktop-screen-4k) {
-      height: 565px;
-      max-width: 1005px;
+      height: 506px;
+      max-width: 900px;
     }
   }
 
