@@ -1,7 +1,9 @@
 <div id="project" class="responsive-width">
-  <h1 class="project-title">{{project.title}}</h1>
-  <h3>{{project.category}}</h3>
-  <h3>{{project.year}}</h3>
+  <div class="project-header">
+    <h1 class="project-title">{{project.title}}</h1>
+    <h3>{{project.category}}</h3>
+    <h3>{{project.year}}</h3>
+  </div>
 
   <ngb-carousel *ngIf="project.images" interval="6000" class="slideshow slide-size">
     <ng-template *ngFor="let image of project.images" ngbSlide>

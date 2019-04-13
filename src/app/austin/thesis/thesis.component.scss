@@ -1,0 +1,56 @@
+@import '../../../styles/variables.scss';
+
+#thesis {
+  max-width: 854px;
+  padding-top: 64px;
+  margin-bottom: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  > .thesis-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 20px;
+
+    > .download-btn {
+      height: 36px;
+      margin: 10px;
+      color: white;
+      background-color: black;
+      font-size: 12px;
+    }
+
+    > .project-title {
+      margin-bottom: 10px;
+      margin-top: 40px;
+    }
+  }
+
+  > .paragraph {
+    width: 100%;
+    margin: 0;
+    margin-bottom: 24px;
+    line-height: 24px;
+
+    &.title {
+      text-align: center;
+    }
+  }
+
+  > .section-title {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 24px;
+  }
+
+  > .thesis-image {
+    max-width: 100%;
+    margin-bottom: 30px;
+  }
+}
