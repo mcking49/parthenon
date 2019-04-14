@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 // Components
 import { AdminComponent } from './admin.component';
@@ -14,9 +15,12 @@ import { ProjectsComponent } from './projects/projects.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import {
   MatButtonModule,
+  MatFormFieldModule,
   MatIconModule,
+  MatInputModule,
   MatListModule,
   MatSidenavModule,
+  MatSnackBarModule,
   MatToolbarModule
 } from '@angular/material';
 
@@ -37,10 +41,14 @@ import { AdminRoutingModule } from './admin-routing.module';
     CommonModule,
     LayoutModule,
     MatButtonModule,
+    MatFormFieldModule,
     MatIconModule,
+    MatInputModule,
     MatListModule,
     MatSidenavModule,
+    MatSnackBarModule,
     MatToolbarModule,
+    ReactiveFormsModule,
     AdminRoutingModule
   ]
 })
