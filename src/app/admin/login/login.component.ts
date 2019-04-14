@@ -27,9 +27,8 @@ export class LoginComponent implements OnInit {
     // If the user is already logged in, redirect them to the dashboard
     if (this.authService.currentUser) {
       this.router.navigate(['../dashboard'], {relativeTo: this.activatedRoute});
-    } else {
-      this.initialiseForm();
     }
+    this.initialiseForm();
   }
 
   public async login() {
@@ -62,7 +61,7 @@ export class LoginComponent implements OnInit {
       }
     } else {
       // This should be unreachable from the user's perspective.
-      console.error(new Error("Form is invalid"));
+      console.error(new Error('Form is invalid'));
     }
   }
 
