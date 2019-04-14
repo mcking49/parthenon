@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase/app';
+import { first } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,23 @@ export class AuthenticationService {
    */
   public get currentUser(): firebase.User {
     return this.auth.auth.currentUser;
+  }
+
+  /**
+   * Checks if there is a user currently logged in.
+   *
+   * @returns {Promise<boolean>} - Indicates if the user is logged in or not.
+   */
+  public isLoggedIn(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      this.auth.user.subscribe((user) => {
+        if (user) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      });
+    });
   }
 
   /**
