@@ -25,9 +25,11 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     // If the user is already logged in, redirect them to the dashboard
-    if (this.authService.currentUser) {
-      this.router.navigate(['../dashboard'], {relativeTo: this.activatedRoute});
-    }
+    this.authService.isLoggedIn().then((isLoggedIn) => {
+      if (isLoggedIn) {
+        this.router.navigate(['../dashboard'], {relativeTo: this.activatedRoute});
+      }
+    });
     this.initialiseForm();
   }
 
