@@ -1,4 +1,5 @@
-<mat-sidenav-container class="sidenav-container">
+<!-- Disable side menu for the login page -->
+<mat-sidenav-container class="sidenav-container" *ngIf="!isLoginPage">
   <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
       [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
       [mode]="(isHandset$ | async) ? 'over' : 'side'"
@@ -26,3 +27,6 @@
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+<!-- Display login page without side menu -->
+<router-outlet *ngIf="isLoginPage" ></router-outlet>

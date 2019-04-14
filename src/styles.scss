@@ -64,6 +64,10 @@ button {
   font-weight: 300;
 }
 
+input {
+  font-family: 'Josefin Sans', sans-serif !important;
+}
+
 .responsive-width {
   max-width: 900px;
   width: 70%;
@@ -198,6 +202,14 @@ ngb-carousel {
   }
 }
 
+// Form
+// ======================================================================== //
+mat-form-field {
+  .mat-form-field-infix {
+    font-family: 'Josefin Sans', sans-serif;
+  }
+}
+
 // List
 // ========================================================================= //
 .mat-list-item-content {
@@ -237,6 +249,12 @@ ngb-carousel {
       }
     }
   }
+}
+
+// Snackbar
+// ========================================================================= //
+snack-bar-container {
+  height: fit-content;
 }
 
 // Toolbar

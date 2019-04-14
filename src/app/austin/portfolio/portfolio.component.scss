@@ -19,16 +19,6 @@
     }
   }
 
-  .underline {
-    width: 50%;
-    margin: 0;
-    background-color: white;
-
-    &.full {
-      width: 100%;
-    }
-  }
-
   > .title {
     text-align: center;
     margin: 40px 0 0;
@@ -101,6 +91,16 @@
     font-size: 20px;
     font-weight: 300;
     margin: 0;
+  }
+
+  .underline {
+    width: 50%;
+    margin: 0;
+    background-color: white;
+
+    &.full {
+      width: 100%;
+    }
   }
 
   > .thesis-logo-button {

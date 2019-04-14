@@ -1,3 +1,4 @@
+import { AuthenticationService } from './../services/authentication.service';
 import { Injectable } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
@@ -12,16 +13,14 @@ import { Observable } from 'rxjs';
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private router: Router) { }
+  constructor(private authService: AuthenticationService, private router: Router) { }
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    // TODO: implement a proper authentication check here.
-    const authenticated: boolean = true;
-    if (!authenticated) {
+    if (!this.authService.currentUser) {
       this.router.navigate(['/admin/login']);
     }
-    return authenticated;
+    return !!this.authService.currentUser;
   }
 }
