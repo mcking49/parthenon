@@ -212,8 +212,15 @@ mat-form-field {
 
 // List
 // ========================================================================= //
-.mat-list-item-content {
+
+.mat-list-item {
   padding: 0 !important;
+
+  &.admin-links {
+    .mat-list-item-content {
+      padding: 0 20px !important;
+    }
+  }
 }
 
 .mat-list-text {

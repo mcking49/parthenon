@@ -1,29 +1,44 @@
 <!-- Disable side menu for the login page -->
+<mat-toolbar class="main-toolbar" *ngIf="!isLoginPage">
+  <button
+    type="button"
+    aria-label="Toggle sidenav"
+    mat-icon-button
+    (click)="drawer.toggle()"
+    *ngIf="isHandset$ | async">
+    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+  </button>
+  Austin D'Souza: <span class="admin-title">Admin</span>
+</mat-toolbar>
 <mat-sidenav-container class="sidenav-container" *ngIf="!isLoginPage">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
-      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-      [mode]="(isHandset$ | async) ? 'over' : 'side'"
-      [opened]="!(isHandset$ | async)">
-    <mat-toolbar>Menu</mat-toolbar>
+  <mat-sidenav #drawer class="sidenav-admin" fixedInViewport="true"
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="!(isHandset$ | async)">
     <mat-nav-list>
-      <a mat-list-item routerLink="dashboard">Dashboard</a>
-      <a mat-list-item routerLink="about">About</a>
-      <a mat-list-item routerLink="contact">Contact</a>
-      <a mat-list-item routerLink="projects">Projects</a>
+      <a mat-list-item class="admin-links" routerLink="dashboard">
+        <mat-icon>dashboard</mat-icon>
+        Dashboard
+      </a>
+      <a mat-list-item class="admin-links" routerLink="profile">
+        <mat-icon>person</mat-icon>
+        Profile
+      </a>
+      <a mat-list-item class="admin-links" routerLink="about">
+        <mat-icon>chat_bubble</mat-icon>
+        About
+      </a>
+      <a mat-list-item class="admin-links" routerLink="projects">
+        <mat-icon>library_books</mat-icon>
+        Projects
+      </a>
+      <a mat-list-item class="admin-links" routerLink="cv">
+        <mat-icon>card_travel</mat-icon>
+        CV
+      </a>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content>
-    <mat-toolbar color="primary">
-      <button
-        type="button"
-        aria-label="Toggle sidenav"
-        mat-icon-button
-        (click)="drawer.toggle()"
-        *ngIf="isHandset$ | async">
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-      </button>
-      <span>parthenon</span>
-    </mat-toolbar>
+  <mat-sidenav-content class="main-content">
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
