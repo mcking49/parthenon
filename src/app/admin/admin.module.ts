@@ -5,7 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 // Components
 import { AdminComponent } from './admin.component';
 import { AboutComponent } from './about/about.component';
-import { ContactComponent } from './contact/contact.component';
+import { ProfileComponent } from './profile/profile.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { ProjectComponent } from './project/project.component';
@@ -26,16 +26,18 @@ import {
 
 // Other
 import { AdminRoutingModule } from './admin-routing.module';
+import { CvComponent } from './cv/cv.component';
 
 @NgModule({
   declarations: [
     AdminComponent,
     AboutComponent,
-    ContactComponent,
+    ProfileComponent,
     DashboardComponent,
     LoginComponent,
     ProjectComponent,
-    ProjectsComponent
+    ProjectsComponent,
+    CvComponent
   ],
   imports: [
     CommonModule,

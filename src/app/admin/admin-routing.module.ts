@@ -3,13 +3,14 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AdminComponent } from './admin.component';
 import { AboutComponent } from './about/about.component';
-import { ContactComponent } from './contact/contact.component';
+import { ProfileComponent } from './profile/profile.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { ProjectComponent } from './project/project.component';
 import { ProjectsComponent } from './projects/projects.component';
 
 import { AuthGuard } from './../guards/auth.guard';
+import { CvComponent } from './cv/cv.component';
 
 const routes: Routes = [
   {
@@ -37,8 +38,8 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
-        path: 'contact',
-        component: ContactComponent,
+        path: 'profile',
+        component: ProfileComponent,
         canActivate: [AuthGuard]
       },
       {
@@ -50,7 +51,12 @@ const routes: Routes = [
         path: 'projects',
         component: ProjectsComponent,
         canActivate: [AuthGuard]
-      }
+      },
+      {
+        path: 'cv',
+        component: CvComponent,
+        canActivate: [AuthGuard]
+      },
     ]
   }
 ];
