@@ -1,17 +1,50 @@
-.sidenav-container {
-  height: 100%;
+@import '../../styles/variables.scss';
+
+.admin-title {
+  padding-left: 5px;
+  font-weight: 700;
 }
 
-.sidenav {
+.sidenav-container {
+  min-height: 100%;
+  padding-top: $toolbar-height; // using margin adds scroll to the page, so using padding instead
+}
+
+.sidenav-admin {
   width: 200px;
+  top: $toolbar-height !important;
+  height: calc(100% - #{$toolbar-height});
 }
 
 .sidenav .mat-toolbar {
   background: inherit;
 }
 
-.mat-toolbar.mat-primary {
-  position: sticky;
+.mat-list-item {
+  transition: .3s;
+  border-right: 0px;
+
+  &:hover {
+    border-right: 5px solid black;
+  }
+
+  .mat-list-item-content {
+    padding: 0 20px !important;
+  }
+
+  .mat-icon {
+    margin-right: 10px;
+  }
+}
+
+.main-content {
+  padding: 20px;
+}
+
+.main-toolbar {
+  position: fixed;
   top: 0;
-  z-index: 1;
+  z-index: 999;
+  background-color: black;
+  color: white;
 }
