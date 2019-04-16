@@ -48,7 +48,7 @@
       max-width: 338px;
     }
 
-    @media screen and (min-width: $mobile-screen-large + 1) and (max-width: $tablet-screen-normal) {
+    @media screen and (min-width: $mobile-screen-large) and (max-width: $tablet-screen-normal) {
       height: 211px;
       max-width: 375px;
     }
