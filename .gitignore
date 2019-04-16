@@ -47,3 +47,4 @@ testem.log
 Thumbs.db
 .firebase/hosting.ZGlzdFxwYXJ0aGVub24.cache
 *.cache
+./src/app/config/firebase.ts
