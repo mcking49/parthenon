@@ -1,3 +1,5 @@
+@import '../../../styles/variables.scss';
+
 #portfolio {
   margin-left: auto;
   margin-right: auto;
@@ -51,8 +53,16 @@
         justify-content: center;
         align-items: center;
 
+        @media screen and (min-width: $laptop-screen-large + 1) {
+          font-size: 16px;
+        }
+
         .project-title {
           font-size: 1.5vw;
+
+          @media screen and (min-width: $laptop-screen-large + 1) {
+            font-size: 20px;
+          }
         }
 
         .project-year {
