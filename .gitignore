@@ -5,6 +5,9 @@
 /tmp
 /out-tsc
 
+# config files
+/src/app/config/firebase.ts
+
 # dependencies
 /node_modules
 
