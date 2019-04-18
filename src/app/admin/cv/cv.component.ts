@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { StorageService } from './../../services/storage.service';
 
 @Component({
   selector: 'app-cv',
@@ -7,9 +8,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CvComponent implements OnInit {
 
-  constructor() { }
+  private fileSelected: File | null;
+
+  constructor(private storageService: StorageService) { }
 
   ngOnInit() {
+  }
+
+  public newEnCvSelected(files: FileList) {
+    this.fileSelected = files.item(0);
+  }
+
+  public uploadCv() {
+    if (this.fileSelected) {
+      this.storageService.uploadCv('en', this.fileSelected);
+    } else {
+      throw new Error('Please selected a file');
+    }
   }
 
 }

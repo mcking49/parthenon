@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFireStorage } from '@angular/fire/storage';
+import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -43,6 +43,18 @@ export class StorageService {
         }
       );
     });
+  }
+
+  /**
+   * Upload a new version of a the CV.
+   *
+   * @param language - The language of the file. Either en or de.
+   * @param file - The file to be uploaded
+   *
+   * @returns {AngularFireUploadTask} - Can be used to monitor the upload status.
+   */
+  public uploadCv(language: string, file: File): AngularFireUploadTask {
+    return this.storage.ref(`cv/Dsouza_Austin-CV19-${language}.pdf`).put(file);
   }
 
   /**

@@ -1,3 +1,6 @@
 <p>
   cv works!
 </p>
+
+<input type="file" (change)="newEnCvSelected($event.target.files)">
+<button mat-button (click)="uploadCv()">Upload CV</button>
