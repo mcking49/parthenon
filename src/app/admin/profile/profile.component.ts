@@ -41,6 +41,10 @@ export class ProfileComponent implements OnInit {
     this.initialiseForm();
   }
 
+  public get isDisabled(): boolean {
+    return !this.profileForm.valid || this.profileForm.pristine;
+  }
+
   public async submitForm() {
     if (this.profileForm.valid) {
 

@@ -31,7 +31,7 @@
         <input matInput placeholder="URL of your LinkedIn profile" formControlName="linkedInUrl">
       </mat-form-field>
 
-      <button type="submit" class="submit-btn" [disabled]="!profileForm.valid || profileForm.pristine" [class.disabled]="!profileForm.valid || profileForm.pristine" mat-raised-button>Save Changes</button>
+      <button type="submit" class="submit-btn" [disabled]="isDisabled" [class.disabled]="isDisabled" mat-raised-button>Save Changes</button>
     </form>
   </div>
 
