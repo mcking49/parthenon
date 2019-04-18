@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs';
 import * as _ from 'lodash';
 import { ProfileService } from './../../services/profile.service';
 import { Profile } from 'src/app/interfaces/profile';
+import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
 
 @Component({
   selector: 'app-profile',
@@ -34,15 +35,46 @@ export class ProfileComponent implements OnInit {
         this.initialProfile = profile;
         this.initialProfileSet = true;
       }
-      _.each(this.profile, (value, key) => {
-        this.profileForm.controls[key].setValue(value);
-      });
+      this.resetForm();
+      console.log(this.profileForm);
     });
     this.initialiseForm();
   }
 
-  public submitForm() {
-    console.log('Form submitted');
+  public async submitForm() {
+    if (this.profileForm.valid) {
+
+      let updatedProfile = {};
+      _.each(this.profileForm.controls, (formControl: FormControl, key: string) => {
+        updatedProfile[key] = formControl.value;
+      });
+
+      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
+        maxHeight: '150px',
+        height: '150px',
+        width: '150px'
+      });
+
+      try {
+        await this.profileService.updateProfile(updatedProfile as Profile);
+        this.resetForm(true);
+      } catch (error) {
+        // TODO: add better validation.
+        this.snackbar.open(
+          'Something went wrong.',
+          'Close',
+          {
+            duration: 3000,
+            verticalPosition: 'bottom'
+          }
+        );
+      } finally {
+        dialogRef.close();
+      }
+    } else {
+      // This should be unreachable from the user's perspective.
+      console.error(new Error('Form is invalid'));
+    }
   }
 
   private initialiseForm(): void {
@@ -66,6 +98,21 @@ export class ProfileComponent implements OnInit {
       linkedInUrl: [
         ''
       ]
+    });
+  }
+
+  /**
+   * Reset the form to it's initial states with default values.
+   *
+   * @param {boolean?} afterSave - true if resetting the form after saving it.
+   */
+  private resetForm(afterSave?: boolean): void {
+    if (afterSave) {
+      this.profileForm.reset();
+    }
+
+    _.each(this.profile, (value: string, key: string) => {
+      this.profileForm.controls[key].setValue(value);
     });
   }
 
