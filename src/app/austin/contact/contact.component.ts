@@ -1,3 +1,5 @@
+import { Profile } from './../../interfaces/profile';
+import { ProfileService } from './../../services/profile.service';
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from '../../services/storage.service';
 import { MatDialog } from '@angular/material';
@@ -11,10 +13,21 @@ import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner
 export class ContactComponent implements OnInit {
 
   public showLoading = false;
+  public email: string;
+  public phone: string;
+  public linkedInUrl: string;
 
-  constructor(private dialog: MatDialog, private storage: StorageService) { }
+  constructor(
+    private dialog: MatDialog,
+    private profileService: ProfileService,
+    private storage: StorageService) { }
 
   ngOnInit() {
+    this.profileService.getProfile().subscribe((profile: Profile) => {
+      this.email = profile.email;
+      this.phone = profile.phone;
+      this.linkedInUrl = profile.linkedInUrl;
+    });
   }
 
   public async downloadCv(language: string): Promise<void> {
