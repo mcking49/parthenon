@@ -4,7 +4,4 @@ export interface Profile {
   email: string;
   phone: string;
   linkedInUrl: string;
-  cvEnUrl: string;
-  cvDeUrl: string;
-  thesisUrl: string;
 }

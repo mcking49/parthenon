@@ -1,3 +1,38 @@
-<p>
-  contact works!
-</p>
+<div id="profile">
+
+  <div class="form-card">
+    <div class="header">
+      <h1 class="title">Profile</h1>
+    </div>
+
+    <form [formGroup]="profileForm" (ngSubmit)="submitForm()" class="form-container">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input matInput placeholder="e.g. Austin" formControlName="firstName">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input matInput placeholder="e.g. D'Souza" formControlName="lastName">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput placeholder="e.g. austindsouza@gmail.com" formControlName="email">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Phone</mat-label>
+        <input matInput placeholder="e.g. +64 27 123 4567" formControlName="phone">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>LinkedIn URL</mat-label>
+        <input matInput placeholder="URL of your LinkedIn profile" formControlName="linkedInUrl">
+      </mat-form-field>
+
+      <button type="submit" class="submit-btn" [disabled]="!profileForm.valid || profileForm.pristine" [class.disabled]="!profileForm.valid || profileForm.pristine" mat-raised-button>Save Changes</button>
+    </form>
+  </div>
+
+</div>
