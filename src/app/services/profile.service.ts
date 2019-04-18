@@ -32,4 +32,14 @@ export class ProfileService {
   public getProfile(): Observable<Profile> {
     return this.profile$;
   }
+
+  /**
+   * Update the user profile.
+   *
+   * @param {Profile} profile - The new updated profile values to be saved.
+   * @returns {Promise<void>} - Resolves a promise when the update completes.
+   */
+  public updateProfile(profile: Profile): Promise<void> {
+    return this.profileDoc.update(profile);
+  }
 }
