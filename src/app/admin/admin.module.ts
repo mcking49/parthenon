@@ -20,6 +20,7 @@ import {
   MatInputModule,
   MatListModule,
   MatSidenavModule,
+  MatSlideToggleModule,
   MatSnackBarModule,
   MatToolbarModule
 } from '@angular/material';
@@ -48,6 +49,7 @@ import { CvComponent } from './cv/cv.component';
     MatInputModule,
     MatListModule,
     MatSidenavModule,
+    MatSlideToggleModule,
     MatSnackBarModule,
     MatToolbarModule,
     ReactiveFormsModule,

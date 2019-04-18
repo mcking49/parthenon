@@ -15,10 +15,9 @@ import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner
 export class ProfileComponent implements OnInit {
 
   public profile$: Observable<Profile>;
-  private initialProfile: Profile;
   public profile: Profile;
   public profileForm: FormGroup;
-  private initialProfileSet: boolean = false;
+  public isEditingMode: boolean = false;
 
   constructor(
     private dialog: MatDialog,
@@ -31,18 +30,13 @@ export class ProfileComponent implements OnInit {
     this.profile$ = this.profileService.getProfile();
     this.profile$.subscribe((profile) => {
       this.profile = profile;
-      if (!this.initialProfileSet) {
-        this.initialProfile = profile;
-        this.initialProfileSet = true;
-      }
       this.resetForm();
-      console.log(this.profileForm);
     });
     this.initialiseForm();
   }
 
   public get isDisabled(): boolean {
-    return !this.profileForm.valid || this.profileForm.pristine;
+    return !this.isEditingMode || !this.profileForm.valid || this.profileForm.pristine;
   }
 
   public async submitForm() {
@@ -61,7 +55,7 @@ export class ProfileComponent implements OnInit {
 
       try {
         await this.profileService.updateProfile(updatedProfile as Profile);
-        this.resetForm(true);
+        this.toggleEditingState();
       } catch (error) {
         // TODO: add better validation.
         this.snackbar.open(
@@ -81,26 +75,52 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  public toggleEditingState() {
+    this.isEditingMode = !this.isEditingMode;
+    if (this.isEditingMode) {
+      _.each(this.profileForm.controls, (value, key) => {
+        this.profileForm.controls[key].enable();
+      });
+    } else {
+      this.resetForm(true);
+    }
+  }
+
   private initialiseForm(): void {
     this.profileForm = this.formBuilder.group({
       firstName: [
-        '',
+        {
+          value: '',
+          disabled: !this.isEditingMode,
+        },
         Validators.required
       ],
       lastName: [
-        '',
+        {
+          value: '',
+          disabled: !this.isEditingMode,
+        },
         Validators.required
       ],
       email: [
-        '',
+        {
+          value: '',
+          disabled: !this.isEditingMode,
+        },
         Validators.required
       ],
       phone: [
-        '',
+        {
+          value: '',
+          disabled: !this.isEditingMode,
+        },
         Validators.required
       ],
       linkedInUrl: [
-        ''
+        {
+          value: '',
+          disabled: !this.isEditingMode
+        },
       ]
     });
   }
@@ -108,15 +128,15 @@ export class ProfileComponent implements OnInit {
   /**
    * Reset the form to it's initial states with default values.
    *
-   * @param {boolean?} afterSave - true if resetting the form after saving it.
+   * @param {boolean} disableFields - Disable the fields after reseting the form.
    */
-  private resetForm(afterSave?: boolean): void {
-    if (afterSave) {
-      this.profileForm.reset();
-    }
-
+  private resetForm(disableFields?: boolean): void {
+    this.profileForm.reset();
     _.each(this.profile, (value: string, key: string) => {
       this.profileForm.controls[key].setValue(value);
+      if (disableFields) {
+        this.profileForm.controls[key].disable();
+      }
     });
   }
 
