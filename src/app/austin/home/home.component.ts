@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Profile } from './../../interfaces/profile';
+import { ProfileService } from './../../services/profile.service';
 
 @Component({
   selector: 'app-home',
@@ -7,12 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  public readonly title = `Austin D'Souza`;
-  public readonly subtitle = 'Graduate Architect';
+  public name: string;
+  public jobTitle: string;
 
-  constructor() { }
+  constructor(private profileService: ProfileService) { }
 
   ngOnInit() {
+    this.profileService.getProfile().subscribe((profile: Profile) => {
+      this.name = `${profile.firstName} ${profile.lastName}`;
+      this.jobTitle = profile.jobTitle;
+    });
   }
 
 }

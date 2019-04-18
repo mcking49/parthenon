@@ -9,6 +9,7 @@ import { LoadingSpinnerModalComponent } from './components/loading-spinner-modal
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { firebaseConfig } from './config/firebase';
 
 // Angular Material
@@ -30,6 +31,7 @@ import { AppRoutingModule } from './app-routing.module';
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
     AngularFireStorageModule,
+    AngularFirestoreModule,
     BrowserModule,
     BrowserAnimationsModule,
     MatDialogModule,
