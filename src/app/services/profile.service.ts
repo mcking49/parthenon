@@ -3,10 +3,8 @@ import {
   AngularFirestore,
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
-import { AngularFireStorage, AngularFireStorageReference } from '@angular/fire/storage';
-import * as firebase from 'firebase/app';
-import { Profile } from 'src/app/interfaces/profile';
 import { Observable } from 'rxjs';
+import { Profile } from 'src/app/interfaces/profile';
 
 @Injectable({
   providedIn: 'root'

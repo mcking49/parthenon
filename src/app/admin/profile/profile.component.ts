@@ -101,6 +101,13 @@ export class ProfileComponent implements OnInit {
         },
         Validators.required
       ],
+      jobTitle: [
+        {
+          value: '',
+          disabled: !this.isEditingMode,
+        },
+        Validators.required
+      ],
       email: [
         {
           value: '',
