@@ -56,6 +56,13 @@ export class ProfileComponent implements OnInit {
       try {
         await this.profileService.updateProfile(updatedProfile as Profile);
         this.toggleEditingState();
+        this.snackbar.open(
+          'The changes have been saved',
+          'Close',
+          {
+            duration: 3000,
+          }
+        );
       } catch (error) {
         // TODO: add better validation.
         this.snackbar.open(
@@ -107,7 +114,7 @@ export class ProfileComponent implements OnInit {
           value: '',
           disabled: !this.isEditingMode,
         },
-        Validators.required
+        Validators.compose([Validators.email, Validators.required])
       ],
       phone: [
         {
