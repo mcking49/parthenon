@@ -64,15 +64,7 @@ export class ProfileComponent implements OnInit {
           }
         );
       } catch (error) {
-        // TODO: add better validation.
-        this.snackbar.open(
-          'Something went wrong.',
-          'Close',
-          {
-            duration: 3000,
-            verticalPosition: 'bottom'
-          }
-        );
+        console.error(error);
       } finally {
         dialogRef.close();
       }
