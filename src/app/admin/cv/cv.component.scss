@@ -6,6 +6,16 @@
   align-items: center;
   justify-content: center;
 
+  > .lock-toggle {
+    display: flex;
+    align-content: center;
+    margin-bottom: 20px;
+
+    > .label {
+      margin-right: 5px;
+    }
+  }
+
   .file-input-container {
     display: flex;
     flex-direction: column;
@@ -13,6 +23,11 @@
 
     > .select-file-button {
       background-color: black;
+      transition: .2s;
+
+      &.disabled {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
     }
 
     > .selected-file-name {
@@ -24,5 +39,6 @@
     display: flex;
     justify-content: space-evenly;
     margin: 10px;
+    transition: .2s;
   }
 }

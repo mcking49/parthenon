@@ -1,4 +1,9 @@
 <div id="cv">
+  <div class="lock-toggle">
+    <span class="label">Upload CV</span>
+    <mat-slide-toggle [checked]="isEditingMode" (change)="toggleEditingState()"></mat-slide-toggle>
+  </div>
+
   <div class="form-card">
     <div class="header">
       <h1 class="title">Upload CV</h1>
@@ -7,7 +12,7 @@
     <form [formGroup]="cvForm" (ngSubmit)="uploadCv()" class="form-container">
       <div class="file-input-container">
         <input placeholder="Select a CV" (change)="newCvSelected($event.target.files)" type="file" formControlName="cv" #fileInput hidden>
-        <button type="button" (click)="fileInput.click()" class="select-file-button" mat-fab>
+        <button type="button" (click)="fileInput.click()" class="select-file-button" [disabled]="isUploadDisabled" [class.disabled]="isUploadDisabled" mat-fab>
           <mat-icon>arrow_upward</mat-icon>
         </button>
         <span class="selected-file-name">{{selectedFile?.name}}</span>
@@ -18,7 +23,7 @@
         <mat-radio-button value="de">German</mat-radio-button>
       </mat-radio-group>
 
-      <button type="submit" class="submit-btn" [disabled]="!cvForm.valid" [class.disabled]="!cvForm.valid" mat-raised-button>Upload CV</button>
+      <button type="submit" class="submit-btn" [disabled]="isFormDisabled" [class.disabled]="isFormDisabled" mat-raised-button>Upload CV</button>
     </form>
   </div>
 </div>
