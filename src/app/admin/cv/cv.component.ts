@@ -9,7 +9,7 @@ import { StorageService } from './../../services/storage.service';
 })
 export class CvComponent implements OnInit {
 
-  private selectedFile: File | null;
+  public selectedFile: File;
   public cvForm: FormGroup;
 
   constructor(
@@ -29,7 +29,7 @@ export class CvComponent implements OnInit {
     if (this.selectedFile && this.cvForm.valid) {
       this.storageService.uploadCv(this.cvForm.controls.language.value, this.selectedFile);
     } else {
-      throw new Error('Please selected a file');
+      throw new Error('Please select a file');
     }
   }
 

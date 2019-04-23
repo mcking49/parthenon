@@ -5,8 +5,13 @@
     </div>
 
     <form [formGroup]="cvForm" (ngSubmit)="uploadCv()" class="form-container">
-      <mat-label>CV</mat-label>
-      <input placeholder="Select a CV" (change)="newCvSelected($event.target.files)" type="file" formControlName="cv">
+      <div class="file-input-container">
+        <input placeholder="Select a CV" (change)="newCvSelected($event.target.files)" type="file" formControlName="cv" #fileInput hidden>
+        <button type="button" (click)="fileInput.click()" class="select-file-button" mat-fab>
+          <mat-icon>arrow_upward</mat-icon>
+        </button>
+        <span class="selected-file-name">{{selectedFile?.name}}</span>
+      </div>
 
       <mat-radio-group formControlName="language">
         <mat-radio-button value="en">English</mat-radio-button>
