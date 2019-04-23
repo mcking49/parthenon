@@ -1,6 +1,19 @@
-<p>
-  cv works!
-</p>
+<div id="cv">
+  <div class="form-card">
+    <div class="header">
+      <h1 class="title">Upload CV</h1>
+    </div>
 
-<input type="file" (change)="newEnCvSelected($event.target.files)">
-<button mat-button (click)="uploadCv()">Upload CV</button>
+    <form [formGroup]="cvForm" (ngSubmit)="uploadCv()" class="form-container">
+      <mat-label>CV</mat-label>
+      <input placeholder="Select a CV" (change)="newCvSelected($event.target.files)" type="file" formControlName="cv">
+
+      <mat-radio-group formControlName="language">
+        <mat-radio-button value="en">English</mat-radio-button>
+        <mat-radio-button value="de">German</mat-radio-button>
+      </mat-radio-group>
+
+      <button type="submit" class="submit-btn" [disabled]="!cvForm.valid" [class.disabled]="!cvForm.valid" mat-raised-button>Upload CV</button>
+    </form>
+  </div>
+</div>

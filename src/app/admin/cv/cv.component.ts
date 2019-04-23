@@ -1,3 +1,4 @@
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from './../../services/storage.service';
 
@@ -8,23 +9,41 @@ import { StorageService } from './../../services/storage.service';
 })
 export class CvComponent implements OnInit {
 
-  private fileSelected: File | null;
+  private selectedFile: File | null;
+  public cvForm: FormGroup;
 
-  constructor(private storageService: StorageService) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private storageService: StorageService
+  ) { }
 
   ngOnInit() {
+    this.initialiseForm();
   }
 
-  public newEnCvSelected(files: FileList) {
-    this.fileSelected = files.item(0);
+  public newCvSelected(files: FileList) {
+    this.selectedFile = files.item(0);
   }
 
   public uploadCv() {
-    if (this.fileSelected) {
-      this.storageService.uploadCv('en', this.fileSelected);
+    if (this.selectedFile && this.cvForm.valid) {
+      this.storageService.uploadCv(this.cvForm.controls.language.value, this.selectedFile);
     } else {
       throw new Error('Please selected a file');
     }
+  }
+
+  private initialiseForm() {
+    this.cvForm = this.formBuilder.group({
+      cv: [
+        null,
+        Validators.required
+      ],
+      language: [
+        '',
+        Validators.required
+      ]
+    });
   }
 
 }
