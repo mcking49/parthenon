@@ -11,11 +11,33 @@
       </div>
 
       <form [formGroup]="aboutForm" (ngSubmit)="submitForm()" class="form-container">
-        <mat-form-field appearance="outline">
-          <mat-label>First Name</mat-label>
-          <!-- <input matInput placeholder="e.g. Austin" formControlName="firstName"> -->
-          <textarea matInput placeholder="e.g. Welcome to my website." formControlName="firstName"></textarea>
-        </mat-form-field>
+        <div class="form-control-container" *ngFor="let key of aboutFormControlKeys">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Paragraph</mat-label>
+            <textarea matInput placeholder="e.g. Welcome to my website. This is a new paragraph" formControlName="{{key}}"></textarea>
+          </mat-form-field>
+          <button
+            type="button"
+            class="delete-btn"
+            (click)="deleteParagraphSection(key)"
+            *ngIf="aboutFormControlKeys.length > 1"
+            color="warn"
+            [disabled]="!isEditingMode"
+            [class.disabled]="!isEditingMode"
+            mat-mini-fab>
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="add-paragraph-btn"
+          (click)="addParagraphSection()"
+          [disabled]="!isEditingMode"
+          [class.disabled]="!isEditingMode"
+          mat-raised-button>
+          Add new paragraph
+        </button>
 
         <button type="submit" class="submit-btn" [disabled]="isDisabled" [class.disabled]="isDisabled" mat-raised-button>Save Changes</button>
       </form>
