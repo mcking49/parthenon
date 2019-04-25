@@ -1,6 +1,6 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { StorageService } from './../../services/storage.service';
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
 import * as _ from 'lodash';
@@ -19,6 +19,7 @@ export class CvComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private formBuilder: FormBuilder,
+    private snackbar: MatSnackBar,
     private storageService: StorageService
   ) { }
 
@@ -62,6 +63,11 @@ export class CvComponent implements OnInit {
         if (percentage === 100) {
           dialogRef.close();
           this.toggleEditingState();
+          this.snackbar.open(
+            'Your CV has been uploaded',
+            'Close',
+            {duration: 3000}
+          );
         }
       });
     } else {
