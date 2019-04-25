@@ -1,3 +1,24 @@
-<p>
-  about works!
-</p>
+<div id="about">
+
+    <div class="lock-toggle">
+      <span class="label">Edit About</span>
+      <mat-slide-toggle [checked]="isEditingMode" (change)="toggleEditingState()"></mat-slide-toggle>
+    </div>
+
+    <div class="form-card">
+      <div class="header">
+        <h1 class="title">About</h1>
+      </div>
+
+      <form [formGroup]="aboutForm" (ngSubmit)="submitForm()" class="form-container">
+        <mat-form-field appearance="outline">
+          <mat-label>First Name</mat-label>
+          <!-- <input matInput placeholder="e.g. Austin" formControlName="firstName"> -->
+          <textarea matInput placeholder="e.g. Welcome to my website." formControlName="firstName"></textarea>
+        </mat-form-field>
+
+        <button type="submit" class="submit-btn" [disabled]="isDisabled" [class.disabled]="isDisabled" mat-raised-button>Save Changes</button>
+      </form>
+    </div>
+
+  </div>
