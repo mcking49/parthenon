@@ -5,4 +5,5 @@ export interface Profile {
   email: string;
   phone: string;
   linkedInUrl: string;
+  profileImgUrl: string;
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
+import { AngularFireStorage, AngularFireUploadTask, AngularFireStorageReference } from '@angular/fire/storage';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -8,6 +8,15 @@ import { Observable } from 'rxjs';
 export class StorageService {
 
   constructor(private storage: AngularFireStorage) { }
+
+  /**
+   * Get the storage reference for the profile image.
+   *
+   * @returns {AngularFireStorageReference} - A storage reference for the profile image.
+   */
+  public get profileImgRef(): AngularFireStorageReference {
+    return this.storage.ref('profile/profile-img.jpg');
+  }
 
   /**
    * Download the CV.
@@ -55,6 +64,17 @@ export class StorageService {
    */
   public uploadCv(language: string, file: File): AngularFireUploadTask {
     return this.storage.ref(`cv/Dsouza_Austin-CV19-${language}.pdf`).put(file);
+  }
+
+  /**
+   * Upload a new profile image to be used on the home page of the main website.
+   *
+   * @param {File} file - the new profile image to be uploaded.
+   *
+   * @returns {AngularFireUploadTask} - The upload status.
+   */
+  public uploadProfileImg(file: File): AngularFireUploadTask {
+    return this.storage.upload('profile/profile-img.jpg', file);
   }
 
   /**
