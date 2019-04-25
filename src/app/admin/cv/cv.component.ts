@@ -1,6 +1,8 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { StorageService } from './../../services/storage.service';
+import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
 import * as _ from 'lodash';
 
 @Component({
@@ -15,6 +17,7 @@ export class CvComponent implements OnInit {
   public isEditingMode: boolean = false;
 
   constructor(
+    private dialog: MatDialog,
     private formBuilder: FormBuilder,
     private storageService: StorageService
   ) { }
@@ -48,7 +51,19 @@ export class CvComponent implements OnInit {
 
   public uploadCv() {
     if (this.selectedFile && this.cvForm.valid) {
-      this.storageService.uploadCv(this.cvForm.controls.language.value, this.selectedFile);
+      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
+        maxHeight: '150px',
+        height: '150px',
+        width: '150px'
+      });
+
+      const uploadTask = this.storageService.uploadCv(this.cvForm.controls.language.value, this.selectedFile);
+      uploadTask.percentageChanges().subscribe((percentage) => {
+        if (percentage === 100) {
+          dialogRef.close();
+          this.toggleEditingState();
+        }
+      });
     } else {
       throw new Error('Please select a file');
     }
