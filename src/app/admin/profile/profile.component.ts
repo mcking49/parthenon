@@ -77,7 +77,7 @@ export class ProfileComponent implements OnInit {
   public toggleEditingState() {
     this.isEditingMode = !this.isEditingMode;
     if (this.isEditingMode) {
-      _.each(this.profileForm.controls, (value, key) => {
+      _.each(this.profileForm.controls, (value: any, key: string) => {
         this.profileForm.controls[key].enable();
       });
     } else {
