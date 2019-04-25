@@ -11,6 +11,7 @@ export class HomeComponent implements OnInit {
 
   public name: string;
   public jobTitle: string;
+  public profileImgUrl: string;
 
   constructor(private profileService: ProfileService) { }
 
@@ -18,6 +19,7 @@ export class HomeComponent implements OnInit {
     this.profileService.getProfile().subscribe((profile: Profile) => {
       this.name = `${profile.firstName} ${profile.lastName}`;
       this.jobTitle = profile.jobTitle;
+      this.profileImgUrl = profile.profileImgUrl;
     });
   }
 

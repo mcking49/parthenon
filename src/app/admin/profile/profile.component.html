@@ -41,6 +41,22 @@
         <input matInput placeholder="URL of your LinkedIn profile" formControlName="linkedInUrl">
       </mat-form-field>
 
+      <div class="file-input-container">
+        <input
+          placeholder="Select a profile image"
+          (change)="newImageSelected($event.target.files)"
+          type="file"
+          #fileInput
+          hidden>
+        <mat-form-field appearance="outline" class="selected-file">
+          <mat-label>Profile Image</mat-label>
+          <input matInput placeholder="New uploaded profile image name" value="{{selectedFile?.name}}" disabled>
+        </mat-form-field>
+        <button type="button" (click)="fileInput.click()" class="select-file-button" [disabled]="!isEditingMode" [class.disabled]="!isEditingMode" mat-fab>
+          <mat-icon>arrow_upward</mat-icon>
+        </button>
+      </div>
+
       <button type="submit" class="submit-btn" [disabled]="isDisabled" [class.disabled]="isDisabled" mat-raised-button>Save Changes</button>
     </form>
   </div>
