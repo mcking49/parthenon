@@ -1,4 +1,5 @@
-// import { AboutService } from './../../services/about.service';
+import { About } from './../../interfaces/about';
+import { AboutService } from './../../services/about.service';
 // import { MatDialog, MatSnackBar } from '@angular/material';
 import { Component, OnInit } from '@angular/core';
 // import { Observable } from 'rxjs';
@@ -18,15 +19,24 @@ export class AboutComponent implements OnInit {
   public aboutForm: FormGroup;
   // public aboutFormControlKeys: string[];
 
+  private serverAboutForm: any;
+
   constructor(
     // private dialog: MatDialog,
     private formBuilder: FormBuilder,
-    // private aboutService: AboutService,
+    private aboutService: AboutService,
     // private snackbar: MatSnackBar
   ) { }
 
   ngOnInit() {
-    this.initialiseForm();
+    this.aboutForm = this.formBuilder.group({});
+    this.aboutService.getAbout().subscribe((about: About) => {
+      this.serverAboutForm = {};
+      this.resetForm(!this.isEditingMode);
+      _.each(about.paragraphs, (paragraph: string) => {
+        this.addParagraphSection(paragraph, true);
+      });
+    });
   }
 
   public get aboutFormControlKeys(): string[] {
@@ -70,9 +80,20 @@ export class AboutComponent implements OnInit {
     // }
   }
 
-  public addParagraphSection(): void {
-    const paragraphId: number = new Date().getTime();
-    this.aboutForm.addControl(`paragraph${paragraphId}`, new FormControl('', Validators.required));
+  public addParagraphSection(value: string = '', loadedFromServer?: boolean, formControlName?: string): void {
+    // create a random number to add to the formcontrol name to ensure uniqueness.
+    if (!formControlName) {
+      const randNum: string = (Math.random() * Math.floor(10000)).toString();
+      formControlName = `paragraph${new Date().getTime().toString()}${randNum}`;
+    }
+    const formControlOptions: any = {
+      value,
+      disabled: !this.isEditingMode
+    };
+    if (loadedFromServer) {
+      this.serverAboutForm[formControlName] = value;
+    }
+    this.aboutForm.addControl(formControlName, new FormControl(formControlOptions, Validators.required));
   }
 
   public deleteParagraphSection(formControlName: string): void {
@@ -90,18 +111,6 @@ export class AboutComponent implements OnInit {
     }
   }
 
-  private initialiseForm(): void {
-    this.aboutForm = this.formBuilder.group({
-      paragraph1: [
-        {
-          value: '',
-          disabled: !this.isEditingMode,
-        },
-        Validators.required
-      ]
-    });
-  }
-
   /**
    * Reset the form to it's initial states with default values.
    *
@@ -109,12 +118,13 @@ export class AboutComponent implements OnInit {
    */
   private resetForm(disableFields?: boolean): void {
     this.aboutForm.reset();
-    // _.each(this.about, (value: string, key: string) => {
-    //   this.aboutForm.controls[key].setValue(value);
-    //   if (disableFields) {
-    //     this.aboutForm.controls[key].disable();
-    //   }
-    // });
+    this.aboutForm.controls = {};
+    _.each(this.serverAboutForm, (value: string, key: string) => {
+      this.addParagraphSection(value, false, key);
+      if (disableFields) {
+        this.aboutForm.controls[key].disable();
+      }
+    });
   }
 
 }
