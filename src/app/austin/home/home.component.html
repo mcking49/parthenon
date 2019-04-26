@@ -1,13 +1,13 @@
 <div id="home">
   <div class="image-container">
-    <img [src]="profileImgUrl">
+    <img [attr.src]="(profile$ | async)?.profileImgUrl">
   </div>
 
-  <h1 class="title">{{name | uppercase}}</h1>
+  <h1 class="title">{{(profile$ | async)?.firstName | uppercase}} {{(profile$ | async)?.lastName | uppercase}}</h1>
 
   <hr class="underline">
 
-  <div class="subtitle">{{jobTitle}}</div>
+  <div class="subtitle">{{(profile$ | async)?.jobTitle}}</div>
 </div>
 
 <app-about></app-about>
