@@ -1,12 +1,10 @@
-import { About } from './../../interfaces/about';
-import { AboutService } from './../../services/about.service';
-// import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { Component, OnInit } from '@angular/core';
-// import { Observable } from 'rxjs';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
-// import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
+import { AboutService } from './../../services/about.service';
+import { About } from './../../interfaces/about';
+import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
 import * as _ from 'lodash';
-// import { Profile } from 'src/app/interfaces/profile';
 
 @Component({
   selector: 'app-about',
@@ -17,15 +15,14 @@ export class AboutComponent implements OnInit {
 
   public isEditingMode: boolean = false;
   public aboutForm: FormGroup;
-  // public aboutFormControlKeys: string[];
 
   private serverAboutForm: any;
 
   constructor(
-    // private dialog: MatDialog,
+    private dialog: MatDialog,
     private formBuilder: FormBuilder,
     private aboutService: AboutService,
-    // private snackbar: MatSnackBar
+    private snackbar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -47,37 +44,39 @@ export class AboutComponent implements OnInit {
     return !this.isEditingMode || !this.aboutForm.valid || this.aboutForm.pristine;
   }
 
-  private async submitForm() {
-    // if (this.aboutForm.valid) {
-    //   const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
-    //     maxHeight: '150px',
-    //     height: '150px',
-    //     width: '150px'
-    //   });
+  public async submitForm() {
+    if (this.aboutForm.valid) {
+      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
+        maxHeight: '150px',
+        height: '150px',
+        width: '150px'
+      });
 
-    //   let updatedProfile = {};
-    //   _.each(this.aboutForm.controls, (formControl: FormControl, key: string) => {
-    //     updatedProfile[key] = formControl.value;
-    //   });
+      let updatedAbout: About = {
+        paragraphs: []
+      };
+      _.each(this.aboutForm.controls, (formControl: FormControl) => {
+        updatedAbout.paragraphs.push(formControl.value);
+      });
 
-    //   try {
-    //     await this.aboutService.updateProfile(updatedProfile as Profile);
-    //     this.toggleEditingState();
-    //     this.snackbar.open(
-    //       'The changes have been saved',
-    //       'Close',
-    //       {
-    //         duration: 3000,
-    //       }
-    //     );
-    //   } catch (error) {
-    //     console.error(error);
-    //   } finally {
-    //     dialogRef.close();
-    //   }
-    // } else {
-    //   console.error('Form is invalid.');
-    // }
+      try {
+        await this.aboutService.updateAbout(updatedAbout);
+        this.toggleEditingState();
+        this.snackbar.open(
+          'The changes have been saved',
+          'Close',
+          {
+            duration: 3000,
+          }
+        );
+      } catch (error) {
+        console.error(error);
+      } finally {
+        dialogRef.close();
+      }
+    } else {
+      console.error('Form is invalid.');
+    }
   }
 
   public addParagraphSection(value: string = '', loadedFromServer?: boolean, formControlName?: string): void {
