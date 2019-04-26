@@ -14,7 +14,12 @@
         <div class="form-control-container" *ngFor="let key of aboutFormControlKeys">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Paragraph</mat-label>
-            <textarea matInput placeholder="e.g. Welcome to my website. This is a new paragraph" formControlName="{{key}}"></textarea>
+            <textarea
+              placeholder="e.g. Welcome to my website. This is a new paragraph"
+              formControlName="{{key}}"
+              cdkTextareaAutosize
+              matInput>
+            </textarea>
           </mat-form-field>
           <button
             type="button"

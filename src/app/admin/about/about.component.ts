@@ -17,6 +17,7 @@ export class AboutComponent implements OnInit {
   public aboutForm: FormGroup;
 
   private serverAboutForm: any;
+  private isFirstTimeLoad: boolean = true;
 
   constructor(
     private dialog: MatDialog,
@@ -28,6 +29,17 @@ export class AboutComponent implements OnInit {
   ngOnInit() {
     this.aboutForm = this.formBuilder.group({});
     this.aboutService.getAbout().subscribe((about: About) => {
+      if (this.isFirstTimeLoad) {
+        this.isFirstTimeLoad = false;
+      } else {
+        this.snackbar.open(
+          'The about content has been refreshed',
+          'Close',
+          {
+            duration: 3000,
+          }
+        );
+      }
       this.serverAboutForm = {};
       this.resetForm(!this.isEditingMode);
       _.each(about.paragraphs, (paragraph: string) => {
