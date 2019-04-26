@@ -72,6 +72,7 @@ export class AboutComponent implements OnInit {
       });
 
       try {
+        this.isFirstTimeLoad = true;
         await this.aboutService.updateAbout(updatedAbout);
         this.toggleEditingState();
         this.snackbar.open(
