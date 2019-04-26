@@ -3,7 +3,7 @@
   <hr class="underline">
 
   <div class="paragraph-container">
-    <p *ngFor="let paragraph of bio" class="paragraph">
+    <p *ngFor="let paragraph of (about$ | async)?.paragraphs" class="paragraph">
       {{paragraph}}
     </p>
   </div>
