@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Profile } from './../../interfaces/profile';
 import { ProfileService } from './../../services/profile.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -9,18 +10,12 @@ import { ProfileService } from './../../services/profile.service';
 })
 export class HomeComponent implements OnInit {
 
-  public name: string;
-  public jobTitle: string;
-  public profileImgUrl: string;
+  public profile$: Observable<Profile>;
 
   constructor(private profileService: ProfileService) { }
 
   ngOnInit() {
-    this.profileService.getProfile().subscribe((profile: Profile) => {
-      this.name = `${profile.firstName} ${profile.lastName}`;
-      this.jobTitle = profile.jobTitle;
-      this.profileImgUrl = profile.profileImgUrl;
-    });
+    this.profile$ = this.profileService.getProfile();
   }
 
 }
