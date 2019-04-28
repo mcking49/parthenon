@@ -1,7 +1,7 @@
 import { About } from './../interfaces/about';
 import { Injectable } from '@angular/core';
 import { AngularFirestoreDocument, AngularFirestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,23 +9,16 @@ import { Observable } from 'rxjs';
 export class AboutService {
 
   private aboutDoc: AngularFirestoreDocument<About>;
-  private about$: Observable<About>;
+  private about: BehaviorSubject<About> = new BehaviorSubject<About>(null);
+  public about$: Observable<About> = this.about.asObservable();
 
   constructor(
     private afStore: AngularFirestore
   ) {
     this.aboutDoc = this.afStore.doc<About>('website/about');
-    this.about$ = this.aboutDoc.valueChanges();
-    this.getAbout();
-  }
-
-  /**
-   * Get the website's about section.
-   *
-   * @returns {Observable<About>} - The website's about section.
-   */
-  public getAbout(): Observable<About> {
-    return this.about$;
+    this.aboutDoc.valueChanges().subscribe((about: About) => {
+      this.updateLocalAbout(about);
+    });
   }
 
   /**
@@ -36,5 +29,14 @@ export class AboutService {
    */
   public updateAbout(about: About): Promise<void> {
     return this.aboutDoc.update(about);
+  }
+
+  /**
+   * Update the local copy of the about content.
+   *
+   * @param {About} about - The about content.
+   */
+  private updateLocalAbout(about): void {
+    this.about.next(about);
   }
 }

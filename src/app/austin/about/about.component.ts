@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { About } from 'src/app/interfaces/about';
 import { AboutService } from './../../services/about.service';
 
@@ -10,12 +9,14 @@ import { AboutService } from './../../services/about.service';
 })
 export class AboutComponent implements OnInit {
 
-  public about$: Observable<About>;
+  public about: About;
 
   constructor(private aboutService: AboutService) { }
 
   ngOnInit() {
-    this.about$ = this.aboutService.getAbout();
+    this.aboutService.about$.subscribe((about: About) => {
+      this.about = about;
+    })
   }
 
 }
