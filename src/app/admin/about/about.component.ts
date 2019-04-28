@@ -28,23 +28,25 @@ export class AboutComponent implements OnInit {
 
   ngOnInit() {
     this.aboutForm = this.formBuilder.group({});
-    this.aboutService.getAbout().subscribe((about: About) => {
-      if (this.isFirstTimeLoad) {
-        this.isFirstTimeLoad = false;
-      } else {
-        this.snackbar.open(
-          'The about content has been refreshed',
-          'Close',
-          {
-            duration: 3000,
-          }
-        );
+    this.aboutService.about$.subscribe((about: About) => {
+      if (about) {
+        if (this.isFirstTimeLoad) {
+          this.isFirstTimeLoad = false;
+        } else {
+          this.snackbar.open(
+            'The about content has been refreshed',
+            'Close',
+            {
+              duration: 3000,
+            }
+          );
+        }
+        this.serverAboutForm = {};
+        this.resetForm(!this.isEditingMode);
+        _.each(about.paragraphs, (paragraph: string) => {
+          this.addParagraphSection(paragraph, true);
+        });
       }
-      this.serverAboutForm = {};
-      this.resetForm(!this.isEditingMode);
-      _.each(about.paragraphs, (paragraph: string) => {
-        this.addParagraphSection(paragraph, true);
-      });
     });
   }
 

@@ -3,7 +3,7 @@ import {
   AngularFirestore,
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Profile } from 'src/app/interfaces/profile';
 
 @Injectable({
@@ -12,23 +12,16 @@ import { Profile } from 'src/app/interfaces/profile';
 export class ProfileService {
 
   private profileDoc: AngularFirestoreDocument<Profile>;
-  private profile$: Observable<Profile>;
+  private profile: BehaviorSubject<Profile> = new BehaviorSubject<Profile>(null);
+  public profile$: Observable<Profile> = this.profile.asObservable();
 
   constructor(
     private afStore: AngularFirestore
   ) {
     this.profileDoc = this.afStore.doc<Profile>('profile/1');
-    this.profile$ = this.profileDoc.valueChanges();
-    this.getProfile();
-  }
-
-  /**
-   * Get the profile.
-   *
-   * @returns {Observable<Profile>} - The user's profile.
-   */
-  public getProfile(): Observable<Profile> {
-    return this.profile$;
+    this.profileDoc.valueChanges().subscribe((profile) => {
+      this.updateLocalProfile(profile);
+    });
   }
 
   /**
@@ -39,5 +32,14 @@ export class ProfileService {
    */
   public updateProfile(profile: Profile): Promise<void> {
     return this.profileDoc.update(profile);
+  }
+
+  /**
+   * Update the local copy of the profile.
+   *
+   * @param {Profile} profile - The user profile.
+   */
+  private updateLocalProfile(profile): void {
+    this.profile.next(profile);
   }
 }

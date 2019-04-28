@@ -2,7 +2,6 @@ import { StorageService } from 'src/app/services/storage.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatDialogRef } from '@angular/material';
-import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { ProfileService } from './../../services/profile.service';
 import { Profile } from 'src/app/interfaces/profile';
@@ -18,7 +17,6 @@ export class ProfileComponent implements OnInit {
 
   public isEditingMode: boolean = false;
   public profile: Profile;
-  public profile$: Observable<Profile>;
   public profileForm: FormGroup;
   public selectedFile: File;
 
@@ -31,12 +29,11 @@ export class ProfileComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.profile$ = this.profileService.getProfile();
-    this.profile$.subscribe((profile) => {
+    this.initialiseForm();
+    this.profileService.profile$.subscribe((profile) => {
       this.profile = profile;
       this.resetForm();
     });
-    this.initialiseForm();
   }
 
   public get isDisabled(): boolean {

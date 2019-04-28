@@ -23,10 +23,12 @@ export class ContactComponent implements OnInit {
     private storage: StorageService) { }
 
   ngOnInit() {
-    this.profileService.getProfile().subscribe((profile: Profile) => {
-      this.email = profile.email;
-      this.phone = profile.phone;
-      this.linkedInUrl = profile.linkedInUrl;
+    this.profileService.profile$.subscribe((profile: Profile) => {
+      if (profile) {
+        this.email = profile.email;
+        this.phone = profile.phone;
+        this.linkedInUrl = profile.linkedInUrl;
+      }
     });
   }
 
