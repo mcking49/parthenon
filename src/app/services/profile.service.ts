@@ -20,7 +20,8 @@ export class ProfileService {
   ) {
     this.profileDoc = this.afStore.doc<Profile>('profile/1');
     this.profileDoc.valueChanges().subscribe((profile) => {
-      this.updateLocalProfile(profile);
+      // Updates the local copy.
+      this.profile.next(profile);
     });
   }
 
@@ -32,14 +33,5 @@ export class ProfileService {
    */
   public updateProfile(profile: Profile): Promise<void> {
     return this.profileDoc.update(profile);
-  }
-
-  /**
-   * Update the local copy of the profile.
-   *
-   * @param {Profile} profile - The user profile.
-   */
-  private updateLocalProfile(profile): void {
-    this.profile.next(profile);
   }
 }

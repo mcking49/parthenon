@@ -17,7 +17,8 @@ export class AboutService {
   ) {
     this.aboutDoc = this.afStore.doc<About>('website/about');
     this.aboutDoc.valueChanges().subscribe((about: About) => {
-      this.updateLocalAbout(about);
+      // Updates the local copy.
+      this.about.next(about);
     });
   }
 
@@ -29,14 +30,5 @@ export class AboutService {
    */
   public updateAbout(about: About): Promise<void> {
     return this.aboutDoc.update(about);
-  }
-
-  /**
-   * Update the local copy of the about content.
-   *
-   * @param {About} about - The about content.
-   */
-  private updateLocalAbout(about): void {
-    this.about.next(about);
   }
 }

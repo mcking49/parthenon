@@ -17,6 +17,7 @@ export class ProjectsService {
   constructor(private afStore: AngularFirestore) {
     this.projectsDoc = this.afStore.doc<Projects>('website/projects');
     this.projectsDoc.valueChanges().subscribe((projects: Projects) => {
+      // Updates the local copy.
       this.projects.next(projects);
     });
   }
