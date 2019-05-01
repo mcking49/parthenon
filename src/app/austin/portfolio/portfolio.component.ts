@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { LoadingSpinnerModalComponent } from '../../components/loading-spinner-modal/loading-spinner-modal.component';
 import { MatDialog } from '@angular/material';
-import { ProjectsService, IProject } from 'src/app/services/projects.service';
+import { ProjectsDeprecatedService, IProjectDeprecated } from 'src/app/services/projects-deprecated.service';
 import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
@@ -16,13 +16,13 @@ export class PortfolioComponent implements OnInit {
 
   public showLoading: boolean;
   public isHandset: Observable<boolean>;
-  public projects: IProject[];
+  public projects: IProjectDeprecated[];
   public readonly thesisLogoPath = '../../../assets/img/projects/2019-masters-thesis/main-logo.png';
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private dialog: MatDialog,
-    private projectService: ProjectsService,
+    private projectService: ProjectsDeprecatedService,
     private responsiveService: ResponsiveService,
     private router: Router,
     private storage: StorageService

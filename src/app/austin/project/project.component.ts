@@ -1,7 +1,7 @@
 import { ResponsiveService } from './../../services/responsive.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { ProjectsService, IProject } from '../../services/projects.service';
+import { ProjectsDeprecatedService, IProjectDeprecated } from '../../services/projects-deprecated.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -12,10 +12,10 @@ import { Observable } from 'rxjs';
 export class ProjectComponent implements OnInit {
 
   public isHandset: Observable<boolean>;
-  public project: IProject;
+  public project: IProjectDeprecated;
 
   constructor(
-    private projectsService: ProjectsService,
+    private projectsDeprecatedService: ProjectsDeprecatedService,
     private responsiveService: ResponsiveService,
     private route: ActivatedRoute
   ) { }
@@ -27,7 +27,7 @@ export class ProjectComponent implements OnInit {
 
   private initProjects(): void {
     const url = this.route.snapshot.paramMap.get('url');
-    this.project = this.projectsService.getProject(url);
+    this.project = this.projectsDeprecatedService.getProject(url);
   }
 
 }

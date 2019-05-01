@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 
-export interface IProject {
+export interface IProjectDeprecated {
   title: string;
   url: string;
   category: string;
@@ -19,15 +19,15 @@ enum ImgRoot {
 @Injectable({
   providedIn: 'root'
 })
-export class ProjectsService {
+export class ProjectsDeprecatedService {
 
-  public projects: IProject[] = [];
+  public projects: IProjectDeprecated[] = [];
 
   constructor() {
     this.initProjects();
   }
 
-  public getProject(url: string): IProject {
+  public getProject(url: string): IProjectDeprecated {
     return _.find(this.projects, {url: url});
   }
 
