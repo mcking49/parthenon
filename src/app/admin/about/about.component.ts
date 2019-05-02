@@ -1,6 +1,6 @@
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { AboutService } from './../../services/about.service';
 import { About } from './../../interfaces/about';
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
@@ -13,21 +13,27 @@ import * as _ from 'lodash';
 })
 export class AboutComponent implements OnInit {
 
-  public isEditingMode: boolean = false;
-  public aboutForm: FormGroup;
+  public isEditingMode: boolean;
+  private isFirstTimeLoad: boolean;
 
-  private serverAboutForm: any;
-  private isFirstTimeLoad: boolean = true;
+  public aboutForm: FormGroup;
+  // Keep a reference of the about content to make reseting the form easier.
+  private defaultParagraphs: string[];
 
   constructor(
     private dialog: MatDialog,
     private formBuilder: FormBuilder,
     private aboutService: AboutService,
     private snackbar: MatSnackBar
-  ) { }
+  ) {
+    this.isEditingMode = false;
+    this.isFirstTimeLoad = true;
+  }
 
   ngOnInit() {
-    this.aboutForm = this.formBuilder.group({});
+    this.aboutForm = this.formBuilder.group({
+      paragraphs: this.formBuilder.array([])
+    });
     this.aboutService.about$.subscribe((about: About) => {
       if (about) {
         if (this.isFirstTimeLoad) {
@@ -41,23 +47,33 @@ export class AboutComponent implements OnInit {
             }
           );
         }
-        this.serverAboutForm = {};
-        this.resetForm(!this.isEditingMode);
-        _.each(about.paragraphs, (paragraph: string) => {
-          this.addParagraphSection(paragraph, true);
-        });
+        this.defaultParagraphs = about.paragraphs;
+        this.resetForm();
       }
     });
   }
 
-  public get aboutFormControlKeys(): string[] {
-    return Object.keys(this.aboutForm.controls);
-  }
-
+  /**
+   * Check if element should be disabled.
+   *
+   * @returns {boolean} - Indicates if the element should be disabled or not.
+   */
   public get isDisabled(): boolean {
     return !this.isEditingMode || !this.aboutForm.valid || this.aboutForm.pristine;
   }
 
+  /**
+   * Get the paragraphs FormArray from the FormGroup.
+   *
+   * @returns {FormArray} - The paragraphs FormArray from the FormGroup.
+   */
+  public get paragraphs(): FormArray {
+    return this.aboutForm.get('paragraphs') as FormArray;
+  }
+
+  /**
+   * Save the new values to the database.
+   */
   public async submitForm() {
     if (this.aboutForm.valid) {
       const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
@@ -66,12 +82,10 @@ export class AboutComponent implements OnInit {
         width: '150px'
       });
 
-      let updatedAbout: About = {
-        paragraphs: []
+      const updatedParagraphs: string[] = _.map(this.paragraphs.controls, 'value');
+      const updatedAbout: About = {
+        paragraphs: updatedParagraphs
       };
-      _.each(this.aboutForm.controls, (formControl: FormControl) => {
-        updatedAbout.paragraphs.push(formControl.value);
-      });
 
       try {
         this.isFirstTimeLoad = true;
@@ -94,50 +108,52 @@ export class AboutComponent implements OnInit {
     }
   }
 
-  public addParagraphSection(value: string = '', loadedFromServer?: boolean, formControlName?: string): void {
-    // create a random number to add to the formcontrol name to ensure uniqueness.
-    if (!formControlName) {
-      const randNum: string = (Math.random() * Math.floor(10000)).toString();
-      formControlName = `paragraph${new Date().getTime().toString()}${randNum}`;
-    }
-    const formControlOptions: any = {
-      value,
+  /**
+   * Add a new paragraph to the paragraphs FormArray.
+   *
+   * @param {string} paragraph - The new paragraph to be added to the paragraphs FormArray.
+   */
+  public addParagraph(paragraph: string = ''): void {
+    const formControlState: any = {
+      value: paragraph,
       disabled: !this.isEditingMode
     };
-    if (loadedFromServer) {
-      this.serverAboutForm[formControlName] = value;
-    }
-    this.aboutForm.addControl(formControlName, new FormControl(formControlOptions, Validators.required));
+    this.paragraphs.push(this.formBuilder.control(formControlState, Validators.required));
   }
 
-  public deleteParagraphSection(formControlName: string): void {
-    this.aboutForm.removeControl(formControlName);
+  /**
+   * Delete a paragraph.
+   *
+   * @param {number} index - The index position of the paragraph to be deleted.
+   */
+  public deleteParagraph(index: number): void {
+    this.paragraphs.removeAt(index);
   }
 
-  public toggleEditingState() {
+  /**
+   * Toggle the editing state of the form.
+   */
+  public toggleEditingState(): void {
     this.isEditingMode = !this.isEditingMode;
     if (this.isEditingMode) {
-      _.each(this.aboutForm.controls, (value: any, key: string) => {
-        this.aboutForm.controls[key].enable();
+      _.each(this.paragraphs.controls, (control: FormControl) => {
+        control.enable();
       });
     } else {
-      this.resetForm(true);
+      this.resetForm();
     }
   }
 
   /**
    * Reset the form to it's initial states with default values.
-   *
-   * @param {boolean} disableFields - Disable the fields after reseting the form.
    */
-  private resetForm(disableFields?: boolean): void {
+  private resetForm(): void {
     this.aboutForm.reset();
-    this.aboutForm.controls = {};
-    _.each(this.serverAboutForm, (value: string, key: string) => {
-      this.addParagraphSection(value, false, key);
-      if (disableFields) {
-        this.aboutForm.controls[key].disable();
-      }
+    this.paragraphs.reset();
+    this.paragraphs.controls = [];
+
+    _.each(this.defaultParagraphs, (paragraph: string) => {
+      this.addParagraph(paragraph);
     });
   }
 
