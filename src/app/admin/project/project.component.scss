@@ -9,6 +9,13 @@
   > .form-card {
     width: 800px;
 
+    > .form-container {
+      > .form-section-title {
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+    }
+
     .add-paragraph-btn {
       color: white;
       background-color: #11DC60;

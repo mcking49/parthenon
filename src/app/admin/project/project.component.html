@@ -11,6 +11,7 @@
     </div>
 
     <form [formGroup]="projectForm" (ngSubmit)="submitForm()" class="form-container">
+      <div class="form-section-title">Project Details</div>
       <mat-form-field appearance="outline">
         <mat-label>Project Title</mat-label>
         <input matInput placeholder="e.g. Parthenon" formControlName="title">
@@ -26,6 +27,7 @@
         <input matInput placeholder="e.g. Architecture Design" formControlName="category">
       </mat-form-field>
 
+      <div class="form-section-title">Brief</div>
       <div formArrayName="brief">
         <div class="paragraphs" *ngFor="let paragraph of brief.controls; let i = index">
           <mat-form-field appearance="outline" class="form-field">
@@ -62,6 +64,11 @@
           Add new paragraph
         </button>
       </div>
+
+      <!-- TODO: Add these sections -->
+      <!-- <div class="form-section-title">Conclusion</div>
+      <div class="form-section-title">Project Images</div>
+      <div class="form-section-title">Project Logo</div> -->
 
       <button type="submit" class="submit-btn" [disabled]="isDisabled" [class.disabled]="isDisabled" mat-raised-button>Save Changes</button>
     </form>
