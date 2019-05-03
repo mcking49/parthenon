@@ -11,6 +11,21 @@
     </div>
 
     <form [formGroup]="projectForm" (ngSubmit)="submitForm()" class="form-container">
+      <mat-form-field appearance="outline">
+        <mat-label>Project Title</mat-label>
+        <input matInput placeholder="e.g. Parthenon" formControlName="title">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Year</mat-label>
+        <input matInput placeholder="e.g. 2019" formControlName="year">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <input matInput placeholder="e.g. Architecture Design" formControlName="category">
+      </mat-form-field>
+
       <div formArrayName="brief">
         <div class="paragraphs" *ngFor="let paragraph of brief.controls; let i = index">
           <mat-form-field appearance="outline" class="form-field">
