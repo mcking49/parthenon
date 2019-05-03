@@ -45,6 +45,7 @@
             (click)="addBriefParagraph(i+1)"
             [disabled]="!isEditingMode"
             [class.disabled]="!isEditingMode"
+            matTooltip="Add new paragraph below"
             mat-mini-fab>
             <mat-icon>add</mat-icon>
           </button>
@@ -56,11 +57,11 @@
             color="warn"
             [disabled]="!isEditingMode"
             [class.disabled]="!isEditingMode"
+            matTooltip="Delete this paragraph"
             mat-mini-fab>
             <mat-icon>delete</mat-icon>
           </button>
         </div>
-        <!-- TODO: add tooltips over icon buttons -->
       </div>
 
       <!-- TODO: Add these sections -->

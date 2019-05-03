@@ -24,6 +24,7 @@ import {
   MatSlideToggleModule,
   MatSnackBarModule,
   MatToolbarModule,
+  MatTooltipModule,
 } from '@angular/material';
 
 // Other
@@ -54,6 +55,7 @@ import { CvComponent } from './cv/cv.component';
     MatSlideToggleModule,
     MatSnackBarModule,
     MatToolbarModule,
+    MatTooltipModule,
     ReactiveFormsModule,
     AdminRoutingModule
   ]
