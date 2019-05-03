@@ -46,6 +46,25 @@
           flex-grow: 1;
         }
       }
+
+      > .file-input-container {
+        margin: 4px 0 24px;
+
+        > .select-file-button {
+          background-color: black;
+          color: white;
+          transition: .2s;
+          margin-right: 10px;
+    
+          &.disabled {
+            background-color: rgba(0, 0, 0, 0.3);
+          }
+        }
+    
+        > .selected-file-name {
+          padding-top: 10px;
+        }
+      }
     }
   }
 

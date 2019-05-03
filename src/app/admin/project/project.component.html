@@ -64,12 +64,40 @@
         </div>
       </div>
 
-      <!-- TODO: Add these sections -->
-      <!-- <div class="form-section-title">Conclusion</div>
-      <div class="form-section-title">Project Images</div>
-      <div class="form-section-title">Project Logo</div> -->
+      <div class="form-section-title">Project Logo</div>
+      <div class="file-input-container">
+        <input
+          placeholder="Project logo"
+          (change)="newLogoSelected($event.target.files)"
+          type="file"
+          accept=".png, .jpeg, .jpg"
+          formControlName="logo"
+          #fileInput
+          hidden>
+        <button
+          type="button"
+          class="select-file-button"
+          (click)="fileInput.click()"
+          [disabled]="isUploadDisabled"
+          [class.disabled]="isUploadDisabled"
+          mat-raised-button>
+          Upload Logo
+        </button>
+        <span class="selected-file-name">{{selectedLogo?.name}}</span>
+      </div>
 
-      <button type="submit" class="submit-btn" [disabled]="isDisabled" [class.disabled]="isDisabled" mat-raised-button>Save Changes</button>
+      <!-- TODO: Add these sections -->
+      <!-- <div class="form-section-title">Conclusion</div> -->
+      <!-- <div class="form-section-title">Project Images</div> -->
+
+      <button
+        type="submit"
+        class="submit-btn"
+        [disabled]="isDisabled"
+        [class.disabled]="isDisabled"
+        mat-raised-button>
+        Save Changes
+      </button>
     </form>
   </div>
 

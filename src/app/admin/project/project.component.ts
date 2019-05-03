@@ -10,6 +10,7 @@ export class ProjectComponent implements OnInit {
 
   public isEditingMode: boolean;
   public projectForm: FormGroup;
+  public selectedLogo: File;
 
   constructor(
     private formBuilder: FormBuilder
@@ -28,6 +29,24 @@ export class ProjectComponent implements OnInit {
    */
   public get brief(): FormArray {
     return this.projectForm.get('brief') as FormArray;
+  }
+
+  /**
+   * Check if element should be disabled.
+   *
+   * @returns {boolean} - Indicates if the element should be disabled or not.
+   */
+  public get isDisabled(): boolean {
+    return !this.isEditingMode || !this.projectForm.valid || this.projectForm.pristine;
+  }
+
+  /**
+   * Check if the upload button is disabled.
+   *
+   * @returns {boolean} - Indicates if the upload button is disabled or not.
+   */
+  public get isUploadDisabled(): boolean {
+    return !this.isEditingMode;
   }
 
   /**
@@ -53,12 +72,12 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
-   * Check if element should be disabled.
+   * Store the new selected logo.
    *
-   * @returns {boolean} - Indicates if the element should be disabled or not.
+   * @param files - The list of files that have been selected.
    */
-  public get isDisabled(): boolean {
-    return !this.isEditingMode || !this.projectForm.valid || this.projectForm.pristine;
+  public newLogoSelected(files: FileList) {
+    this.selectedLogo = files.item(0);
   }
 
   /**
@@ -95,6 +114,10 @@ export class ProjectComponent implements OnInit {
           Validators.required
         )
       ]),
+      logo: [
+        null,
+        Validators.required
+      ]
     });
   }
 
