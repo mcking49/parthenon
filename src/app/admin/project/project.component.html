@@ -41,7 +41,16 @@
           </mat-form-field>
           <button
             type="button"
-            class="delete-btn"
+            class="field-control-btn add-btn"
+            (click)="addBriefParagraph(i+1)"
+            [disabled]="!isEditingMode"
+            [class.disabled]="!isEditingMode"
+            mat-mini-fab>
+            <mat-icon>add</mat-icon>
+          </button>
+          <button
+            type="button"
+            class="field-control-btn"
             (click)="deleteBriefParagraph(i)"
             *ngIf="brief.length > 1"
             color="warn"
@@ -51,18 +60,7 @@
             <mat-icon>delete</mat-icon>
           </button>
         </div>
-
-        <!-- TODO: change to plus icon and add paraagraphs at any position -->
         <!-- TODO: add tooltips over icon buttons -->
-        <button
-          type="button"
-          class="add-paragraph-btn"
-          (click)="addBriefParagraph()"
-          [disabled]="!isEditingMode"
-          [class.disabled]="!isEditingMode"
-          mat-raised-button>
-          Add new paragraph
-        </button>
       </div>
 
       <!-- TODO: Add these sections -->

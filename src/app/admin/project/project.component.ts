@@ -35,12 +35,12 @@ export class ProjectComponent implements OnInit {
    *
    * @param {string} paragraph - The new paragraph to be added to the brief.
    */
-  public addBriefParagraph(paragraph: string = ''): void {
+  public addBriefParagraph(index: number, paragraph: string = ''): void {
     const formControlState: any = {
       value: paragraph,
       disabled: !this.isEditingMode
     };
-    this.brief.push(this.formBuilder.control(formControlState, Validators.required));
+    this.brief.insert(index, this.formBuilder.control(formControlState, Validators.required));
   }
 
   /**
