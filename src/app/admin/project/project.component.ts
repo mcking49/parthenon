@@ -9,6 +9,7 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 export class ProjectComponent implements OnInit {
 
   public isEditingMode: boolean;
+  public hasConclusion: boolean;
   public projectForm: FormGroup;
   public selectedLogo: File;
   public selectedImages: FileList;
@@ -17,10 +18,20 @@ export class ProjectComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {
     this.isEditingMode = true;
+    this.hasConclusion = false;
   }
 
   ngOnInit() {
     this.initialiseForm();
+  }
+
+  /**
+   * Get the Conclusion section from the Project form.
+   *
+   * @returns {FormArray} - the Conclusion section from the Project form.
+   */
+  public get conclusion(): FormArray {
+    return this.projectForm.get('conclusion') as FormArray;
   }
 
   /**
@@ -48,6 +59,41 @@ export class ProjectComponent implements OnInit {
    */
   public get isUploadDisabled(): boolean {
     return !this.isEditingMode;
+  }
+
+  /**
+   * Check if the form has a conclusion section.
+   *
+   * @returns {boolean} - true if there is a conclusion.
+   */
+  public addConclusionForm() {
+    this.addConclusionParagraph(0);
+    this.hasConclusion = true;
+  }
+
+  /**
+   * Add a new paragraph for the conclusion.
+   *
+   * @param {string} paragraph - The new paragraph to be added to the conclusion.
+   */
+  public addConclusionParagraph(index: number, paragraph: string = ''): void {
+    const formControlState: any = {
+      value: paragraph,
+      disabled: !this.isEditingMode
+    };
+    this.conclusion.insert(index, this.formBuilder.control(formControlState, Validators.required));
+  }
+
+  /**
+   * Delete a paragraph from the conclusion.
+   *
+   * @param {number} index - The index position of the paragraph to be deleted.
+   */
+  public deleteConclusionParagraph(index: number): void {
+    this.conclusion.removeAt(index);
+    if (index == 0) {
+      this.hasConclusion = false;
+    }
   }
 
   /**
@@ -131,7 +177,8 @@ export class ProjectComponent implements OnInit {
       images: [
         null,
         Validators.required
-      ]
+      ],
+      conclusion: this.formBuilder.array([]),
     });
   }
 
