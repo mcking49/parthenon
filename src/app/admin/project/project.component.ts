@@ -11,6 +11,7 @@ export class ProjectComponent implements OnInit {
   public isEditingMode: boolean;
   public projectForm: FormGroup;
   public selectedLogo: File;
+  public selectedImages: FileList;
 
   constructor(
     private formBuilder: FormBuilder
@@ -72,6 +73,15 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
+   * Store the new selected images.
+   *
+   * @param files - The list of files that have been selected.
+   */
+  public newImagesSelected(files: FileList) {
+    this.selectedImages = files;
+  }
+
+  /**
    * Store the new selected logo.
    *
    * @param files - The list of files that have been selected.
@@ -115,6 +125,10 @@ export class ProjectComponent implements OnInit {
         )
       ]),
       logo: [
+        null,
+        Validators.required
+      ],
+      images: [
         null,
         Validators.required
       ]

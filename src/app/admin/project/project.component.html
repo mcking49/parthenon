@@ -72,12 +72,12 @@
           type="file"
           accept=".png, .jpeg, .jpg"
           formControlName="logo"
-          #fileInput
+          #selectLogo
           hidden>
         <button
           type="button"
           class="select-file-button"
-          (click)="fileInput.click()"
+          (click)="selectLogo.click()"
           [disabled]="isUploadDisabled"
           [class.disabled]="isUploadDisabled"
           mat-raised-button>
@@ -86,9 +86,31 @@
         <span class="selected-file-name">{{selectedLogo?.name}}</span>
       </div>
 
+      <div class="form-section-title">Project Images</div>
+      <div class="file-input-container">
+        <input
+          placeholder="Project Images"
+          (change)="newImagesSelected($event.target.files)"
+          type="file"
+          accept=".png, .jpeg, .jpg"
+          formControlName="images"
+          multiple
+          #selectImages
+          hidden>
+        <button
+          type="button"
+          class="select-file-button"
+          (click)="selectImages.click()"
+          [disabled]="isUploadDisabled"
+          [class.disabled]="isUploadDisabled"
+          mat-raised-button>
+          Upload Images
+        </button>
+        <span class="selected-file-name" *ngIf="selectedImages">{{selectedImages?.length}} files selected.</span>
+      </div>
+
       <!-- TODO: Add these sections -->
       <!-- <div class="form-section-title">Conclusion</div> -->
-      <!-- <div class="form-section-title">Project Images</div> -->
 
       <button
         type="submit"
