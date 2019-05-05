@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Projects } from 'src/app/interfaces/projects';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import * as _ from 'lodash';
 import { Project } from 'src/app/interfaces/project';
 
@@ -12,6 +12,9 @@ import { Project } from 'src/app/interfaces/project';
   styleUrls: ['./projects.component.scss']
 })
 export class ProjectsComponent implements OnInit {
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   public tableData: MatTableDataSource<any>;
   public tableColumns: string[] = ['year', 'title'];
@@ -31,12 +34,18 @@ export class ProjectsComponent implements OnInit {
           return _.pick(project, ['year', 'title', 'url']);
         });
         this.tableData = new MatTableDataSource(projectsArray);
+        this.tableData.paginator = this.paginator;
+        this.tableData.sort = this.sort;
       }
     });
   }
 
   public applyFilter(filterValue: string) {
     this.tableData.filter = filterValue.trim().toLowerCase();
+
+    if (this.tableData.paginator) {
+      this.tableData.paginator.firstPage();
+    }
   }
 
   public openProject(url: string): void {

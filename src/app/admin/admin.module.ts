@@ -19,13 +19,15 @@ import {
   MatIconModule,
   MatInputModule,
   MatListModule,
+  MatPaginatorModule,
   MatRadioModule,
   MatSidenavModule,
   MatSlideToggleModule,
   MatSnackBarModule,
+  MatSortModule,
   MatTableModule,
   MatToolbarModule,
-  MatTooltipModule
+  MatTooltipModule,
 } from '@angular/material';
 
 // Other
@@ -52,9 +54,11 @@ import { CvComponent } from './cv/cv.component';
     MatInputModule,
     MatListModule,
     MatRadioModule,
+    MatPaginatorModule,
     MatSidenavModule,
     MatSlideToggleModule,
     MatSnackBarModule,
+    MatSortModule,
     MatTableModule,
     MatToolbarModule,
     MatTooltipModule,
