@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectsService } from 'src/app/services/projects.service';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Projects } from 'src/app/interfaces/projects';
+import { MatTableDataSource } from '@angular/material';
+import * as _ from 'lodash';
+import { Project } from 'src/app/interfaces/project';
 
 @Component({
   selector: 'app-projects',
@@ -10,16 +13,30 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ProjectsComponent implements OnInit {
 
-  public projectsForm: FormGroup;
+  public tableData: MatTableDataSource<any>;
+  public tableColumns: string[] = ['year', 'title'];
+  private projects: Projects;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private formBuilder: FormBuilder,
     private projectsService: ProjectsService
   ) { }
 
   ngOnInit() {
+    this.projectsService.projects$.subscribe((projects) => {
+      if (projects) {
+        this.projects = projects;
+        const projectsArray =  _.map(projects, (project: Project) => {
+          return _.pick(project, ['year', 'title', 'url']);
+        });
+        this.tableData = new MatTableDataSource(projectsArray);
+      }
+    });
+  }
+
+  public applyFilter(filterValue: string) {
+    this.tableData.filter = filterValue.trim().toLowerCase();
   }
 
   public openProject(url: string): void {
