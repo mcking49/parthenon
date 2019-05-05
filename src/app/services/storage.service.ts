@@ -55,6 +55,15 @@ export class StorageService {
   }
 
   /**
+   * Get the Image downloadUrl observable.
+   *
+   * @returns {Observable<string>} - The downloadURL Observable.
+   */
+  public getProjectImgDownloadUrl(projectUrl: string, file: File): Observable<string> {
+    return this.storage.ref(`projects/${projectUrl}/${file.name}`).getDownloadURL();
+  }
+
+  /**
    * Upload a new version of a the CV.
    *
    * @param language - The language of the file. Either en or de.
@@ -64,6 +73,18 @@ export class StorageService {
    */
   public uploadCv(language: string, file: File): AngularFireUploadTask {
     return this.storage.ref(`cv/Dsouza_Austin-CV19-${language}.pdf`).put(file);
+  }
+
+  /**
+   * Upload a new project logo.
+   *
+   * @param projectUrl - the Url id of the project.
+   * @param file - The file to be uploaded
+   *
+   * @returns {AngularFireUploadTask} - Can be used to monitor the upload status.
+   */
+  public uploadProjectImg(projectUrl: string, file: File): AngularFireUploadTask {
+    return this.storage.upload(`projects/${projectUrl}/${file.name}`, file);
   }
 
   /**

@@ -1,3 +1,168 @@
-<p>
-  project works!
-</p>
+<div id="project">
+
+  <div class="lock-toggle">
+    <span class="label">Edit Project</span>
+    <mat-slide-toggle [checked]="isEditingMode" (change)="toggleEditingState()"></mat-slide-toggle>
+  </div>
+
+  <div class="form-card">
+    <div class="header">
+      <h1 class="title">Project</h1>
+    </div>
+
+    <form [formGroup]="projectForm" (ngSubmit)="submitForm()" class="form-container">
+      <div class="form-section-title">Project Details</div>
+      <mat-form-field appearance="outline">
+        <mat-label>Project Title</mat-label>
+        <input matInput placeholder="e.g. Parthenon" formControlName="title">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Year</mat-label>
+        <input matInput placeholder="e.g. 2019" formControlName="year">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <input matInput placeholder="e.g. Architecture Design" formControlName="category">
+      </mat-form-field>
+
+      <div class="form-section-title">Project Logo</div>
+      <div class="file-input-container">
+        <input
+          placeholder="Project logo"
+          (change)="newLogoSelected($event.target.files)"
+          type="file"
+          accept=".png, .jpeg, .jpg"
+          #selectLogo
+          hidden>
+        <button
+          type="button"
+          class="select-file-button"
+          (click)="selectLogo.click()"
+          [disabled]="isUploadDisabled"
+          [class.disabled]="isUploadDisabled"
+          mat-raised-button>
+          Upload Logo
+        </button>
+        <span class="selected-file-name">{{selectedLogo?.name}}</span>
+      </div>
+
+      <div class="form-section-title">Project Images</div>
+      <div class="file-input-container">
+        <input
+          placeholder="Project Images"
+          (change)="newImagesSelected($event.target.files)"
+          type="file"
+          accept=".png, .jpeg, .jpg"
+          multiple
+          #selectImages
+          hidden>
+        <button
+          type="button"
+          class="select-file-button"
+          (click)="selectImages.click()"
+          [disabled]="isUploadDisabled"
+          [class.disabled]="isUploadDisabled"
+          mat-raised-button>
+          Upload Images
+        </button>
+        <span class="selected-file-name" *ngIf="selectedImages">{{selectedImages?.length}} files selected.</span>
+      </div>
+
+      <div class="form-section-title">Brief</div>
+      <div formArrayName="brief">
+        <div class="paragraphs" *ngFor="let paragraph of brief.controls; let i = index">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Brief paragraph {{i+1}}</mat-label>
+            <textarea
+              placeholder="e.g. This project is about..."
+              [formControlName]="i"
+              cdkTextareaAutosize
+              matInput>
+            </textarea>
+          </mat-form-field>
+          <button
+            type="button"
+            class="field-control-btn add-btn"
+            (click)="addBriefParagraph(i+1)"
+            [disabled]="!isEditingMode"
+            [class.disabled]="!isEditingMode"
+            matTooltip="Add new paragraph below"
+            mat-mini-fab>
+            <mat-icon>add</mat-icon>
+          </button>
+          <button
+            type="button"
+            class="field-control-btn"
+            (click)="deleteBriefParagraph(i)"
+            *ngIf="brief.length > 1"
+            color="warn"
+            [disabled]="!isEditingMode"
+            [class.disabled]="!isEditingMode"
+            matTooltip="Delete this paragraph"
+            mat-mini-fab>
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-section-title" *ngIf="hasConclusion">Conclusion</div>
+      <div formArrayName="conclusion" *ngIf="hasConclusion">
+        <div class="paragraphs" *ngFor="let paragraph of conclusion.controls; let i = index">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Conclusion paragraph {{i+1}}</mat-label>
+            <textarea
+              placeholder="e.g. This project is about..."
+              [formControlName]="i"
+              cdkTextareaAutosize
+              matInput>
+            </textarea>
+          </mat-form-field>
+          <button
+            type="button"
+            class="field-control-btn add-btn"
+            (click)="addConclusionParagraph(i+1)"
+            [disabled]="!isEditingMode"
+            [class.disabled]="!isEditingMode"
+            matTooltip="Add new paragraph below"
+            mat-mini-fab>
+            <mat-icon>add</mat-icon>
+          </button>
+          <button
+            type="button"
+            class="field-control-btn"
+            (click)="deleteConclusionParagraph(i)"
+            color="warn"
+            [disabled]="!isEditingMode"
+            [class.disabled]="!isEditingMode"
+            matTooltip="Delete this paragraph"
+            mat-mini-fab>
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="add-conclusion-btn"
+        *ngIf="!hasConclusion"
+        (click)="addConclusionForm()"
+        [disabled]="!isEditingMode"
+        [class.disabled]="!isEditingMode"
+        mat-raised-button>
+        Add a conclusion
+      </button>
+
+      <button
+        type="submit"
+        class="submit-btn"
+        [disabled]="isDisabled"
+        [class.disabled]="isDisabled"
+        mat-raised-button>
+        Save Changes
+      </button>
+    </form>
+  </div>
+
+</div>

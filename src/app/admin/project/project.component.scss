@@ -1,0 +1,80 @@
+#project {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  > .form-card {
+    width: 800px;
+
+    > .form-container {
+      > .form-section-title {
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+
+      > .add-conclusion-btn {
+        color: white;
+        background-color: #11DC60;
+        margin: 0 auto 30px auto;
+        width: 160px;
+
+        &.disabled {
+          background-color: rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      .paragraphs {
+        display: flex;
+        align-items: center;
+
+        > .field-control-btn {
+          margin: 0 0 20px 20px;
+
+          &.add-btn {
+            background-color: #11DC60;
+          }
+
+          &.disabled {
+            background-color: rgba(0, 0, 0, 0.3);
+          }
+        }
+
+        > .form-field {
+          flex-grow: 1;
+        }
+      }
+
+      > .file-input-container {
+        margin: 4px 0 24px;
+
+        > .select-file-button {
+          background-color: black;
+          color: white;
+          transition: .2s;
+          margin-right: 10px;
+
+          &.disabled {
+            background-color: rgba(0, 0, 0, 0.3);
+          }
+        }
+
+        > .selected-file-name {
+          padding-top: 10px;
+        }
+      }
+    }
+  }
+
+  > .lock-toggle {
+    display: flex;
+    align-content: center;
+    margin-bottom: 20px;
+
+    > .label {
+      margin-right: 5px;
+    }
+  }
+}
