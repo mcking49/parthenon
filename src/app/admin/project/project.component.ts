@@ -251,12 +251,25 @@ export class ProjectComponent implements OnInit {
     });
 
     try {
-      await this.projectsService.addOrUpdateProject(project as Project)
+      await this.projectsService.addOrUpdateProject(project as Project);
+      this.resetForm();
     } catch (error) {
       console.error(error);
     } finally {
       dialogRef.close();
     }
+  }
+
+  /**
+   * Reset the form to it's initial states with default values.
+   */
+  private resetForm(): void {
+    this.brief.controls = [];
+    this.conclusion.controls = [];
+    this.brief.reset();
+    this.conclusion.reset();
+    this.addBriefParagraph(0);
+    this.projectForm.reset();
   }
 
 }
