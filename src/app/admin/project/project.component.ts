@@ -21,6 +21,8 @@ export class ProjectComponent implements OnInit {
   public selectedLogo: File;
   public selectedImages: FileList;
 
+  public newProject = true;
+
   constructor(
     private dialog: MatDialog,
     private formBuilder: FormBuilder,
@@ -59,7 +61,11 @@ export class ProjectComponent implements OnInit {
    * @returns {boolean} - Indicates if the element should be disabled or not.
    */
   public get isDisabled(): boolean {
-    return !this.isEditingMode || !this.projectForm.valid || this.projectForm.pristine;
+    if (this.newProject) {
+      return !this.isEditingMode || !this.projectForm.valid || this.projectForm.pristine || !this.selectedImages || !this.selectedLogo;
+    } else {
+      return !this.isEditingMode || !this.projectForm.valid || this.projectForm.pristine;
+    }
   }
 
   /**
