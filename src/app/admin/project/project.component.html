@@ -34,7 +34,6 @@
           (change)="newLogoSelected($event.target.files)"
           type="file"
           accept=".png, .jpeg, .jpg"
-          formControlName="logo"
           #selectLogo
           hidden>
         <button
@@ -56,7 +55,6 @@
           (change)="newImagesSelected($event.target.files)"
           type="file"
           accept=".png, .jpeg, .jpg"
-          formControlName="images"
           multiple
           #selectImages
           hidden>
