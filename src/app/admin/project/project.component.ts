@@ -275,6 +275,8 @@ export class ProjectComponent implements OnInit {
     this.brief.reset();
     this.conclusion.reset();
     this.addBriefParagraph(0);
+    this.selectedImages = null;
+    this.selectedLogo = null;
     this.projectForm.reset();
   }
 
