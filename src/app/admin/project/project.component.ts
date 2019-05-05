@@ -1,5 +1,12 @@
+import { Project } from './../../interfaces/project';
+import { ProjectsService } from 'src/app/services/projects.service';
+import { StorageService } from './../../services/storage.service';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
+import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
+import * as _ from 'lodash';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-project',
@@ -15,7 +22,10 @@ export class ProjectComponent implements OnInit {
   public selectedImages: FileList;
 
   constructor(
-    private formBuilder: FormBuilder
+    private dialog: MatDialog,
+    private formBuilder: FormBuilder,
+    private projectsService: ProjectsService,
+    private storageService: StorageService,
   ) {
     this.isEditingMode = true;
     this.hasConclusion = false;
@@ -140,7 +150,50 @@ export class ProjectComponent implements OnInit {
    * Save the project to the database.
    */
   public submitForm(): void {
-    console.log('submit form pressed');
+    if (this.selectedLogo && this.selectedImages && this.projectForm.valid) {
+      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
+        maxHeight: '150px',
+        height: '150px',
+        width: '150px'
+      });
+
+      const totalImages = this.selectedImages.length + 1;
+      let uploadedImages = 0;
+      const project = {
+        url: this.projectsService.generateUrl(
+          this.projectForm.get('title').value,
+          this.projectForm.get('year').value as number
+        )
+      }
+
+      this.storageService.uploadProjectImg(project.url, this.selectedLogo).snapshotChanges().pipe(
+        finalize(async () => {
+          const url: string = await this.storageService.getProjectImgDownloadUrl(project.url, this.selectedLogo).toPromise();
+          this.projectForm.get('logoUrl').setValue(url);
+          uploadedImages++;
+          if (uploadedImages === totalImages) {
+            this.saveForm(project, dialogRef);
+          }
+        })
+      ).subscribe();
+
+      _.each(this.selectedImages, (img) => {
+        this.storageService.uploadProjectImg(project.url, img).snapshotChanges().pipe(
+          finalize(async () => {
+            const url: string = await this.storageService.getProjectImgDownloadUrl(project.url, img).toPromise();
+            const images: string[] = this.projectForm.get('imageUrls').value;
+            images.push(url);
+            this.projectForm.get('imageUrls').setValue(images);
+            uploadedImages++;
+            if (uploadedImages === totalImages) {
+              this.saveForm(project, dialogRef);
+            }
+          })
+        ).subscribe();
+      });
+    } else {
+      throw new Error('The form is invalid');
+    }
   }
 
   /**
@@ -170,16 +223,40 @@ export class ProjectComponent implements OnInit {
           Validators.required
         )
       ]),
-      logo: [
-        null,
-        Validators.required
+      logoUrl: [
+        ''
       ],
-      images: [
-        null,
-        Validators.required
+      imageUrls: [
+        []
       ],
       conclusion: this.formBuilder.array([]),
     });
+  }
+
+  /**
+   * Save the project to the database.
+   *
+   * @param project - A blank project object that contains a url.
+   * @param dialogRef - The loading dialog reference.
+   */
+  private async saveForm(project: any, dialogRef: MatDialogRef<LoadingSpinnerModalComponent, any>) {
+    _.map(this.projectForm.controls, (formControl: FormControl, key: string) => {
+      if (key === 'brief') {
+        project[key] = _.map(this.brief.controls, 'value');
+      } else if (key === 'conclusion') {
+        project[key] = _.map(this.conclusion.controls, 'value');
+      } else {
+        project[key] = formControl.value;
+      }
+    });
+
+    try {
+      await this.projectsService.addOrUpdateProject(project as Project)
+    } catch (error) {
+      console.error(error);
+    } finally {
+      dialogRef.close();
+    }
   }
 
 }

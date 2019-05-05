@@ -30,9 +30,6 @@ export class ProjectsService {
    * @returns {Promise<void>} - A promise when the action is completed.
    */
   public addOrUpdateProject(project: Project): Promise<void> {
-    // always ensure the url matches the project title and year.
-    project.url = this.generateUrl(project.title, project.year);
-
     return new Promise<void>((resolve, reject) => {
       this.projects$.subscribe((projects: Projects) => {
         projects[project.url] = project;
@@ -71,7 +68,7 @@ export class ProjectsService {
    *
    * @returns {string} - The generated URL for the project.
    */
-  private generateUrl(title: string, year: number): string {
+  public generateUrl(title: string, year: number): string {
     return `${year}-${title.toLowerCase().trim().replace(/\s/g, '-')}`;
   }
 }
