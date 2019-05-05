@@ -277,7 +277,20 @@ export class ProjectComponent implements OnInit {
     this.addBriefParagraph(0);
     this.selectedImages = null;
     this.selectedLogo = null;
-    this.projectForm.reset();
+    this.projectForm.reset({
+      title: '',
+      category: '',
+      year: '',
+      brief: this.formBuilder.array([
+        this.formBuilder.control(
+          '',
+          Validators.required
+        )
+      ]),
+      logoUrl: '',
+      imageUrls: [],
+      conclusion: this.formBuilder.array([])
+    });
   }
 
 }
