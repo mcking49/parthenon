@@ -164,7 +164,7 @@ export class ProjectComponent implements OnInit {
           this.projectForm.get('title').value,
           this.projectForm.get('year').value as number
         )
-      }
+      };
 
       this.storageService.uploadProjectImg(project.url, this.selectedLogo).snapshotChanges().pipe(
         finalize(async () => {
@@ -209,11 +209,11 @@ export class ProjectComponent implements OnInit {
         '',
         Validators.required
       ],
-      year: [
+      category: [
         '',
         Validators.required
       ],
-      category: [
+      year: [
         '',
         Validators.required
       ],
