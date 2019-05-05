@@ -67,6 +67,19 @@ export class StorageService {
   }
 
   /**
+   * Upload a new project logo.
+   *
+   * @param projectUrl - the Url id of the project.
+   * @param file - The file to be uploaded
+   *
+   * @returns {AngularFireUploadTask} - Can be used to monitor the upload status.
+   */
+  public uploadProjectLogo(projectUrl: string, file: File): AngularFireUploadTask {
+    const ext = file.name.split('.').pop();
+    return this.storage.ref(`projects/${projectUrl}/logo.${ext}`).put(file);
+  }
+
+  /**
    * Upload a new profile image to be used on the home page of the main website.
    *
    * @param {File} file - the new profile image to be uploaded.
