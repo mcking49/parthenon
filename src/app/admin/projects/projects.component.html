@@ -67,7 +67,7 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: tableColumns;" (click)="openProject(row.url)" ></tr>
+    <tr mat-row *matRowDef="let row; columns: tableColumns;" (click)="openProject(row.url)" matTooltip="Open project"></tr>
   </table>
   <mat-paginator [pageSizeOptions]="[10, 15, 25, 100]" showFirstLastButtons></mat-paginator>
 
