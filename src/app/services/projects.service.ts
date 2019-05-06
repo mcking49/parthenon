@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { Project } from './../interfaces/project';
 import { Projects } from './../interfaces/projects';
 import * as firebase from 'firebase/app';
+import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -43,16 +44,18 @@ export class ProjectsService {
   }
 
   /**
-   * Delete a project from the database.
+   * Delete projects from the database.
    *
-   * @param {Project} project - The project to be deleted.
+   * @param {string[]} urls - A list of urls of projects to be deleted.
    *
    * @returns {Promise<void>} - A promise when the action is completed.
    */
-  public deleteProject(project: Project): Promise<void> {
-    const deletedProject = {};
-    deletedProject[project.url] = firebase.firestore.FieldValue.delete();
-    return this.projectsDoc.update(deletedProject);
+  public deleteProjects(urls: string[]): Promise<void> {
+    const deletedProjects = {};
+    _.each(urls, (url) => {
+      deletedProjects[url] = firebase.firestore.FieldValue.delete();
+    });
+    return this.projectsDoc.update(deletedProjects);
   }
 
   /**

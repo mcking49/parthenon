@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { Project } from './../../interfaces/project';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { StorageService } from './../../services/storage.service';
@@ -20,21 +21,36 @@ export class ProjectComponent implements OnInit {
   public projectForm: FormGroup;
   public selectedLogo: File;
   public selectedImages: FileList;
+  public newProject: boolean;
 
-  public newProject = true;
+  private project: Project;
 
   constructor(
     private dialog: MatDialog,
     private formBuilder: FormBuilder,
     private projectsService: ProjectsService,
+    private route: ActivatedRoute,
     private storageService: StorageService,
   ) {
-    this.isEditingMode = true;
+    this.isEditingMode = false;
     this.hasConclusion = false;
+    this.newProject = false;
   }
 
   ngOnInit() {
     this.initialiseForm();
+    this.route.params.subscribe((params) => {
+      if (params.url === 'new') {
+        this.newProject = true;
+        this.isEditingMode = true;
+      } else {
+        this.projectsService.projects$.subscribe((projects) => {
+          if (projects) {
+            this.project = projects[params.url];
+          }
+        });
+      }
+    });
   }
 
   /**
