@@ -22,7 +22,6 @@ export class ProjectsComponent implements OnInit {
   public selection: SelectionModel<any>;
 
   public tableColumns: string[] = ['select', 'year', 'title', 'category'];
-  private projects: Projects;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -36,7 +35,6 @@ export class ProjectsComponent implements OnInit {
   ngOnInit() {
     this.projectsService.projects$.subscribe((projects) => {
       if (projects) {
-        this.projects = projects;
         const projectsArray = _.map(projects, (project: Project) => {
           return _.pick(project, ['year', 'title', 'category', 'url']);
         });
