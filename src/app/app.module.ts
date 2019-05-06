@@ -15,17 +15,20 @@ import { firebaseConfig } from './config/firebase';
 // Angular Material
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
+  MatButtonModule,
   MatDialogModule,
-  MatProgressSpinnerModule,
+  MatProgressSpinnerModule
 } from '@angular/material';
 
 // Other
 import { AppRoutingModule } from './app-routing.module';
+import { ConfirmDeleteComponent } from './components/confirm-delete/confirm-delete.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoadingSpinnerModalComponent
+    LoadingSpinnerModalComponent,
+    ConfirmDeleteComponent
   ],
   imports: [
     AngularFireModule.initializeApp(firebaseConfig),
@@ -34,6 +37,7 @@ import { AppRoutingModule } from './app-routing.module';
     AngularFirestoreModule,
     BrowserModule,
     BrowserAnimationsModule,
+    MatButtonModule,
     MatDialogModule,
     MatProgressSpinnerModule,
     AppRoutingModule
@@ -41,6 +45,6 @@ import { AppRoutingModule } from './app-routing.module';
   providers: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent],
-  entryComponents: [LoadingSpinnerModalComponent]
+  entryComponents: [LoadingSpinnerModalComponent, ConfirmDeleteComponent]
 })
 export class AppModule { }

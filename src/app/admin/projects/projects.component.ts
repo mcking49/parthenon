@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ProjectsService } from 'src/app/services/projects.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Projects } from 'src/app/interfaces/projects';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
-import * as _ from 'lodash';
-import { Project } from 'src/app/interfaces/project';
 import { SelectionModel } from '@angular/cdk/collections';
+import { ProjectsService } from 'src/app/services/projects.service';
+import { Project } from 'src/app/interfaces/project';
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
+import { ConfirmDeleteComponent } from 'src/app/components/confirm-delete/confirm-delete.component';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-projects',
@@ -65,23 +65,27 @@ export class ProjectsComponent implements OnInit {
     }
   }
 
-  public async deleteProjects() {
-    // TODO: Add confirmation popup
-    const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
-      maxHeight: '150px',
-      height: '150px',
-      width: '150px'
-    });
+  public deleteProjects(): void {
+    const confirmDialogRef = this.dialog.open(ConfirmDeleteComponent);
 
-    const urls: string[] = _.map(this.selectedProjects, 'url');
-    try {
-      await this.projectsService.deleteProjects(urls);
-      this.selection.clear();
-    } catch (error) {
-      throw new Error(error);
-    } finally {
-      dialogRef.close();
-    }
+    confirmDialogRef.afterClosed().subscribe(async (confirmed) => {
+      if (confirmed) {
+        const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
+          height: '150px',
+          width: '150px'
+        });
+
+        const urls: string[] = _.map(this.selectedProjects, 'url');
+        try {
+          await this.projectsService.deleteProjects(urls);
+          this.selection.clear();
+        } catch (error) {
+          throw new Error(error);
+        } finally {
+          dialogRef.close();
+        }
+      }
+    });
   }
 
   public isAllSelected(): boolean {
