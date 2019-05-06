@@ -6,6 +6,17 @@
   align-items: center;
   justify-content: center;
 
+  > .buttons {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+
+    > .new-project {
+      color: white;
+      background-color: #11DC60;
+    }
+  }
+
   table {
     width: 100%;
   }

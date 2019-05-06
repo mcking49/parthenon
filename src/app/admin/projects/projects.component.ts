@@ -48,6 +48,10 @@ export class ProjectsComponent implements OnInit {
     }
   }
 
+  public deleteProjects(): void {
+    console.log('delete projects');
+  }
+
   public openProject(url: string): void {
     this.router.navigate([`../project/${url}`], {relativeTo: this.activatedRoute});
   }

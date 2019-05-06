@@ -1,9 +1,12 @@
-<button type="button" (click)="openProject('new')" color="warn" mat-raised-button>New Project</button>
-
 <div id="projects">
 
   <div class="header">
     <h1 class="title">Projects</h1>
+  </div>
+
+  <div class="buttons">
+    <button type="button" (click)="openProject('new')" class="new-project" mat-raised-button>New Project</button>
+    <button type="button" (click)="deleteProjects()" class="delete-project" color="warn" mat-raised-button>Delete Projects</button>
   </div>
 
   <mat-form-field>
@@ -27,6 +30,6 @@
     <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: tableColumns;" (click)="openProject(row.url)" ></tr>
   </table>
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[10, 15, 25, 100]" showFirstLastButtons></mat-paginator>
 
 </div>
