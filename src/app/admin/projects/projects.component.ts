@@ -21,7 +21,7 @@ export class ProjectsComponent implements OnInit {
   public tableData: MatTableDataSource<any>;
   public selection: SelectionModel<any>;
 
-  public tableColumns: string[] = ['select', 'year', 'title'];
+  public tableColumns: string[] = ['select', 'year', 'title', 'category'];
   private projects: Projects;
 
   constructor(
@@ -37,8 +37,8 @@ export class ProjectsComponent implements OnInit {
     this.projectsService.projects$.subscribe((projects) => {
       if (projects) {
         this.projects = projects;
-        const projectsArray =  _.map(projects, (project: Project) => {
-          return _.pick(project, ['year', 'title', 'url']);
+        const projectsArray = _.map(projects, (project: Project) => {
+          return _.pick(project, ['year', 'title', 'category', 'url']);
         });
         this.tableData = new MatTableDataSource(projectsArray);
         this.tableData.paginator = this.paginator;
