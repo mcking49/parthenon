@@ -45,11 +45,21 @@ export class ProjectsComponent implements OnInit {
     });
   }
 
+  /**
+   * The currently selected projects in the table.
+   *
+   * @returns {any[]} - An array of selected projects.
+   */
   public get selectedProjects(): any[] {
     return this.selection.selected;
   }
 
-  public applyFilter(filterValue: string) {
+  /**
+   * Filter the table of projects.
+   *
+   * @param filterValue - The string to projects by.
+   */
+  public applyFilter(filterValue: string): void {
     this.tableData.filter = filterValue.trim().toLowerCase();
 
     if (this.tableData.paginator) {
@@ -57,6 +67,13 @@ export class ProjectsComponent implements OnInit {
     }
   }
 
+  /**
+   * Generate a label for each checkbox in the table.
+   *
+   * @param row - A project in the table.
+   *
+   * @returns {string} - The checkbox label.
+   */
   public checkboxLabel(row?: any): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
@@ -65,6 +82,9 @@ export class ProjectsComponent implements OnInit {
     }
   }
 
+  /**
+   * Delete selected projects from the database.
+   */
   public deleteProjects(): void {
     const confirmDialogRef = this.dialog.open(ConfirmDeleteComponent);
 
@@ -88,6 +108,11 @@ export class ProjectsComponent implements OnInit {
     });
   }
 
+  /**
+   * Check if all projects are selected in the table.
+   *
+   * @returns {boolean} - True is all projects are selected.
+   */
   public isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
     let numRows: number;
@@ -99,6 +124,9 @@ export class ProjectsComponent implements OnInit {
     return numSelected === numRows;
   }
 
+  /**
+   * Toggle the master checkbox which selects / deselects all projects in the table.
+   */
   public masterToggle(): void {
     this.isAllSelected() ?
       this.selection.clear() :
@@ -107,6 +135,11 @@ export class ProjectsComponent implements OnInit {
       });
   }
 
+  /**
+   * Open a project.
+   *
+   * @param {string} url - The url of the project to open.
+   */
   public openProject(url: string): void {
     this.router.navigate([`../project/${url}`], {relativeTo: this.activatedRoute});
   }
