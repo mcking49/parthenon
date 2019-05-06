@@ -15,6 +15,7 @@ import { ProjectsComponent } from './projects/projects.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import {
   MatButtonModule,
+  MatCheckboxModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
@@ -49,6 +50,7 @@ import { CvComponent } from './cv/cv.component';
     CommonModule,
     LayoutModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
