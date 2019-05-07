@@ -198,14 +198,21 @@ export class ProjectComponent implements OnInit {
    * Save the project to the database.
    */
   public submitForm(): void {
-    if (this.selectedLogo && this.selectedImages && this.projectForm.valid) {
+    if (
+      (this.selectedLogo || this.projectForm.get('logoUrl').value)
+      && (this.selectedImages || this.projectForm.get('imageUrls').value.length)
+      && this.projectForm.valid
+    ) {
       const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
         maxHeight: '150px',
         height: '150px',
         width: '150px'
       });
 
-      const totalImages = this.selectedImages.length + 1;
+      let totalImages = this.selectedImages ? this.selectedImages.length : 0;
+      if (this.selectedLogo) {
+        totalImages++;
+      }
       let uploadedImages = 0;
       const project = {
         url: this.projectsService.generateUrl(
@@ -214,31 +221,39 @@ export class ProjectComponent implements OnInit {
         )
       };
 
-      this.storageService.uploadProjectImg(project.url, this.selectedLogo).snapshotChanges().pipe(
-        finalize(async () => {
-          const url: string = await this.storageService.getProjectImgDownloadUrl(project.url, this.selectedLogo).toPromise();
-          this.projectForm.get('logoUrl').setValue(url);
-          uploadedImages++;
-          if (uploadedImages === totalImages) {
-            this.saveForm(project, dialogRef);
-          }
-        })
-      ).subscribe();
+      if (this.selectedLogo || this.selectedImages) {
+        if (this.selectedLogo) {
+          this.storageService.uploadProjectImg(project.url, this.selectedLogo).snapshotChanges().pipe(
+            finalize(async () => {
+              const url: string = await this.storageService.getProjectImgDownloadUrl(project.url, this.selectedLogo).toPromise();
+              this.projectForm.get('logoUrl').setValue(url);
+              uploadedImages++;
+              if (uploadedImages === totalImages) {
+                this.saveForm(project, dialogRef);
+              }
+            })
+          ).subscribe();
+        }
 
-      _.each(this.selectedImages, (img) => {
-        this.storageService.uploadProjectImg(project.url, img).snapshotChanges().pipe(
-          finalize(async () => {
-            const url: string = await this.storageService.getProjectImgDownloadUrl(project.url, img).toPromise();
-            const images: string[] = this.projectForm.get('imageUrls').value;
-            images.push(url);
-            this.projectForm.get('imageUrls').setValue(images);
-            uploadedImages++;
-            if (uploadedImages === totalImages) {
-              this.saveForm(project, dialogRef);
-            }
-          })
-        ).subscribe();
-      });
+        if (this.selectedImages) {
+          _.each(this.selectedImages, (img) => {
+            this.storageService.uploadProjectImg(project.url, img).snapshotChanges().pipe(
+              finalize(async () => {
+                const url: string = await this.storageService.getProjectImgDownloadUrl(project.url, img).toPromise();
+                const images: string[] = this.projectForm.get('imageUrls').value;
+                images.push(url);
+                this.projectForm.get('imageUrls').setValue(images);
+                uploadedImages++;
+                if (uploadedImages === totalImages) {
+                  this.saveForm(project, dialogRef);
+                }
+              })
+            ).subscribe();
+          });
+        }
+      } else {
+        this.saveForm(project, dialogRef);
+      }
     } else {
       throw new Error('The form is invalid');
     }
