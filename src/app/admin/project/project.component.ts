@@ -47,6 +47,32 @@ export class ProjectComponent implements OnInit {
         this.projectsService.projects$.subscribe((projects) => {
           if (projects) {
             this.project = projects[params.url];
+            _.each(this.project, (value: any, key: string) => {
+              if (key === 'brief') {
+                _.each(value, (paragraph: string, index: number) => {
+                  if (index === 0) {
+                    this.brief.controls[0].setValue(paragraph);
+                  } else {
+                    this.addBriefParagraph(index, paragraph);
+                  }
+                });
+              } else if (key === 'conclusion') {
+                if (value.length) {
+                  _.each(value, (paragraph: string, index: number) => {
+                    if (!this.hasConclusion) {
+                      this.addConclusionForm();
+                      this.conclusion.controls[0].setValue(paragraph);
+                    } else {
+                      this.addConclusionParagraph(index, paragraph);
+                    }
+                  });
+                }
+              } else if (key === 'url') {
+                return;
+              } else {
+                this.projectForm.controls[key].setValue(value);
+              }
+            });
           }
         });
       }
@@ -256,9 +282,9 @@ export class ProjectComponent implements OnInit {
       brief: this.formBuilder.array([
         this.formBuilder.control(
           {
-          value: '',
-          disabled: !this.isEditingMode
-        },
+            value: '',
+            disabled: !this.isEditingMode
+          },
           Validators.required
         )
       ]),
