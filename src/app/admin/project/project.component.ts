@@ -223,25 +223,42 @@ export class ProjectComponent implements OnInit {
    */
   public toggleEditingState(): void {
     this.isEditingMode = !this.isEditingMode;
+    if (this.isEditingMode) {
+      _.each(this.projectForm.controls, (value: any, key: string) => {
+        this.projectForm.controls[key].enable();
+      });
+    }
   }
 
   private initialiseForm(): void {
     this.projectForm = this.formBuilder.group({
       title: [
-        '',
+        {
+          value: '',
+          disabled: !this.isEditingMode
+        },
         Validators.required
       ],
       category: [
-        '',
+        {
+          value: '',
+          disabled: !this.isEditingMode
+        },
         Validators.required
       ],
       year: [
-        '',
+        {
+          value: '',
+          disabled: !this.isEditingMode
+        },
         Validators.required
       ],
       brief: this.formBuilder.array([
         this.formBuilder.control(
-          '',
+          {
+          value: '',
+          disabled: !this.isEditingMode
+        },
           Validators.required
         )
       ]),
