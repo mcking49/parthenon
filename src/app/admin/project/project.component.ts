@@ -26,6 +26,7 @@ export class ProjectComponent implements OnInit {
   public newProject: boolean;
 
   private project: Project;
+  private projectUrl: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -44,13 +45,14 @@ export class ProjectComponent implements OnInit {
   ngOnInit() {
     this.initialiseForm();
     this.activatedRoute.params.subscribe((params) => {
-      if (params.url === 'new') {
+      this.projectUrl = params.url;
+      if (this.projectUrl === 'new') {
         this.newProject = true;
         this.isEditingMode = true;
       } else {
         this.projectsService.projects$.subscribe((projects) => {
           if (projects) {
-            this.project = projects[params.url];
+            this.project = projects[this.projectUrl];
             _.each(this.project, (value: any, key: string) => {
               if (key === 'brief') {
                 _.each(value, (paragraph: string, index: number) => {
@@ -336,6 +338,16 @@ export class ProjectComponent implements OnInit {
 
     try {
       await this.projectsService.addOrUpdateProject(project as Project);
+
+      // If the year or title changes, this creates a new project in the database
+      // because the url will be different. This means the old url and now outdated project
+      // still exists in the database so we should delete it. We don't need to wait for this
+      // action to complete so we can ignore waiting for the promise to resolve and let the delete
+      // finish in the background.
+      if (this.projectUrl !== project.url) {
+        this.projectsService.deleteProjects([this.projectUrl]);
+      }
+
       this.resetForm();
       await this.router.navigate(['../../projects'], {relativeTo: this.activatedRoute});
       this.snackbar.open(
