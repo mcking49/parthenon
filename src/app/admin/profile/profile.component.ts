@@ -65,7 +65,7 @@ export class ProfileComponent implements OnInit {
   }
 
   private async saveForm(dialogRef: MatDialogRef<LoadingSpinnerModalComponent, any>) {
-    let updatedProfile = {};
+    const updatedProfile = {};
     _.each(this.profileForm.controls, (formControl: FormControl, key: string) => {
       updatedProfile[key] = formControl.value;
     });

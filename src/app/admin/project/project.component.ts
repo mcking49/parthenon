@@ -1,13 +1,15 @@
-import { ActivatedRoute } from '@angular/router';
-import { Project } from './../../interfaces/project';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
+import { finalize } from 'rxjs/operators';
+
 import { ProjectsService } from 'src/app/services/projects.service';
 import { StorageService } from './../../services/storage.service';
-import { MatDialog, MatDialogRef } from '@angular/material';
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
+import { Project } from './../../interfaces/project';
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
+
 import * as _ from 'lodash';
-import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-project',
@@ -26,10 +28,12 @@ export class ProjectComponent implements OnInit {
   private project: Project;
 
   constructor(
+    private activatedRoute: ActivatedRoute,
     private dialog: MatDialog,
     private formBuilder: FormBuilder,
     private projectsService: ProjectsService,
-    private route: ActivatedRoute,
+    private router: Router,
+    private snackbar: MatSnackBar,
     private storageService: StorageService,
   ) {
     this.isEditingMode = false;
@@ -39,7 +43,7 @@ export class ProjectComponent implements OnInit {
 
   ngOnInit() {
     this.initialiseForm();
-    this.route.params.subscribe((params) => {
+    this.activatedRoute.params.subscribe((params) => {
       if (params.url === 'new') {
         this.newProject = true;
         this.isEditingMode = true;
@@ -333,6 +337,14 @@ export class ProjectComponent implements OnInit {
     try {
       await this.projectsService.addOrUpdateProject(project as Project);
       this.resetForm();
+      await this.router.navigate(['../../projects'], {relativeTo: this.activatedRoute});
+      this.snackbar.open(
+        'Your project has been saved',
+        'Close',
+        {
+          duration: 3000,
+        }
+      );
     } catch (error) {
       console.error(error);
     } finally {
