@@ -45,7 +45,7 @@
           mat-raised-button>
           Upload Logo
         </button>
-        <span class="selected-file-name">{{selectedLogo?.name}}</span>
+        <span class="selected-file-name">{{selectedLogo ? selectedLogo?.name : project?.logo.filename}}</span>
       </div>
 
       <div class="form-section-title">Project Images</div>

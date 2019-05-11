@@ -6,7 +6,9 @@ import { finalize } from 'rxjs/operators';
 
 import { ProjectsService } from 'src/app/services/projects.service';
 import { StorageService } from './../../services/storage.service';
+import { Image } from './../../interfaces/image';
 import { Project } from './../../interfaces/project';
+import { Projects } from 'src/app/interfaces/projects';
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
 
 import * as _ from 'lodash';
@@ -37,49 +39,58 @@ export class ProjectComponent implements OnInit {
     private storageService: StorageService,
   ) {
     this.isEditingMode = false;
-  this.hasConclusion = false;
+    this.hasConclusion = false;
   }
 
   ngOnInit() {
-    this.initialiseForm();
     this.activatedRoute.params.subscribe((params) => {
       this.projectUrl = params.url;
       if (this.projectUrl === 'new') {
         this.isEditingMode = true;
+        this.initialiseForm();
       } else {
-        this.projectsService.projects$.subscribe((projects) => {
+        this.initialiseForm();
+        this.projectsService.projects$.subscribe((projects: Projects) => {
           if (projects) {
             this.project = projects[this.projectUrl];
             _.each(this.project, (value: any, key: string) => {
-              if (key === 'brief') {
-                _.each(value, (paragraph: string, index: number) => {
-                  if (index === 0) {
-                    this.brief.controls[0].setValue(paragraph);
-                  } else {
-                    this.addBriefParagraph(index, paragraph);
-                  }
-                });
-              } else if (key === 'conclusion') {
-                if (value.length) {
+              switch (key) {
+                case 'brief': {
                   _.each(value, (paragraph: string, index: number) => {
-                    if (this.hasConclusion) {
-                      this.addConclusionParagraph(index, paragraph);
+                    if (index === 0) {
+                      this.brief.controls[0].setValue(paragraph);
                     } else {
-                      this.addConclusionForm();
-                      this.conclusion.controls[0].setValue(paragraph);
+                      this.addBriefParagraph(index, paragraph);
                     }
                   });
+                  break;
                 }
-              } else if (key === 'url') {
-                return;
-              } else {
-                this.projectForm.controls[key].setValue(value);
+                case 'conclusion': {
+                  if (value.length) {
+                    _.each(value, (paragraph: string, index: number) => {
+                      if (this.hasConclusion) {
+                        this.addConclusionParagraph(index, paragraph);
+                      } else {
+                        this.addConclusionForm();
+                        this.conclusion.controls[0].setValue(paragraph);
+                      }
+                    });
+                  }
+                  break;
+                }
+                case 'url': {
+                  break;
+                }
+                default: {
+                  this.projectForm.controls[key].setValue(value);
+                  break;
+                }
               }
             });
           }
         });
       }
-    });
+    }).unsubscribe();
   }
 
   /**
@@ -202,8 +213,8 @@ export class ProjectComponent implements OnInit {
    */
   public submitForm(): void {
     if (
-      (this.selectedLogo || this.projectForm.get('logoUrl').value)
-      && (this.selectedImages || this.projectForm.get('imageUrls').value.length)
+      (this.selectedLogo || this.projectForm.get('logo').value)
+      && (this.selectedImages || this.projectForm.get('images').value.length)
       && this.projectForm.valid
     ) {
       const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
@@ -229,7 +240,11 @@ export class ProjectComponent implements OnInit {
           this.storageService.uploadProjectImg(project.url, this.selectedLogo).snapshotChanges().pipe(
             finalize(async () => {
               const url: string = await this.storageService.getProjectImgDownloadUrl(project.url, this.selectedLogo).toPromise();
-              this.projectForm.get('logoUrl').setValue(url);
+              const logo: Image = {
+                filename: this.selectedLogo.name,
+                url: url
+              };
+              this.projectForm.get('logo').setValue(logo);
               uploadedImages++;
               if (uploadedImages === totalImages) {
                 this.saveForm(project, dialogRef);
@@ -239,13 +254,18 @@ export class ProjectComponent implements OnInit {
         }
 
         if (this.selectedImages) {
-          _.each(this.selectedImages, (img) => {
+          this.projectForm.get('images').setValue([]);
+          _.each(this.selectedImages, (img: File) => {
             this.storageService.uploadProjectImg(project.url, img).snapshotChanges().pipe(
               finalize(async () => {
                 const url: string = await this.storageService.getProjectImgDownloadUrl(project.url, img).toPromise();
-                const images: string[] = this.projectForm.get('imageUrls').value;
-                images.push(url);
-                this.projectForm.get('imageUrls').setValue(images);
+                const images: Image[] = this.projectForm.get('images').value;
+                const image: Image = {
+                  filename: img.name,
+                  url: url
+                };
+                images.push(image);
+                this.projectForm.get('images').setValue(images);
                 uploadedImages++;
                 if (uploadedImages === totalImages) {
                   this.saveForm(project, dialogRef);
@@ -308,10 +328,10 @@ export class ProjectComponent implements OnInit {
           Validators.required
         )
       ]),
-      logoUrl: [
+      logo: [
         ''
       ],
-      imageUrls: [
+      images: [
         []
       ],
       conclusion: this.formBuilder.array([]),
@@ -378,24 +398,24 @@ export class ProjectComponent implements OnInit {
       title: {
         value: isNewProject ? '' : this.project.title,
         disabled: !this.isEditingMode
-        },
+      },
       category: {
         value: isNewProject ? '' : this.project.category,
         disabled: !this.isEditingMode
-        },
+      },
       year: {
         value: isNewProject ? '' : this.project.year,
         disabled: !this.isEditingMode
-        },
+      },
       brief: this.formBuilder.array([]),
-      logoUrl: {
-        value: isNewProject ? '' : this.project.logoUrl,
+      logo: {
+        value: isNewProject ? '' : this.project.logo,
         disabled: !this.isEditingMode
-        },
-      imageUrls: {
-        value: isNewProject ? [] : this.project.imageUrls,
+      },
+      images: {
+        value: isNewProject ? [] : this.project.images,
         disabled: !this.isEditingMode
-        },
+      },
       conclusion: this.formBuilder.array([])
     });
 
@@ -411,6 +431,7 @@ export class ProjectComponent implements OnInit {
       }
     } else {
       this.addBriefParagraph(0);
+      this.hasConclusion = false;
     }
   }
 
