@@ -152,7 +152,7 @@ export class ProjectComponent implements OnInit {
    */
   public deleteConclusionParagraph(index: number): void {
     this.conclusion.removeAt(index);
-    if (index == 0) {
+    if (!this.conclusion.length) {
       this.hasConclusion = false;
     }
   }
