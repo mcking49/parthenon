@@ -23,7 +23,6 @@ export class ProjectComponent implements OnInit {
   public projectForm: FormGroup;
   public selectedLogo: File;
   public selectedImages: FileList;
-  public newProject: boolean;
 
   private project: Project;
   private projectUrl: string;
@@ -38,8 +37,7 @@ export class ProjectComponent implements OnInit {
     private storageService: StorageService,
   ) {
     this.isEditingMode = false;
-    this.hasConclusion = false;
-    this.newProject = false;
+  this.hasConclusion = false;
   }
 
   ngOnInit() {
@@ -47,7 +45,6 @@ export class ProjectComponent implements OnInit {
     this.activatedRoute.params.subscribe((params) => {
       this.projectUrl = params.url;
       if (this.projectUrl === 'new') {
-        this.newProject = true;
         this.isEditingMode = true;
       } else {
         this.projectsService.projects$.subscribe((projects) => {
@@ -65,11 +62,11 @@ export class ProjectComponent implements OnInit {
               } else if (key === 'conclusion') {
                 if (value.length) {
                   _.each(value, (paragraph: string, index: number) => {
-                    if (!this.hasConclusion) {
+                    if (this.hasConclusion) {
+                      this.addConclusionParagraph(index, paragraph);
+                    } else {
                       this.addConclusionForm();
                       this.conclusion.controls[0].setValue(paragraph);
-                    } else {
-                      this.addConclusionParagraph(index, paragraph);
                     }
                   });
                 }
@@ -109,7 +106,7 @@ export class ProjectComponent implements OnInit {
    * @returns {boolean} - Indicates if the element should be disabled or not.
    */
   public get isDisabled(): boolean {
-    if (this.newProject) {
+    if (this.projectUrl === 'new') {
       return !this.isEditingMode || !this.projectForm.valid || this.projectForm.pristine || !this.selectedImages || !this.selectedLogo;
     } else {
       return !this.isEditingMode || !this.projectForm.valid || this.projectForm.pristine;
@@ -274,6 +271,8 @@ export class ProjectComponent implements OnInit {
       _.each(this.projectForm.controls, (value: any, key: string) => {
         this.projectForm.controls[key].enable();
       });
+    } else {
+      this.resetForm();
     }
   }
 
@@ -368,27 +367,51 @@ export class ProjectComponent implements OnInit {
    * Reset the form to it's initial states with default values.
    */
   private resetForm(): void {
+    const isNewProject = this.projectUrl === 'new' ? true : false;
     this.brief.controls = [];
     this.conclusion.controls = [];
     this.brief.reset();
     this.conclusion.reset();
-    this.addBriefParagraph(0);
     this.selectedImages = null;
     this.selectedLogo = null;
     this.projectForm.reset({
-      title: '',
-      category: '',
-      year: '',
-      brief: this.formBuilder.array([
-        this.formBuilder.control(
-          '',
-          Validators.required
-        )
-      ]),
-      logoUrl: '',
-      imageUrls: [],
+      title: {
+        value: isNewProject ? '' : this.project.title,
+        disabled: !this.isEditingMode
+        },
+      category: {
+        value: isNewProject ? '' : this.project.category,
+        disabled: !this.isEditingMode
+        },
+      year: {
+        value: isNewProject ? '' : this.project.year,
+        disabled: !this.isEditingMode
+        },
+      brief: this.formBuilder.array([]),
+      logoUrl: {
+        value: isNewProject ? '' : this.project.logoUrl,
+        disabled: !this.isEditingMode
+        },
+      imageUrls: {
+        value: isNewProject ? [] : this.project.imageUrls,
+        disabled: !this.isEditingMode
+        },
       conclusion: this.formBuilder.array([])
     });
+
+    if (!isNewProject) {
+      _.each(this.project.brief, (paragraph: string, index: number) => {
+        this.addBriefParagraph(index, paragraph);
+      });
+      if (this.project.conclusion && this.project.conclusion.length) {
+        this.hasConclusion = true;
+        _.each(this.project.conclusion, (paragraph: string, index: number) => {
+          this.addConclusionParagraph(index, paragraph);
+        });
+      }
+    } else {
+      this.addBriefParagraph(0);
+    }
   }
 
 }
