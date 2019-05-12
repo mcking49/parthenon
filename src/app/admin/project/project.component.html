@@ -113,6 +113,14 @@
             <mat-icon>remove_circle</mat-icon>
           </button>
         </div>
+        <div
+          class="image placeholder"
+          [class.disabled]="!isEditingMode"
+          (click)="selectImages.click()"
+          matTooltip="Add a project logo"
+          *ngIf="isEditingMode">
+          <mat-icon>add</mat-icon>
+        </div>
       </div>
 
       <div class="form-section-title">Brief</div>

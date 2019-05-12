@@ -31,6 +31,7 @@ export class ProjectComponent implements OnInit {
 
   public showLogoPlaceholder: boolean;
   private logoRequestedForDelete: Image;
+  private imagesRequestedForDelete: Image[];
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -45,6 +46,7 @@ export class ProjectComponent implements OnInit {
     this.hasConclusion = false;
     this.newProject = false;
     this.showLogoPlaceholder = false;
+    this.imagesRequestedForDelete = [];
   }
 
   ngOnInit() {
@@ -194,11 +196,15 @@ export class ProjectComponent implements OnInit {
   /**
    * Delete an image from the project.
    *
-   * @param image - The image to be deleted.
+   * @param {Image} image - The image to be deleted.
    */
   public deleteImage(image: Image): void {
-    // FIXME: add real functionality
-    console.log(image);
+    this.imagesRequestedForDelete.push(image);
+    this.project.images = _.remove(this.project.images, (data: Image) => {
+      return data !== image;
+    });
+    this.projectForm.get('images').setValue(this.project.images);
+    this.projectForm.markAsDirty();
   }
 
   /**
@@ -240,6 +246,46 @@ export class ProjectComponent implements OnInit {
    */
   public newImagesSelected(files: FileList) {
     this.selectedImages = files;
+    if (!this.newProject) {
+      if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
+        // TODO: delete projects that have been marked for delete.
+        console.log('delet projects');
+      } else {
+        const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
+          maxHeight: '150px',
+          height: '150px',
+          width: '150px'
+        });
+
+        const images: Image[] = this.project.images;
+        let uploadedImages = 0;
+        const totalImages = this.selectedImages.length;
+        // TODO: investigate using Promise.all here instead of uploadImages++ counter.
+        _.each(this.selectedImages, (img: File) => {
+          this.storageService.uploadProjectImg(this.project.url, img).snapshotChanges().pipe(
+            finalize(() => {
+              this.storageService.getProjectImgDownloadUrl(this.project.url, img).toPromise()
+                .then((url: string) => {
+                  const image: Image = {
+                    filename: img.name,
+                    url: url
+                  };
+                  images.push(image);
+                  this.projectForm.get('images').setValue(images);
+                  uploadedImages++;
+                  if (uploadedImages === totalImages) {
+                    this.project.images = images;
+                    this.updateImages(dialogRef);
+                  }
+                })
+                .catch((error) => {
+                  throw error;
+                });
+            })
+          ).subscribe();
+        });
+      }
+    }
   }
 
   /**
@@ -480,6 +526,21 @@ export class ProjectComponent implements OnInit {
         }
       })
     ).subscribe();
+  }
+
+  /**
+   * Update the images for the project.
+   *
+   * @param {MatDialogRef<LoadingSpinnerModalComponent, any>} dialogRef - The loading component.
+   */
+  private async updateImages(dialogRef: MatDialogRef<LoadingSpinnerModalComponent, any>) {
+    try {
+      await this.projectsService.addOrUpdateProject(this.project);
+    } catch (error) {
+      throw error;
+    } finally {
+      dialogRef.close();
+    }
   }
 
   /**
