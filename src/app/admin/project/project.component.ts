@@ -265,8 +265,8 @@ export class ProjectComponent implements OnInit {
       const images: Image[] = this.project.images;
       let uploadedImages = 0;
       const totalImages = this.selectedImages.length;
-      // TODO: investigate using Promise.all here instead of uploadImages++ counter.
       _.each(this.selectedImages, (img: File) => {
+        // TODO: convert to promises.
         this.storageService.uploadProjectImg(this.projectUrl, img).snapshotChanges().pipe(
           finalize(() => {
             this.storageService.getProjectImgDownloadUrl(this.project.url, img).toPromise()
