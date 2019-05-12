@@ -49,12 +49,17 @@
         <span class="selected-file-name" *ngIf="newProject">{{selectedLogo?.name}}</span>
       </div>
       <div class="images" *ngIf="!newProject">
-        <div
-          class="image"
+        <div class="image placeholder"
+          [class.disabled]="!isEditingMode"
+          (click)="selectLogo.click()"
+          matTooltip="Add a project logo"
+          *ngIf="showLogoPlaceholder">
+          <mat-icon>add</mat-icon>
+        </div>
+        <div class="image"
           [class.disabled]="!isEditingMode">
           <img [attr.src]="project?.logo?.url"/>
-          <button
-            type="button"
+          <button type="button"
             class="delete-img-button"
             color="warn"
             (click)="deleteLogo()"
@@ -63,14 +68,6 @@
             mat-icon-button>
             <mat-icon>remove_circle</mat-icon>
           </button>
-        </div>
-        <div
-          class="image placeholder"
-          [class.disabled]="!isEditingMode"
-          (click)="selectLogo.click()"
-          matTooltip="Add a project logo"
-          *ngIf="showLogoPlaceholder">
-          <mat-icon>add</mat-icon>
         </div>
       </div>
 
@@ -97,8 +94,14 @@
         <span class="selected-file-name" *ngIf="selectedImages">{{selectedImages?.length}} files selected.</span>
       </div>
       <div class="images" *ngIf="!newProject">
-        <div
-          class="image"
+        <div class="image placeholder"
+          [class.disabled]="!isEditingMode"
+          (click)="selectImages.click()"
+          matTooltip="Add new images"
+          *ngIf="isEditingMode">
+          <mat-icon>add</mat-icon>
+        </div>
+        <div class="image"
           *ngFor="let image of project?.images"
           [class.disabled]="!isEditingMode">
           <img [attr.src]="image.url"/>
@@ -112,14 +115,6 @@
             mat-icon-button>
             <mat-icon>remove_circle</mat-icon>
           </button>
-        </div>
-        <div
-          class="image placeholder"
-          [class.disabled]="!isEditingMode"
-          (click)="selectImages.click()"
-          matTooltip="Add a project logo"
-          *ngIf="isEditingMode">
-          <mat-icon>add</mat-icon>
         </div>
       </div>
 
