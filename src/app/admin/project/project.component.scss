@@ -97,6 +97,36 @@
             opacity: 0.5;
           }
 
+          &.placeholder {
+            min-width: 30%;
+            min-height: 100px;
+            margin: 0;
+            border: 3px dashed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: none;
+
+            &:active {
+              border-color: rgb(12, 150, 65);
+
+              > .mat-icon {
+                color: rgb(12, 150, 65);
+              }
+            }
+
+            &:hover:not(.disabled) {
+              cursor: pointer;
+              box-shadow: none;
+            }
+
+            > .mat-icon {
+              height: 40px;
+              width: 40px;
+              font-size: 40px;
+            }
+          }
+
           > img {
             max-width: 100%;
             max-height: 200px;

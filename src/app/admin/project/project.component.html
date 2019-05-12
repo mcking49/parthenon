@@ -52,7 +52,7 @@
         <div
           class="image"
           [class.disabled]="!isEditingMode">
-          <img [attr.src]="project?.logo.url"/>
+          <img [attr.src]="project?.logo?.url"/>
           <button
             type="button"
             class="delete-img-button"
@@ -63,6 +63,14 @@
             mat-icon-button>
             <mat-icon>remove_circle</mat-icon>
           </button>
+        </div>
+        <div
+          class="image placeholder"
+          [class.disabled]="!isEditingMode"
+          (click)="selectLogo.click()"
+          matTooltip="Add a project logo"
+          *ngIf="showLogoPlaceholder">
+          <mat-icon>add</mat-icon>
         </div>
       </div>
 

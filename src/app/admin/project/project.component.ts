@@ -29,6 +29,9 @@ export class ProjectComponent implements OnInit {
   public selectedLogo: File;
   public selectedImages: FileList;
 
+  public showLogoPlaceholder: boolean;
+  private logoRequestedForDelete: Image;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private dialog: MatDialog,
@@ -41,6 +44,7 @@ export class ProjectComponent implements OnInit {
     this.isEditingMode = false;
     this.hasConclusion = false;
     this.newProject = false;
+    this.showLogoPlaceholder = false;
   }
 
   ngOnInit() {
@@ -201,8 +205,10 @@ export class ProjectComponent implements OnInit {
    * Delete the project logo.
    */
   public deleteLogo(): void {
-    // FIXME: add real functionality
-    console.log('delete logo');
+    this.showLogoPlaceholder = true;
+    this.logoRequestedForDelete = this.project.logo;
+    this.project.logo = null;
+    this.projectForm.get('logo').setValue('');
   }
 
   /**
@@ -241,8 +247,11 @@ export class ProjectComponent implements OnInit {
    *
    * @param files - The list of files that have been selected.
    */
-  public newLogoSelected(files: FileList) {
+  public newLogoSelected(files: FileList): void {
     this.selectedLogo = files.item(0);
+    if (this.logoRequestedForDelete) {
+      this.updateLogo();
+    }
   }
 
   /**
@@ -383,6 +392,7 @@ export class ProjectComponent implements OnInit {
    */
   private async saveForm(project: any, dialogRef: MatDialogRef<LoadingSpinnerModalComponent, any>) {
     _.map(this.projectForm.controls, (formControl: FormControl, key: string) => {
+      // TODO: change to switch statement
       if (key === 'brief') {
         project[key] = _.map(this.brief.controls, 'value');
       } else if (key === 'conclusion') {
@@ -418,6 +428,58 @@ export class ProjectComponent implements OnInit {
     } finally {
       dialogRef.close();
     }
+  }
+
+  /**
+   * Update the logo for the project.
+   */
+  private updateLogo(): void {
+    const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
+      maxHeight: '150px',
+      height: '150px',
+      width: '150px'
+    });
+
+    // Delete the old logo from the database if the new logo filename is different to the old logo filename.
+    if (this.selectedLogo.name !== this.logoRequestedForDelete.filename) {
+      // Check filename of old logo doesn't match filename of a project image
+      let imageExists = false;
+      _.each(this.project.images, (image) => {
+        if (this.logoRequestedForDelete.filename === image.filename) {
+          imageExists = true;
+        }
+      });
+      if (!imageExists) {
+        // We don't need to wait for image to delete so let this action happen in the background.
+        this.storageService.deleteImage(this.project.url, this.logoRequestedForDelete.filename)
+          .catch((error) => {
+            throw error;
+          })
+          .finally(() => {
+            this.logoRequestedForDelete = null;
+          });
+      }
+    }
+
+    this.storageService.uploadProjectImg(this.project.url, this.selectedLogo).snapshotChanges().pipe(
+      finalize(async () => {
+        try {
+          const url: string = await this.storageService.getProjectImgDownloadUrl(this.project.url, this.selectedLogo).toPromise();
+          const logo: Image = {
+            filename: this.selectedLogo.name,
+            url: url
+          };
+          this.project.logo = logo;
+          await this.projectsService.addOrUpdateProject(this.project);
+          this.showLogoPlaceholder = false;
+        } catch (error) {
+          throw error;
+        } finally {
+          this.selectedLogo = null;
+          dialogRef.close();
+        }
+      })
+    ).subscribe();
   }
 
   /**
