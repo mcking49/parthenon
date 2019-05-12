@@ -28,7 +28,7 @@ import {
   MatSortModule,
   MatTableModule,
   MatToolbarModule,
-  MatTooltipModule,
+  MatTooltipModule
 } from '@angular/material';
 
 // Other

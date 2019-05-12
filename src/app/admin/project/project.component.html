@@ -42,10 +42,33 @@
           (click)="selectLogo.click()"
           [disabled]="isUploadDisabled"
           [class.disabled]="isUploadDisabled"
+          *ngIf="newProject"
           mat-raised-button>
           Upload Logo
         </button>
-        <span class="selected-file-name">{{selectedLogo?.name}}</span>
+        <span class="selected-file-name" *ngIf="newProject">{{selectedLogo?.name}}</span>
+      </div>
+      <div class="images" *ngIf="!newProject">
+        <div class="image placeholder"
+          [class.disabled]="!isEditingMode"
+          (click)="selectLogo.click()"
+          matTooltip="Add a project logo"
+          *ngIf="showLogoPlaceholder">
+          <mat-icon>add</mat-icon>
+        </div>
+        <div class="image"
+          [class.disabled]="!isEditingMode">
+          <img [attr.src]="project?.logo?.url"/>
+          <button type="button"
+            class="delete-img-button"
+            color="warn"
+            (click)="deleteLogo()"
+            matTooltip="Delete logo"
+            matTooltipClass="delete-btn-tooltip"
+            mat-icon-button>
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </div>
       </div>
 
       <div class="form-section-title">Project Images</div>
@@ -64,10 +87,35 @@
           (click)="selectImages.click()"
           [disabled]="isUploadDisabled"
           [class.disabled]="isUploadDisabled"
+          *ngIf="newProject"
           mat-raised-button>
           Upload Images
         </button>
         <span class="selected-file-name" *ngIf="selectedImages">{{selectedImages?.length}} files selected.</span>
+      </div>
+      <div class="images" *ngIf="!newProject">
+        <div class="image placeholder"
+          [class.disabled]="!isEditingMode"
+          (click)="selectImages.click()"
+          matTooltip="Add new images"
+          *ngIf="isEditingMode">
+          <mat-icon>add</mat-icon>
+        </div>
+        <div class="image"
+          *ngFor="let image of project?.images"
+          [class.disabled]="!isEditingMode">
+          <img [attr.src]="image.url"/>
+          <button
+            type="button"
+            class="delete-img-button"
+            color="warn"
+            (click)="deleteImage(image)"
+            matTooltip="Delete image"
+            matTooltipClass="delete-btn-tooltip"
+            mat-icon-button>
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </div>
       </div>
 
       <div class="form-section-title">Brief</div>

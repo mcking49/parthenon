@@ -19,9 +19,23 @@ export class StorageService {
   }
 
   /**
+   * Delete an image from the database.
+   *
+   * @param {string} url - The project url.
+   * @param {string} filename - The name of the file to be deleted.
+   *
+   * @returns {Promise<void>} - A promise that resolves when the image is deleted.
+   */
+  public deleteImage(url: string, filename: string): Promise<void> {
+    return this.getProjectImgRef(url, filename).delete().toPromise();
+  }
+
+  /**
    * Download the CV.
    *
    * @param {string} language - The language of the CV to download. Only accepts 'en' or 'de'.
+   *
+   * @returns {Promise<boolean>} - A promise that resolves after the action is completed.
    */
   public downloadCv(language: string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
@@ -39,6 +53,8 @@ export class StorageService {
 
   /**
    * Download the Thesis.
+   *
+   * @returns {Promise<boolean>} - A promise of the download action.
    */
   public downloadThesis(): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
@@ -57,10 +73,20 @@ export class StorageService {
   /**
    * Get the Image downloadUrl observable.
    *
+   * @param {string} projectUrl - The URL of the project.
+   * @param {File | string} - File or String that contains the file name.
+   *
    * @returns {Observable<string>} - The downloadURL Observable.
    */
-  public getProjectImgDownloadUrl(projectUrl: string, file: File): Observable<string> {
-    return this.storage.ref(`projects/${projectUrl}/${file.name}`).getDownloadURL();
+  public getProjectImgDownloadUrl(projectUrl: string, file: File | string): Observable<string> {
+    // TODO: don't need file, should only pass in filename here.
+    let name: string;
+    if (file instanceof File) {
+      name = file.name;
+    } else {
+      name = file;
+    }
+    return this.storage.ref(`projects/${projectUrl}/${name}`).getDownloadURL();
   }
 
   /**
@@ -107,6 +133,18 @@ export class StorageService {
    */
   private getCvDownloadUrl(language: string): Observable<string> {
     return this.storage.ref(`cv/Dsouza_Austin-CV19-${language}.pdf`).getDownloadURL();
+  }
+
+  /**
+   * Get the storage reference for a project image.
+   *
+   * @param url - The project url.
+   * @param filename - The name of the file to get.
+   *
+   * @returns {AngularFireStorageReference} - The storage reference for the image.
+   */
+  private getProjectImgRef(url: string, filename: string): AngularFireStorageReference {
+    return this.storage.ref(`projects/${url}/${filename}`);
   }
 
   /**
