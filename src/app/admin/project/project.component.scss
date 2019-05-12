@@ -67,10 +67,43 @@
       }
 
       > .images {
-        > img {
-          max-width: 33.33%;
+        margin-bottom: 24px;
+        display: flex;
+        flex-wrap: wrap;
+
+        > .image {
+          max-width: 30%;
           max-height: 200px;
-          padding: 10px;
+          margin: 12px;
+          transition: .2s;
+
+          &:hover:not(.disabled) {
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4);
+
+            > .delete-img-button {
+              opacity: 1;
+              visibility: visible;
+            }
+          }
+
+          &.disabled {
+            opacity: 0.5;
+          }
+
+          > img {
+            max-width: 100%;
+            max-height: 200px;
+          }
+
+          > .delete-img-button {
+            cursor: pointer;
+            opacity: 0;
+            outline: none;
+            visibility: hidden;
+            position: absolute;
+            transform: translateX(-40px);
+            transition: .2s;
+          }
         }
       }
     }

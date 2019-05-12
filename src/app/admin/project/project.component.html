@@ -48,7 +48,21 @@
         <span class="selected-file-name">{{selectedLogo ? selectedLogo?.name : project?.logo.filename}}</span>
       </div>
       <div class="images" *ngIf="projectUrl != 'new'">
-        <img [attr.src]="project?.logo.url"/>
+        <div
+          class="image"
+          [class.disabled]="!isEditingMode">
+          <img [attr.src]="project?.logo.url"/>
+          <button
+            type="button"
+            class="delete-img-button"
+            color="warn"
+            (click)="deleteLogo()"
+            matTooltip="Delete logo"
+            matTooltipClass="delete-btn-tooltip"
+            mat-icon-button>
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </div>
       </div>
 
       <div class="form-section-title">Project Images</div>
@@ -73,7 +87,22 @@
         <span class="selected-file-name" *ngIf="selectedImages">{{selectedImages?.length}} files selected.</span>
       </div>
       <div class="images" *ngIf="projectUrl != 'new'">
-        <img *ngFor="let image of project?.images" [attr.src]="image.url"/>
+        <div
+          class="image"
+          *ngFor="let image of project?.images"
+          [class.disabled]="!isEditingMode">
+          <img [attr.src]="image.url"/>
+          <button
+            type="button"
+            class="delete-img-button"
+            color="warn"
+            (click)="deleteImage(image)"
+            matTooltip="Delete image"
+            matTooltipClass="delete-btn-tooltip"
+            mat-icon-button>
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </div>
       </div>
 
       <div class="form-section-title">Brief</div>

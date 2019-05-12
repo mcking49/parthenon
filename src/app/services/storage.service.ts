@@ -27,7 +27,7 @@ export class StorageService {
    * @returns {Promise<void>} - A promise that resolves when the image is deleted.
    */
   public deleteImage(url: string, filename: string): Promise<void> {
-    return this.getprojectImgRef(url, filename).delete().toPromise();
+    return this.getProjectImgRef(url, filename).delete().toPromise();
   }
 
   /**
@@ -133,7 +133,7 @@ export class StorageService {
    *
    * @returns {AngularFireStorageReference} - The storage reference for the image.
    */
-  private getprojectImgRef(url: string, filename: string): AngularFireStorageReference {
+  private getProjectImgRef(url: string, filename: string): AngularFireStorageReference {
     return this.storage.ref(`projects/${url}/${filename}`);
   }
 

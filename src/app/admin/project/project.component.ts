@@ -22,12 +22,11 @@ export class ProjectComponent implements OnInit {
 
   public isEditingMode: boolean;
   public hasConclusion: boolean;
+  public project: Project;
   public projectForm: FormGroup;
+  public projectUrl: string;
   public selectedLogo: File;
   public selectedImages: FileList;
-
-  private project: Project;
-  private projectUrl: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -166,6 +165,24 @@ export class ProjectComponent implements OnInit {
     if (!this.conclusion.length) {
       this.hasConclusion = false;
     }
+  }
+
+  /**
+   * Delete an image from the project.
+   *
+   * @param image - The image to be deleted.
+   */
+  public deleteImage(image: Image): void {
+    // FIXME: add real functionality
+    console.log(image);
+  }
+
+  /**
+   * Delete the project logo.
+   */
+  public deleteLogo(): void {
+    // FIXME: add real functionality
+    console.log('delete logo');
   }
 
   /**
