@@ -22,6 +22,7 @@ export class ProjectComponent implements OnInit {
 
   public isEditingMode: boolean;
   public hasConclusion: boolean;
+  public newProject: boolean;
   public project: Project;
   public projectForm: FormGroup;
   public projectUrl: string;
@@ -39,6 +40,7 @@ export class ProjectComponent implements OnInit {
   ) {
     this.isEditingMode = false;
     this.hasConclusion = false;
+    this.newProject = false;
   }
 
   ngOnInit() {
@@ -46,34 +48,51 @@ export class ProjectComponent implements OnInit {
       this.projectUrl = params.url;
       if (this.projectUrl === 'new') {
         this.isEditingMode = true;
-        this.initialiseForm();
+        this.newProject = true;
+        this.createForm();
       } else {
-        this.initialiseForm();
+        this.createForm();
         this.projectsService.projects$.subscribe((projects: Projects) => {
           if (projects) {
-            this.project = projects[this.projectUrl];
-            _.each(this.project, (value: any, key: string) => {
+            const project: Project = projects[this.projectUrl];
+            _.each(project, (value: any, key: string) => {
+              const needToUpdate: boolean = !this.project || this.project[key] !== project[key];
               switch (key) {
                 case 'brief': {
-                  _.each(value, (paragraph: string, index: number) => {
-                    if (index === 0) {
-                      this.brief.controls[0].setValue(paragraph);
-                    } else {
-                      this.addBriefParagraph(index, paragraph);
+                  if (needToUpdate) {
+                    if (this.project) {
+                      this.brief.controls = [];
+                      this.brief.reset();
+                      this.addBriefParagraph(0);
                     }
-                  });
+                    _.each(value, (paragraph: string, index: number) => {
+                      if (index === 0) {
+                        this.brief.controls[0].setValue(paragraph);
+                      } else {
+                        this.addBriefParagraph(index, paragraph);
+                      }
+                    });
+                  }
                   break;
                 }
                 case 'conclusion': {
-                  if (value.length) {
-                    _.each(value, (paragraph: string, index: number) => {
-                      if (this.hasConclusion) {
-                        this.addConclusionParagraph(index, paragraph);
-                      } else {
-                        this.addConclusionForm();
-                        this.conclusion.controls[0].setValue(paragraph);
-                      }
-                    });
+                  if (needToUpdate) {
+                    if (this.project) {
+                      this.conclusion.controls = [];
+                      this.conclusion.reset();
+                    }
+                    if (value.length) {
+                      _.each(value, (paragraph: string, index: number) => {
+                        if (this.hasConclusion) {
+                          this.addConclusionParagraph(index, paragraph);
+                        } else {
+                          this.addConclusionForm();
+                          this.conclusion.controls[0].setValue(paragraph);
+                        }
+                      });
+                    } else {
+                      this.hasConclusion = false;
+                    }
                   }
                   break;
                 }
@@ -86,6 +105,7 @@ export class ProjectComponent implements OnInit {
                 }
               }
             });
+            this.project = project;
           }
         });
       }
@@ -116,7 +136,7 @@ export class ProjectComponent implements OnInit {
    * @returns {boolean} - Indicates if the element should be disabled or not.
    */
   public get isDisabled(): boolean {
-    if (this.projectUrl === 'new') {
+    if (this.newProject) {
       return !this.isEditingMode || !this.projectForm.valid || this.projectForm.pristine || !this.selectedImages || !this.selectedLogo;
     } else {
       return !this.isEditingMode || !this.projectForm.valid || this.projectForm.pristine;
@@ -313,7 +333,7 @@ export class ProjectComponent implements OnInit {
     }
   }
 
-  private initialiseForm(): void {
+  private createForm(): void {
     this.projectForm = this.formBuilder.group({
       title: [
         {
@@ -404,7 +424,6 @@ export class ProjectComponent implements OnInit {
    * Reset the form to it's initial states with default values.
    */
   private resetForm(): void {
-    const isNewProject = this.projectUrl === 'new' ? true : false;
     this.brief.controls = [];
     this.conclusion.controls = [];
     this.brief.reset();
@@ -413,30 +432,30 @@ export class ProjectComponent implements OnInit {
     this.selectedLogo = null;
     this.projectForm.reset({
       title: {
-        value: isNewProject ? '' : this.project.title,
+        value: this.newProject ? '' : this.project.title,
         disabled: !this.isEditingMode
       },
       category: {
-        value: isNewProject ? '' : this.project.category,
+        value: this.newProject ? '' : this.project.category,
         disabled: !this.isEditingMode
       },
       year: {
-        value: isNewProject ? '' : this.project.year,
+        value: this.newProject ? '' : this.project.year,
         disabled: !this.isEditingMode
       },
       brief: this.formBuilder.array([]),
       logo: {
-        value: isNewProject ? '' : this.project.logo,
+        value: this.newProject ? '' : this.project.logo,
         disabled: !this.isEditingMode
       },
       images: {
-        value: isNewProject ? [] : this.project.images,
+        value: this.newProject ? [] : this.project.images,
         disabled: !this.isEditingMode
       },
       conclusion: this.formBuilder.array([])
     });
 
-    if (!isNewProject) {
+    if (!this.newProject) {
       _.each(this.project.brief, (paragraph: string, index: number) => {
         this.addBriefParagraph(index, paragraph);
       });

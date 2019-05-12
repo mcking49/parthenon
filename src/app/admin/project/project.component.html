@@ -42,12 +42,13 @@
           (click)="selectLogo.click()"
           [disabled]="isUploadDisabled"
           [class.disabled]="isUploadDisabled"
+          *ngIf="newProject"
           mat-raised-button>
           Upload Logo
         </button>
-        <span class="selected-file-name">{{selectedLogo ? selectedLogo?.name : project?.logo.filename}}</span>
+        <span class="selected-file-name" *ngIf="newProject">{{selectedLogo?.name}}</span>
       </div>
-      <div class="images" *ngIf="projectUrl != 'new'">
+      <div class="images" *ngIf="!newProject">
         <div
           class="image"
           [class.disabled]="!isEditingMode">
@@ -81,12 +82,13 @@
           (click)="selectImages.click()"
           [disabled]="isUploadDisabled"
           [class.disabled]="isUploadDisabled"
+          *ngIf="newProject"
           mat-raised-button>
           Upload Images
         </button>
         <span class="selected-file-name" *ngIf="selectedImages">{{selectedImages?.length}} files selected.</span>
       </div>
-      <div class="images" *ngIf="projectUrl != 'new'">
+      <div class="images" *ngIf="!newProject">
         <div
           class="image"
           *ngFor="let image of project?.images"
