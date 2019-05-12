@@ -74,7 +74,6 @@
         > .image {
           max-width: 30%;
           max-height: 200px;
-          margin: 12px;
           transition: .2s;
 
           &:hover:not(.disabled) {
@@ -84,6 +83,14 @@
               opacity: 1;
               visibility: visible;
             }
+          }
+
+          &:nth-child(3n+2) {
+            margin: 0 37px;
+          }
+
+          &:nth-last-child(n+4) {
+            margin-bottom: 37px;
           }
 
           &.disabled {
