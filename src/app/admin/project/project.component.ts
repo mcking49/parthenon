@@ -244,47 +244,51 @@ export class ProjectComponent implements OnInit {
    *
    * @param files - The list of files that have been selected.
    */
-  public newImagesSelected(files: FileList) {
+  public async newImagesSelected(files: FileList) {
     this.selectedImages = files;
-    if (!this.newProject) {
-      if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
-        // TODO: delete projects that have been marked for delete.
-        console.log('delet projects');
-      } else {
-        const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
-          maxHeight: '150px',
-          height: '150px',
-          width: '150px'
-        });
 
-        const images: Image[] = this.project.images;
-        let uploadedImages = 0;
-        const totalImages = this.selectedImages.length;
-        // TODO: investigate using Promise.all here instead of uploadImages++ counter.
-        _.each(this.selectedImages, (img: File) => {
-          this.storageService.uploadProjectImg(this.project.url, img).snapshotChanges().pipe(
-            finalize(() => {
-              this.storageService.getProjectImgDownloadUrl(this.project.url, img).toPromise()
-                .then((url: string) => {
-                  const image: Image = {
-                    filename: img.name,
-                    url: url
-                  };
-                  images.push(image);
-                  this.projectForm.get('images').setValue(images);
-                  uploadedImages++;
-                  if (uploadedImages === totalImages) {
-                    this.project.images = images;
-                    this.updateImages(dialogRef);
-                  }
-                })
-                .catch((error) => {
-                  throw error;
-                });
-            })
-          ).subscribe();
+    if (!this.newProject) {
+      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
+        maxHeight: '150px',
+        height: '150px',
+        width: '150px'
+      });
+
+      if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
+        const imagesToDeletePromises = [];
+        _.each(this.imagesRequestedForDelete, (image: Image) => {
+          imagesToDeletePromises.push(this.storageService.deleteImage(this.projectUrl, image.filename));
         });
+        await Promise.all(imagesToDeletePromises);
       }
+
+      const images: Image[] = this.project.images;
+      let uploadedImages = 0;
+      const totalImages = this.selectedImages.length;
+      // TODO: investigate using Promise.all here instead of uploadImages++ counter.
+      _.each(this.selectedImages, (img: File) => {
+        this.storageService.uploadProjectImg(this.projectUrl, img).snapshotChanges().pipe(
+          finalize(() => {
+            this.storageService.getProjectImgDownloadUrl(this.project.url, img).toPromise()
+              .then((url: string) => {
+                const image: Image = {
+                  filename: img.name,
+                  url: url
+                };
+                images.push(image);
+                this.projectForm.get('images').setValue(images);
+                uploadedImages++;
+                if (uploadedImages === totalImages) {
+                  this.project.images = images;
+                  this.updateImages(dialogRef);
+                }
+              })
+              .catch((error) => {
+                throw error;
+              });
+          })
+        ).subscribe();
+      });
     }
   }
 
