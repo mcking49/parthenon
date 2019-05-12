@@ -73,10 +73,20 @@ export class StorageService {
   /**
    * Get the Image downloadUrl observable.
    *
+   * @param {string} projectUrl - The URL of the project.
+   * @param {File | string} - File or String that contains the file name.
+   *
    * @returns {Observable<string>} - The downloadURL Observable.
    */
-  public getProjectImgDownloadUrl(projectUrl: string, file: File): Observable<string> {
-    return this.storage.ref(`projects/${projectUrl}/${file.name}`).getDownloadURL();
+  public getProjectImgDownloadUrl(projectUrl: string, file: File | string): Observable<string> {
+    // TODO: don't need file, should only pass in filename here.
+    let name: string;
+    if (file instanceof File) {
+      name = file.name;
+    } else {
+      name = file;
+    }
+    return this.storage.ref(`projects/${projectUrl}/${name}`).getDownloadURL();
   }
 
   /**

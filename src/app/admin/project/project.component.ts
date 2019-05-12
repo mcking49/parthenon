@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
+import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 
 import { ProjectsService } from 'src/app/services/projects.service';
 import { StorageService } from './../../services/storage.service';
@@ -255,40 +256,47 @@ export class ProjectComponent implements OnInit {
       });
 
       if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
-        const imagesToDeletePromises = [];
+        const imagesToDeletePromises: Promise<void>[] = [];
         _.each(this.imagesRequestedForDelete, (image: Image) => {
           imagesToDeletePromises.push(this.storageService.deleteImage(this.projectUrl, image.filename));
         });
         await Promise.all(imagesToDeletePromises);
       }
 
-      const images: Image[] = this.project.images;
-      let uploadedImages = 0;
-      const totalImages = this.selectedImages.length;
+      const uploadPromises: Promise<UploadTaskSnapshot>[] = [];
       _.each(this.selectedImages, (img: File) => {
-        // TODO: convert to promises.
-        this.storageService.uploadProjectImg(this.projectUrl, img).snapshotChanges().pipe(
-          finalize(() => {
-            this.storageService.getProjectImgDownloadUrl(this.project.url, img).toPromise()
-              .then((url: string) => {
-                const image: Image = {
-                  filename: img.name,
-                  url: url
-                };
-                images.push(image);
-                this.projectForm.get('images').setValue(images);
-                uploadedImages++;
-                if (uploadedImages === totalImages) {
-                  this.project.images = images;
-                  this.updateImages(dialogRef);
-                }
-              })
-              .catch((error) => {
-                throw error;
-              });
-          })
-        ).subscribe();
+        uploadPromises.push(this.storageService.uploadProjectImg(this.projectUrl, img).snapshotChanges().toPromise());
       });
+
+      try {
+        const snapshots: UploadTaskSnapshot[] = await Promise.all(uploadPromises);
+        const downloadUrlPromises: Promise<string>[] = [];
+        const filenames: string[] = [];
+        _.each(snapshots, (snapshot: UploadTaskSnapshot) => {
+          downloadUrlPromises.push(this.storageService.getProjectImgDownloadUrl(this.projectUrl, snapshot.ref.name).toPromise());
+          filenames.push(snapshot.ref.name);
+        });
+
+        const urls: string[] = await Promise.all(downloadUrlPromises);
+        const images: Image[] = this.project.images;
+        _.each(urls, (url: string, index: number) => {
+          const image: Image = {
+            filename: filenames[index],
+            url: url
+          };
+          images.push(image);
+        });
+        this.project.images = images;
+        this.updateImages(dialogRef);
+      } catch (error) {
+        this.snackbar.open(
+          'An error occured. Please refresh and try again.',
+          'Close',
+          {duration: 5000}
+        );
+        dialogRef.close();
+        throw error;
+      }
     }
   }
 
