@@ -438,13 +438,19 @@ export class ProjectComponent implements OnInit {
    */
   private async saveForm(project: any, dialogRef: MatDialogRef<LoadingSpinnerModalComponent, any>) {
     _.map(this.projectForm.controls, (formControl: FormControl, key: string) => {
-      // TODO: change to switch statement
-      if (key === 'brief') {
-        project[key] = _.map(this.brief.controls, 'value');
-      } else if (key === 'conclusion') {
-        project[key] = _.map(this.conclusion.controls, 'value');
-      } else {
-        project[key] = formControl.value;
+      switch (key) {
+        case 'brief': {
+          project[key] = _.map(this.brief.controls, 'value');
+          break;
+        }
+        case 'conclusion': {
+          project[key] = _.map(this.conclusion.controls, 'value');
+          break;
+        }
+        default: {
+          project[key] = formControl.value;
+          break;
+        }
       }
     });
 
