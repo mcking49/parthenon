@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 export class ProjectComponent implements OnInit {
 
   public isHandset: Observable<boolean>;
-  public project: IProjectDeprecated;
+  public projectDeprecated: IProjectDeprecated;
 
   constructor(
     private projectsDeprecatedService: ProjectsDeprecatedService,
@@ -27,7 +27,7 @@ export class ProjectComponent implements OnInit {
 
   private initProjects(): void {
     const url = this.route.snapshot.paramMap.get('url');
-    this.project = this.projectsDeprecatedService.getProject(url);
+    this.projectDeprecated = this.projectsDeprecatedService.getProject(url);
   }
 
 }
