@@ -44,8 +44,8 @@
   </mat-card>
 
   <mat-action-list *ngIf="isHandset | async">
-    <button *ngFor="let project of projects" (click)="openProject(project.url)" mat-list-item>
-      <img [src]="project.logo" class="project-logo"/>
+    <button class="projects-btn-list" *ngFor="let project of projects" (click)="openProject(project.url)" mat-list-item>
+      <img [attr.src]="project?.logo?.url" class="project-logo"/>
       <p class="project-title" mat-line>{{project.title}}</p>
       <p class="project-year project-subtitle" mat-line>{{project.year}}</p>
       <p class="project-category project-subtitle" mat-line>{{project.category}}</p>
