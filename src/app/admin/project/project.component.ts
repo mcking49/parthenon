@@ -218,9 +218,10 @@ export class ProjectComponent implements OnInit {
 
       // Upload new images then save the project.
       try {
-        const uploadedImages = await this.uploadImages();
+        const uploadedImages = await this.uploadImages(this.selectedImages);
         const urls = await uploadedImages.downloadUrlPromise;
-        this.project.images = this.generateImages(urls, uploadedImages.filenames);
+        const images: Image[] = _.concat(this.project.images, this.generateImages(urls, uploadedImages.filenames));
+        this.project.images = images;
         this.updateImages(loading);
       } catch (error) {
         this.snackbar.open(
@@ -239,10 +240,47 @@ export class ProjectComponent implements OnInit {
    *
    * @param files - The list of files that have been selected.
    */
-  public newLogoSelected(files: FileList): void {
+  public async newLogoSelected(files: FileList) {
     this.selectedLogo = files.item(0);
     if (this.logoRequestedForDelete) {
-      this.updateLogo();
+      const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
+
+      // Delete the old logo from the database if the new logo filename is different to the old logo filename.
+      if (this.selectedLogo.name !== this.logoRequestedForDelete.filename) {
+        // Check filename of old logo doesn't match filename of a project image
+        let isSameFilename = false;
+        _.each(this.project.images, (image) => {
+          if (this.logoRequestedForDelete.filename === image.filename) {
+            isSameFilename = true;
+          }
+        });
+        if (!isSameFilename) {
+          // We don't need to wait for image to delete so let this action happen in the background.
+          this.storageService.deleteImage(this.project.url, this.logoRequestedForDelete.filename)
+            .catch((error) => {
+              throw error;
+            })
+            .finally(() => {
+              this.logoRequestedForDelete = null;
+            });
+        }
+      }
+
+      // Upload and save the new logo.
+      try {
+        const uploadedImages = await this.uploadImages([this.selectedLogo]);
+        const urls = await uploadedImages.downloadUrlPromise;
+        this.project.logo = this.generateImages(urls, uploadedImages.filenames)[0];
+        this.updateImages(loading);
+      } catch (error) {
+        this.snackbar.open(
+          'An error occured. Please refresh and try again.',
+          'Close',
+          {duration: 5000}
+        );
+        loading.close();
+        throw error;
+      }
     }
   }
 
@@ -255,7 +293,7 @@ export class ProjectComponent implements OnInit {
       && (this.selectedImages || this.projectForm.get('images').value.length)
       && this.projectForm.valid
     ) {
-      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
+      const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
 
       let totalImages = this.selectedImages ? this.selectedImages.length : 0;
       if (this.selectedLogo) {
@@ -281,7 +319,7 @@ export class ProjectComponent implements OnInit {
               this.projectForm.get('logo').setValue(logo);
               uploadedImages++;
               if (uploadedImages === totalImages) {
-                this.saveForm(project, dialogRef);
+                this.saveForm(project, loading);
               }
             })
           ).subscribe();
@@ -302,14 +340,14 @@ export class ProjectComponent implements OnInit {
                 this.projectForm.get('images').setValue(images);
                 uploadedImages++;
                 if (uploadedImages === totalImages) {
-                  this.saveForm(project, dialogRef);
+                  this.saveForm(project, loading);
                 }
               })
             ).subscribe();
           });
         }
       } else {
-        this.saveForm(project, dialogRef);
+        this.saveForm(project, loading);
       }
     } else {
       throw new Error('The form is invalid');
@@ -441,9 +479,9 @@ export class ProjectComponent implements OnInit {
    * Save the project to the database.
    *
    * @param project - A blank project object that contains a url.
-   * @param dialogRef - The loading dialog reference.
+   * @param loading - The loading dialog reference.
    */
-  private async saveForm(project: any, dialogRef: MatDialogRef<LoadingSpinnerModalComponent, any>) {
+  private async saveForm(project: any, loading: MatDialogRef<LoadingSpinnerModalComponent, any>) {
     _.map(this.projectForm.controls, (formControl: FormControl, key: string) => {
       switch (key) {
         case 'brief': {
@@ -485,7 +523,7 @@ export class ProjectComponent implements OnInit {
     } catch (error) {
       throw error;
     } finally {
-      dialogRef.close();
+      loading.close();
     }
   }
 
@@ -498,7 +536,7 @@ export class ProjectComponent implements OnInit {
    * @returns {Image[])} - An Image object array.
    */
   private generateImages(urls: string[], filenames: string[]): Image[] {
-    const images: Image[] = this.project.images;
+    const images: Image[] = [];
     _.each(urls, (url: string, index: number) => {
       const image: Image = {
         filename: filenames[index],
@@ -510,79 +548,36 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
-   * Update the logo for the project.
-   */
-  private updateLogo(): void {
-    const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
-
-    // Delete the old logo from the database if the new logo filename is different to the old logo filename.
-    if (this.selectedLogo.name !== this.logoRequestedForDelete.filename) {
-      // Check filename of old logo doesn't match filename of a project image
-      let imageExists = false;
-      _.each(this.project.images, (image) => {
-        if (this.logoRequestedForDelete.filename === image.filename) {
-          imageExists = true;
-        }
-      });
-      if (!imageExists) {
-        // We don't need to wait for image to delete so let this action happen in the background.
-        this.storageService.deleteImage(this.project.url, this.logoRequestedForDelete.filename)
-          .catch((error) => {
-            throw error;
-          })
-          .finally(() => {
-            this.logoRequestedForDelete = null;
-          });
-      }
-    }
-
-    this.storageService.uploadProjectImg(this.project.url, this.selectedLogo).snapshotChanges().pipe(
-      finalize(async () => {
-        try {
-          const url: string = await this.storageService.getProjectImgDownloadUrl(this.project.url, this.selectedLogo).toPromise();
-          const logo: Image = {
-            filename: this.selectedLogo.name,
-            url: url
-          };
-          this.project.logo = logo;
-          await this.projectsService.addOrUpdateProject(this.project);
-          this.showLogoPlaceholder = false;
-        } catch (error) {
-          throw error;
-        } finally {
-          this.selectedLogo = null;
-          dialogRef.close();
-        }
-      })
-    ).subscribe();
-  }
-
-  /**
    * Update the images for the project.
    *
-   * @param {MatDialogRef<LoadingSpinnerModalComponent, any>} dialogRef - The loading component.
+   * @param {MatDialogRef<LoadingSpinnerModalComponent, any>} loading - The loading component.
    */
-  private async updateImages(dialogRef: MatDialogRef<LoadingSpinnerModalComponent, any>) {
+  private async updateImages(loading: MatDialogRef<LoadingSpinnerModalComponent, any>) {
     try {
       await this.projectsService.addOrUpdateProject(this.project);
+      this.showLogoPlaceholder = false;
     } catch (error) {
       throw error;
     } finally {
-      dialogRef.close();
+      loading.close();
+      this.selectedImages = null;
+      this.selectedLogo = null;
     }
   }
 
   /**
    * Upload images to the database.
    *
+   * @param {FileList | File[]} - A list of Files (images) to upload.
+   *
    * @returns {Promise<any>} - Resolves when images have been uploaded and returns a promise
    * that will resolve the download urls for those images, and returns the filenames of those images, in order.
    */
-  private uploadImages(): Promise<any> {
+  private uploadImages(imagesToUpload: FileList | File[]): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
       const uploadPromises: Promise<UploadTaskSnapshot>[] = [];
-      _.each(this.selectedImages, (img: File) => {
-        uploadPromises.push(this.storageService.uploadProjectImg(this.projectUrl, img).snapshotChanges().toPromise());
+      _.each(imagesToUpload, (image: File) => {
+        uploadPromises.push(this.storageService.uploadProjectImg(this.projectUrl, image).snapshotChanges().toPromise());
       });
 
       try {
