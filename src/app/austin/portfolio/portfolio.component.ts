@@ -16,20 +16,20 @@ export class PortfolioComponent implements OnInit {
 
   public showLoading: boolean;
   public isHandset: Observable<boolean>;
-  public projects: IProjectDeprecated[];
+  public projectsDeprecated: IProjectDeprecated[];
   public readonly thesisLogoPath = '../../../assets/img/projects/2019-masters-thesis/main-logo.png';
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private dialog: MatDialog,
-    private projectService: ProjectsDeprecatedService,
+    private projectsDeprecatedService: ProjectsDeprecatedService,
     private responsiveService: ResponsiveService,
     private router: Router,
     private storage: StorageService
   ) { }
 
   ngOnInit() {
-    this.projects = [];
+    this.projectsDeprecated = [];
     this.initProjects();
     this.showLoading = false;
     this.isHandset = this.responsiveService.isHandset;
@@ -59,7 +59,7 @@ export class PortfolioComponent implements OnInit {
   }
 
   private initProjects() {
-    this.projects = this.projectService.projects;
+    this.projectsDeprecated = this.projectsDeprecatedService.projects;
   }
 
 }
