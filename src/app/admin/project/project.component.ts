@@ -51,72 +51,16 @@ export class ProjectComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe((params) => {
-      this.projectUrl = params.url;
-      if (this.projectUrl === 'new') {
-        this.isEditingMode = true;
-        this.newProject = true;
-        this.createForm();
-      } else {
-        this.createForm();
-        this.projectsService.projects$.subscribe((projects: Projects) => {
-          if (projects) {
-            const project: Project = projects[this.projectUrl];
-            _.each(project, (value: any, key: string) => {
-              const needToUpdate: boolean = !this.project || this.project[key] !== project[key];
-              switch (key) {
-                case 'brief': {
-                  if (needToUpdate) {
-                    if (this.project) {
-                      this.brief.controls = [];
-                      this.brief.reset();
-                      this.addBriefParagraph(0);
-                    }
-                    _.each(value, (paragraph: string, index: number) => {
-                      if (index === 0) {
-                        this.brief.controls[0].setValue(paragraph);
-                      } else {
-                        this.addBriefParagraph(index, paragraph);
-                      }
-                    });
-                  }
-                  break;
-                }
-                case 'conclusion': {
-                  if (needToUpdate) {
-                    if (this.project) {
-                      this.conclusion.controls = [];
-                      this.conclusion.reset();
-                    }
-                    if (value.length) {
-                      _.each(value, (paragraph: string, index: number) => {
-                        if (this.hasConclusion) {
-                          this.addConclusionParagraph(index, paragraph);
-                        } else {
-                          this.addConclusionForm();
-                          this.conclusion.controls[0].setValue(paragraph);
-                        }
-                      });
-                    } else {
-                      this.hasConclusion = false;
-                    }
-                  }
-                  break;
-                }
-                case 'url': {
-                  break;
-                }
-                default: {
-                  this.projectForm.controls[key].setValue(value);
-                  break;
-                }
-              }
-            });
-            this.project = project;
-          }
-        });
-      }
-    }).unsubscribe();
+    this.projectUrl = this.activatedRoute.snapshot.paramMap.get('url');
+    if (this.projectUrl === 'new') {
+      this.isEditingMode = true;
+      this.newProject = true;
+      this.createForm();
+    } else {
+      // When editing an already existing project.
+      this.createForm();
+      this.getProject();
+    }
   }
 
   /**
@@ -439,6 +383,68 @@ export class ProjectComponent implements OnInit {
         []
       ],
       conclusion: this.formBuilder.array([]),
+    });
+  }
+
+  /**
+   * Get the project to edit.
+   */
+  private getProject(): void {
+    this.projectsService.projects$.subscribe((projects: Projects) => {
+      if (projects) {
+        const project: Project = projects[this.projectUrl];
+        _.each(project, (value: any, key: string) => {
+          const needToUpdate: boolean = !this.project || this.project[key] !== project[key];
+          switch (key) {
+            case 'brief': {
+              if (needToUpdate) {
+                if (this.project) {
+                  this.brief.controls = [];
+                  this.brief.reset();
+                  this.addBriefParagraph(0);
+                }
+                _.each(value, (paragraph: string, index: number) => {
+                  if (index === 0) {
+                    this.brief.controls[0].setValue(paragraph);
+                  } else {
+                    this.addBriefParagraph(index, paragraph);
+                  }
+                });
+              }
+              break;
+            }
+            case 'conclusion': {
+              if (needToUpdate) {
+                if (this.project) {
+                  this.conclusion.controls = [];
+                  this.conclusion.reset();
+                }
+                if (value.length) {
+                  _.each(value, (paragraph: string, index: number) => {
+                    if (this.hasConclusion) {
+                      this.addConclusionParagraph(index, paragraph);
+                    } else {
+                      this.addConclusionForm();
+                      this.conclusion.controls[0].setValue(paragraph);
+                    }
+                  });
+                } else {
+                  this.hasConclusion = false;
+                }
+              }
+              break;
+            }
+            case 'url': {
+              break;
+            }
+            default: {
+              this.projectForm.controls[key].setValue(value);
+              break;
+            }
+          }
+        });
+        this.project = project;
+      }
     });
   }
 
