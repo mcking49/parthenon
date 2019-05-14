@@ -2,8 +2,8 @@ import { ResponsiveService } from './../../services/responsive.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Project } from 'src/app/interfaces/project';
 import { ProjectsService } from 'src/app/services/projects.service';
+import { Project } from 'src/app/interfaces/project';
 import { Projects } from 'src/app/interfaces/projects';
 
 @Component({
@@ -41,6 +41,10 @@ export class ProjectComponent implements OnInit {
     }
   }
 
+  /**
+   * Initialise the project component and get the Project data
+   * from the server.
+   */
   private initProjects(): void {
     const url = this.route.snapshot.paramMap.get('url');
     this.projectsService.projects$.subscribe((projects: Projects) => {
