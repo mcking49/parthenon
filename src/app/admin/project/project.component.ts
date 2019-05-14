@@ -64,15 +64,6 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
-   * Get the Conclusion section from the Project form.
-   *
-   * @returns {FormArray} - the Conclusion section from the Project form.
-   */
-  public get conclusion(): FormArray {
-    return this.projectForm.get('conclusion') as FormArray;
-  }
-
-  /**
    * Get the Brief section from the Project form.
    *
    * @returns {FormArray} - the Brief section from the Project form.
@@ -82,33 +73,43 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
-   * Check if element should be disabled.
+   * Check if a brief paragraph can be deleted.
    *
-   * @returns {boolean} - Indicates if the element should be disabled or not.
+   * A project must have a bried which means there must be at least 1
+   * brief paragraph.
+   *
+   * @returns {boolean} - True if the brief paragraph can be deleted.
    */
-  public get isDisabled(): boolean {
+  public get canDeleteBriefParagraph(): boolean {
+    return this.brief.length > 1;
+  }
+
+  /**
+   * Check if the form is in a valid state and can be saved.
+   *
+   * @returns {boolean} - True if the form can be saved.
+   */
+  public get canSave(): boolean {
     if (this.newProject) {
-      return !this.isEditingMode || !this.projectForm.valid || this.projectForm.pristine || !this.selectedImages || !this.selectedLogo;
+      return this.isEditingMode && this.projectForm.valid && this.projectForm.dirty && !!this.selectedImages && !!this.selectedLogo;
     } else {
-      return !this.isEditingMode || !this.projectForm.valid || this.projectForm.pristine;
+      return this.isEditingMode && this.projectForm.valid && this.projectForm.dirty;
     }
   }
 
   /**
-   * Check if the upload button is disabled.
+   * Get the Conclusion section from the Project form.
    *
-   * @returns {boolean} - Indicates if the upload button is disabled or not.
+   * @returns {FormArray} - the Conclusion section from the Project form.
    */
-  public get isUploadDisabled(): boolean {
-    return !this.isEditingMode;
+  public get conclusion(): FormArray {
+    return this.projectForm.get('conclusion') as FormArray;
   }
 
   /**
-   * Check if the form has a conclusion section.
-   *
-   * @returns {boolean} - true if there is a conclusion.
+   * Add a conclusion section to the form.
    */
-  public addConclusionForm() {
+  public addConclusionForm(): void {
     this.addConclusionParagraph(0);
     this.hasConclusion = true;
   }
@@ -116,6 +117,7 @@ export class ProjectComponent implements OnInit {
   /**
    * Add a new paragraph for the conclusion.
    *
+   * @param {number} number - The index position of where the paragraph should be added in the array.
    * @param {string} paragraph - The new paragraph to be added to the conclusion.
    */
   public addConclusionParagraph(index: number, paragraph: string = ''): void {
@@ -165,6 +167,7 @@ export class ProjectComponent implements OnInit {
   /**
    * Add a new paragraph for the brief.
    *
+   * @param {number} number - The index position of where the paragraph should be added in the array.
    * @param {string} paragraph - The new paragraph to be added to the brief.
    */
   public addBriefParagraph(index: number, paragraph: string = ''): void {
@@ -344,6 +347,9 @@ export class ProjectComponent implements OnInit {
     }
   }
 
+  /**
+   * Create the project form with default values.
+   */
   private createForm(): void {
     this.projectForm = this.formBuilder.group({
       title: [
@@ -494,7 +500,7 @@ export class ProjectComponent implements OnInit {
         }
       );
     } catch (error) {
-      console.error(error);
+      throw error;
     } finally {
       dialogRef.close();
     }

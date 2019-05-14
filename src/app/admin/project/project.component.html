@@ -40,8 +40,8 @@
           type="button"
           class="select-file-button"
           (click)="selectLogo.click()"
-          [disabled]="isUploadDisabled"
-          [class.disabled]="isUploadDisabled"
+          [disabled]="!this.isEditingMode"
+          [class.disabled]="!this.isEditingMode"
           *ngIf="newProject"
           mat-raised-button>
           Upload Logo
@@ -85,8 +85,8 @@
           type="button"
           class="select-file-button"
           (click)="selectImages.click()"
-          [disabled]="isUploadDisabled"
-          [class.disabled]="isUploadDisabled"
+          [disabled]="!this.isEditingMode"
+          [class.disabled]="!this.isEditingMode"
           *ngIf="newProject"
           mat-raised-button>
           Upload Images
@@ -144,7 +144,7 @@
             type="button"
             class="field-control-btn"
             (click)="deleteBriefParagraph(i)"
-            *ngIf="brief.length > 1"
+            *ngIf="canDeleteBriefParagraph"
             color="warn"
             [disabled]="!isEditingMode"
             [class.disabled]="!isEditingMode"
@@ -205,8 +205,8 @@
       <button
         type="submit"
         class="submit-btn"
-        [disabled]="isDisabled"
-        [class.disabled]="isDisabled"
+        [disabled]="!canSave"
+        [class.disabled]="!canSave"
         mat-raised-button>
         Save Changes
       </button>
