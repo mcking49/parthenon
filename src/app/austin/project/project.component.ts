@@ -1,8 +1,10 @@
 import { ResponsiveService } from './../../services/responsive.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { ProjectsDeprecatedService, IProjectDeprecated } from '../../services/projects-deprecated.service';
 import { Observable } from 'rxjs';
+import { Project } from 'src/app/interfaces/project';
+import { ProjectsService } from 'src/app/services/projects.service';
+import { Projects } from 'src/app/interfaces/projects';
 
 @Component({
   selector: 'app-project',
@@ -12,10 +14,10 @@ import { Observable } from 'rxjs';
 export class ProjectComponent implements OnInit {
 
   public isHandset: Observable<boolean>;
-  public projectDeprecated: IProjectDeprecated;
+  public project: Project;
 
   constructor(
-    private projectsDeprecatedService: ProjectsDeprecatedService,
+    private projectsService: ProjectsService,
     private responsiveService: ResponsiveService,
     private route: ActivatedRoute
   ) { }
@@ -27,7 +29,11 @@ export class ProjectComponent implements OnInit {
 
   private initProjects(): void {
     const url = this.route.snapshot.paramMap.get('url');
-    this.projectDeprecated = this.projectsDeprecatedService.getProject(url);
+    this.projectsService.projects$.subscribe((projects: Projects) => {
+      if (projects) {
+        this.project = projects[url];
+      }
+    });
   }
 
 }

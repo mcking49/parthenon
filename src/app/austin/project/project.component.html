@@ -1,30 +1,30 @@
 <div id="project" class="responsive-width">
   <div class="project-header">
-    <h1 class="project-title">{{projectDeprecated.title}}</h1>
-    <h3>{{projectDeprecated.category}}</h3>
-    <h3>{{projectDeprecated.year}}</h3>
+    <h1 class="project-title">{{project?.title}}</h1>
+    <h3>{{project?.category}}</h3>
+    <h3>{{project?.year}}</h3>
   </div>
 
-  <ngb-carousel *ngIf="projectDeprecated.images" interval="6000" class="slideshow slide-size">
-    <ng-template *ngFor="let image of projectDeprecated.images" ngbSlide>
+  <ngb-carousel *ngIf="project?.images" interval="6000" class="slideshow slide-size">
+    <ng-template *ngFor="let image of project?.images" ngbSlide>
       <i class="material-icons pause-on-hover-icon">pause</i>
-      <img [src]="image" class="slide-image slide-size"/>
+      <img [attr.src]="image.url" class="slide-image slide-size"/>
     </ng-template>
   </ngb-carousel>
 
-  <div class="section-container">
+  <div class="section-container" *ngIf="project">
     <h2 class="section-title">Brief</h2>
     <div>
-      <p *ngFor="let paragraph of projectDeprecated.brief" class="paragraph">
+      <p *ngFor="let paragraph of project?.brief" class="paragraph">
         {{paragraph}}
       </p>
     </div>
   </div>
 
-  <div class="section-container" *ngIf="!!projectDeprecated.conclusion">
+  <div class="section-container" *ngIf="!!project?.conclusion">
     <h2 class="section-title">Conclusion</h2>
     <div>
-      <p *ngFor="let paragraph of projectDeprecated.conclusion" class="paragraph">
+      <p *ngFor="let paragraph of project?.conclusion" class="paragraph">
         {{paragraph}}
       </p>
     </div>
