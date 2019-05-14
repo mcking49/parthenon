@@ -196,14 +196,18 @@ export class ProjectComponent implements OnInit {
   /**
    * Store the new selected images.
    *
+   * If you are editing an existing project, the newly selected images will automatically start saving
+   * and the project will be saved as well.
+   *
    * @param files - The list of files that have been selected.
    */
   public async newImagesSelected(files: FileList) {
     this.selectedImages = files;
 
     if (!this.newProject) {
-      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
+      const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
 
+      // Delete any images that have been requested for delete.
       if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
         const imagesToDeletePromises: Promise<void>[] = [];
         _.each(this.imagesRequestedForDelete, (image: Image) => {
@@ -212,38 +216,19 @@ export class ProjectComponent implements OnInit {
         await Promise.all(imagesToDeletePromises);
       }
 
-      const uploadPromises: Promise<UploadTaskSnapshot>[] = [];
-      _.each(this.selectedImages, (img: File) => {
-        uploadPromises.push(this.storageService.uploadProjectImg(this.projectUrl, img).snapshotChanges().toPromise());
-      });
-
+      // Upload new images then save the project.
       try {
-        const snapshots: UploadTaskSnapshot[] = await Promise.all(uploadPromises);
-        const downloadUrlPromises: Promise<string>[] = [];
-        const filenames: string[] = [];
-        _.each(snapshots, (snapshot: UploadTaskSnapshot) => {
-          downloadUrlPromises.push(this.storageService.getProjectImgDownloadUrl(this.projectUrl, snapshot.ref.name).toPromise());
-          filenames.push(snapshot.ref.name);
-        });
-
-        const urls: string[] = await Promise.all(downloadUrlPromises);
-        const images: Image[] = this.project.images;
-        _.each(urls, (url: string, index: number) => {
-          const image: Image = {
-            filename: filenames[index],
-            url: url
-          };
-          images.push(image);
-        });
-        this.project.images = images;
-        this.updateImages(dialogRef);
+        const uploadedImages = await this.uploadImages();
+        const urls = await uploadedImages.downloadUrlPromise;
+        this.project.images = this.generateImages(urls, uploadedImages.filenames);
+        this.updateImages(loading);
       } catch (error) {
         this.snackbar.open(
           'An error occured. Please refresh and try again.',
           'Close',
           {duration: 5000}
         );
-        dialogRef.close();
+        loading.close();
         throw error;
       }
     }
@@ -505,6 +490,26 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
+   * Generate a list of Images.
+   *
+   * @param urls - A list of image download URL's.
+   * @param filenames - A list of filenames for each image with the same index.
+   *
+   * @returns {Image[])} - An Image object array.
+   */
+  private generateImages(urls: string[], filenames: string[]): Image[] {
+    const images: Image[] = this.project.images;
+    _.each(urls, (url: string, index: number) => {
+      const image: Image = {
+        filename: filenames[index],
+        url: url
+      };
+      images.push(image);
+    });
+    return images;
+  }
+
+  /**
    * Update the logo for the project.
    */
   private updateLogo(): void {
@@ -565,6 +570,40 @@ export class ProjectComponent implements OnInit {
     } finally {
       dialogRef.close();
     }
+  }
+
+  /**
+   * Upload images to the database.
+   *
+   * @returns {Promise<any>} - Resolves when images have been uploaded and returns a promise
+   * that will resolve the download urls for those images, and returns the filenames of those images, in order.
+   */
+  private uploadImages(): Promise<any> {
+    return new Promise<any>(async (resolve, reject) => {
+      const uploadPromises: Promise<UploadTaskSnapshot>[] = [];
+      _.each(this.selectedImages, (img: File) => {
+        uploadPromises.push(this.storageService.uploadProjectImg(this.projectUrl, img).snapshotChanges().toPromise());
+      });
+
+      try {
+        const snapshots: UploadTaskSnapshot[] = await Promise.all(uploadPromises);
+        const downloadUrlPromises: Promise<string>[] = [];
+        const filenames: string[] = [];
+        _.each(snapshots, (snapshot: UploadTaskSnapshot) => {
+          downloadUrlPromises.push(this.storageService.getProjectImgDownloadUrl(this.projectUrl, snapshot.ref.name).toPromise());
+          filenames.push(snapshot.ref.name);
+        });
+
+        const images: any = {
+          downloadUrlPromise: Promise.all(downloadUrlPromises),
+          filenames
+        };
+
+        resolve(images);
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   /**
