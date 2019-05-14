@@ -29,9 +29,7 @@ export class PortfolioComponent implements OnInit {
     private responsiveService: ResponsiveService,
     private router: Router,
     private storage: StorageService
-  ) {
-    this.projects = [];
-  }
+  ) { }
 
   ngOnInit() {
     this.initProjects();
