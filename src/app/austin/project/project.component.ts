@@ -27,6 +27,20 @@ export class ProjectComponent implements OnInit {
     this.isHandset = this.responsiveService.isHandset;
   }
 
+  /**
+   * Check if the project has a conclusion.
+   *
+   * @returns {boolean} - True if the project has been initialised and has at least
+   * 1 conclusion paragraph.
+   */
+  public get hasConclusion(): boolean {
+    if (this.project) {
+      return this.project.conclusion && !!this.project.conclusion.length;
+    } else {
+      return false;
+    }
+  }
+
   private initProjects(): void {
     const url = this.route.snapshot.paramMap.get('url');
     this.projectsService.projects$.subscribe((projects: Projects) => {

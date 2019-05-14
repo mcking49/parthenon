@@ -21,7 +21,7 @@
     </div>
   </div>
 
-  <div class="section-container" *ngIf="!!project?.conclusion">
+  <div class="section-container" *ngIf="hasConclusion">
     <h2 class="section-title">Conclusion</h2>
     <div>
       <p *ngFor="let paragraph of project?.conclusion" class="paragraph">
