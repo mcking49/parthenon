@@ -39,17 +39,28 @@ export class PortfolioComponent implements OnInit {
     this.isHandset = this.responsiveService.isHandset;
   }
 
+  /**
+   * Open the selected project page.
+   *
+   * @param url - The URL of the project to open.
+   */
   public openProject(url: string): void {
     this.router.navigate([`../project/${url}`], {relativeTo: this.activatedRoute});
   }
 
-  public openThesis() {
+  /**
+   * Open the thesis page.
+   */
+  public openThesis(): void {
     this.router.navigate(
       ['../master-thesis/2019-the-togetherness-of-strangers'],
       {relativeTo: this.activatedRoute}
     );
   }
 
+  /**
+   * Download the Thesis from the database.
+   */
   public async downloadThesis() {
     this.showLoading = true;
     const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
@@ -57,12 +68,21 @@ export class PortfolioComponent implements OnInit {
       height: '150px',
       width: '150px',
     });
-    await this.storage.downloadThesis();
-    dialogRef.close();
-    this.showLoading = false;
+
+    try {
+      await this.storage.downloadThesis();
+    } catch (error) {
+      throw error;
+    } finally {
+      dialogRef.close();
+      this.showLoading = false;
+    }
   }
 
-  private initProjects() {
+  /**
+   * Initialise the portfolio page.
+   */
+  private initProjects(): void {
     this.projectsService.projects$.subscribe((projects: Projects) => {
       if (projects) {
         this.projects = _.values(projects);
