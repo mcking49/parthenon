@@ -83,7 +83,7 @@ export class PortfolioComponent implements OnInit {
   private initProjects(): void {
     this.projectsService.projects$.subscribe((projects: Projects) => {
       if (projects) {
-        this.projects = _.values(projects);
+        this.projects = _.orderBy(_.values(projects), ['year', 'title'], ['desc', 'asc']);
       }
     });
   }
