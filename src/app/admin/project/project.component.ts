@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar, MatDialogConfig } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
@@ -34,6 +34,8 @@ export class ProjectComponent implements OnInit {
   private logoRequestedForDelete: Image;
   private imagesRequestedForDelete: Image[];
 
+  private loadingConfig: MatDialogConfig<any>;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private dialog: MatDialog,
@@ -48,6 +50,10 @@ export class ProjectComponent implements OnInit {
     this.newProject = false;
     this.showLogoPlaceholder = false;
     this.imagesRequestedForDelete = [];
+    this.loadingConfig = {
+      height: '150px',
+      width: '150px'
+    };
   }
 
   ngOnInit() {
@@ -196,11 +202,7 @@ export class ProjectComponent implements OnInit {
     this.selectedImages = files;
 
     if (!this.newProject) {
-      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
-        maxHeight: '150px',
-        height: '150px',
-        width: '150px'
-      });
+      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
 
       if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
         const imagesToDeletePromises: Promise<void>[] = [];
@@ -268,11 +270,7 @@ export class ProjectComponent implements OnInit {
       && (this.selectedImages || this.projectForm.get('images').value.length)
       && this.projectForm.valid
     ) {
-      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
-        maxHeight: '150px',
-        height: '150px',
-        width: '150px'
-      });
+      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
 
       let totalImages = this.selectedImages ? this.selectedImages.length : 0;
       if (this.selectedLogo) {
@@ -510,11 +508,7 @@ export class ProjectComponent implements OnInit {
    * Update the logo for the project.
    */
   private updateLogo(): void {
-    const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
-      maxHeight: '150px',
-      height: '150px',
-      width: '150px'
-    });
+    const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
 
     // Delete the old logo from the database if the new logo filename is different to the old logo filename.
     if (this.selectedLogo.name !== this.logoRequestedForDelete.filename) {
