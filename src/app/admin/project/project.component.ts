@@ -24,7 +24,7 @@ export class ProjectComponent implements OnInit {
   public isEditingMode: boolean;
   public hasConclusion: boolean;
   public newProject: boolean;
-  public project: Project;
+  public project: Project; // TODO: check if this method can be used for new projects as well.
   public projectForm: FormGroup;
   public projectUrl: string;
   public selectedLogo: File;
@@ -222,15 +222,17 @@ export class ProjectComponent implements OnInit {
         const urls = await uploadedImages.downloadUrlPromise;
         const images: Image[] = _.concat(this.project.images, this.generateImages(urls, uploadedImages.filenames));
         this.project.images = images;
-        this.updateImages(loading);
+        await this.projectsService.addOrUpdateProject(this.project);
+        this.selectedImages = null;
       } catch (error) {
         this.snackbar.open(
           'An error occured. Please refresh and try again.',
           'Close',
           {duration: 5000}
         );
-        loading.close();
         throw error;
+      } finally {
+        loading.close();
       }
     }
   }
@@ -271,15 +273,18 @@ export class ProjectComponent implements OnInit {
         const uploadedImages = await this.uploadImages([this.selectedLogo]);
         const urls = await uploadedImages.downloadUrlPromise;
         this.project.logo = this.generateImages(urls, uploadedImages.filenames)[0];
-        this.updateImages(loading);
+        await this.projectsService.addOrUpdateProject(this.project);
+        this.selectedLogo = null;
+        this.showLogoPlaceholder = false;
       } catch (error) {
         this.snackbar.open(
           'An error occured. Please refresh and try again.',
           'Close',
           {duration: 5000}
         );
-        loading.close();
         throw error;
+      } finally {
+        loading.close();
       }
     }
   }
@@ -287,7 +292,7 @@ export class ProjectComponent implements OnInit {
   /**
    * Save the project to the database.
    */
-  public submitForm(): void {
+  public async submitForm() {
     if (
       (this.selectedLogo || this.projectForm.get('logo').value)
       && (this.selectedImages || this.projectForm.get('images').value.length)
@@ -545,24 +550,6 @@ export class ProjectComponent implements OnInit {
       images.push(image);
     });
     return images;
-  }
-
-  /**
-   * Update the images for the project.
-   *
-   * @param {MatDialogRef<LoadingSpinnerModalComponent, any>} loading - The loading component.
-   */
-  private async updateImages(loading: MatDialogRef<LoadingSpinnerModalComponent, any>) {
-    try {
-      await this.projectsService.addOrUpdateProject(this.project);
-      this.showLogoPlaceholder = false;
-    } catch (error) {
-      throw error;
-    } finally {
-      loading.close();
-      this.selectedImages = null;
-      this.selectedLogo = null;
-    }
   }
 
   /**
