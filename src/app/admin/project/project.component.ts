@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MatSnackBar, MatDialogConfig } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
-import { finalize } from 'rxjs/operators';
 import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 
 import { ProjectsService } from 'src/app/services/projects.service';
@@ -13,6 +12,8 @@ import { Projects } from 'src/app/interfaces/projects';
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
 
 import * as _ from 'lodash';
+
+type ImageTypes = 'project-image' | 'project-logo';
 
 @Component({
   selector: 'app-project',
@@ -218,7 +219,7 @@ export class ProjectComponent implements OnInit {
 
       // Upload new images then save the project.
       try {
-        const uploadedImages = await this.uploadImages(this.selectedImages);
+        const uploadedImages = await this.uploadImages(this.selectedImages, this.projectUrl, 'project-image');
         const urls = await uploadedImages.downloadUrlPromise;
         const images: Image[] = _.concat(this.project.images, this.generateImages(urls, uploadedImages.filenames));
         this.project.images = images;
@@ -270,7 +271,7 @@ export class ProjectComponent implements OnInit {
 
       // Upload and save the new logo.
       try {
-        const uploadedImages = await this.uploadImages([this.selectedLogo]);
+        const uploadedImages = await this.uploadImages([this.selectedLogo], this.projectUrl, 'project-logo');
         const urls = await uploadedImages.downloadUrlPromise;
         this.project.logo = this.generateImages(urls, uploadedImages.filenames)[0];
         await this.projectsService.addOrUpdateProject(this.project);
@@ -299,12 +300,6 @@ export class ProjectComponent implements OnInit {
       && this.projectForm.valid
     ) {
       const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
-
-      let totalImages = this.selectedImages ? this.selectedImages.length : 0;
-      if (this.selectedLogo) {
-        totalImages++;
-      }
-      let uploadedImages = 0;
       const project = {
         url: this.projectsService.generateUrl(
           this.projectForm.get('title').value,
@@ -312,47 +307,52 @@ export class ProjectComponent implements OnInit {
         )
       };
 
-      if (this.selectedLogo || this.selectedImages) {
+      const uploadPromises: Promise<any>[] = [];
+
+      // Upload images
+      try {
         if (this.selectedLogo) {
-          this.storageService.uploadProjectImg(project.url, this.selectedLogo).snapshotChanges().pipe(
-            finalize(async () => {
-              const url: string = await this.storageService.getProjectImgDownloadUrl(project.url, this.selectedLogo).toPromise();
-              const logo: Image = {
-                filename: this.selectedLogo.name,
-                url: url
-              };
-              this.projectForm.get('logo').setValue(logo);
-              uploadedImages++;
-              if (uploadedImages === totalImages) {
-                this.saveForm(project, loading);
-              }
-            })
-          ).subscribe();
+          uploadPromises.push(this.uploadImages([this.selectedLogo], project.url, 'project-logo'));
+        }
+        if (this.selectedImages) {
+          uploadPromises.push(this.uploadImages(this.selectedImages, project.url, 'project-image'));
         }
 
-        if (this.selectedImages) {
-          this.projectForm.get('images').setValue([]);
-          _.each(this.selectedImages, (img: File) => {
-            this.storageService.uploadProjectImg(project.url, img).snapshotChanges().pipe(
-              finalize(async () => {
-                const url: string = await this.storageService.getProjectImgDownloadUrl(project.url, img).toPromise();
-                const images: Image[] = this.projectForm.get('images').value;
-                const image: Image = {
-                  filename: img.name,
-                  url: url
-                };
-                images.push(image);
+        if (uploadPromises.length) {
+          const uploadedImages: any[] = await Promise.all(uploadPromises);
+          const getAllDownloadUrls: Promise<string[]>[] = [];
+          _.each(uploadedImages, (value: any) => {
+            getAllDownloadUrls.push(value.downloadUrlPromise);
+          });
+          const downloadUrls: Array<string[]> = await Promise.all(getAllDownloadUrls);
+          _.each(downloadUrls, (value: string[], index: number) => {
+            switch (uploadedImages[index].imageType) {
+              case 'project-logo': {
+                const logo = this.generateImages(value, uploadedImages[index].filenames)[0];
+                this.projectForm.get('logo').setValue(logo);
+                break;
+              }
+              case 'project-image': {
+                const images = this.generateImages(value, uploadedImages[index].filenames);
                 this.projectForm.get('images').setValue(images);
-                uploadedImages++;
-                if (uploadedImages === totalImages) {
-                  this.saveForm(project, loading);
-                }
-              })
-            ).subscribe();
+                break;
+              }
+              default: {
+                throw new Error('Unknown project image type.');
+              }
+            }
           });
         }
-      } else {
+
         this.saveForm(project, loading);
+      } catch (error) {
+        this.snackbar.open(
+          'An error occured. Please refresh and try again.',
+          'Close',
+          {duration: 5000}
+        );
+        loading.close();
+        throw error;
       }
     } else {
       throw new Error('The form is invalid');
@@ -535,10 +535,10 @@ export class ProjectComponent implements OnInit {
   /**
    * Generate a list of Images.
    *
-   * @param urls - A list of image download URL's.
-   * @param filenames - A list of filenames for each image with the same index.
+   * @param {string} urls - A list of image download URL's.
+   * @param {string[]} filenames - A list of filenames for each image with the same index.
    *
-   * @returns {Image[])} - An Image object array.
+   * @returns {Image[]} - An Image object array.
    */
   private generateImages(urls: string[], filenames: string[]): Image[] {
     const images: Image[] = [];
@@ -555,16 +555,18 @@ export class ProjectComponent implements OnInit {
   /**
    * Upload images to the database.
    *
-   * @param {FileList | File[]} - A list of Files (images) to upload.
+   * @param {FileList | File[]} imagesToUpload - A list of Files (images) to upload.
+   * @param {string} projectUrl - The URL of the project the images will belong to.
+   * @param {ImageTypes} imageType - The type of the image ('project-logo' or 'project-images').
    *
    * @returns {Promise<any>} - Resolves when images have been uploaded and returns a promise
    * that will resolve the download urls for those images, and returns the filenames of those images, in order.
    */
-  private uploadImages(imagesToUpload: FileList | File[]): Promise<any> {
+  private uploadImages(imagesToUpload: FileList | File[], projectUrl: string, imageType: ImageTypes): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
       const uploadPromises: Promise<UploadTaskSnapshot>[] = [];
       _.each(imagesToUpload, (image: File) => {
-        uploadPromises.push(this.storageService.uploadProjectImg(this.projectUrl, image).snapshotChanges().toPromise());
+        uploadPromises.push(this.storageService.uploadProjectImg(projectUrl, image).snapshotChanges().toPromise());
       });
 
       try {
@@ -572,13 +574,14 @@ export class ProjectComponent implements OnInit {
         const downloadUrlPromises: Promise<string>[] = [];
         const filenames: string[] = [];
         _.each(snapshots, (snapshot: UploadTaskSnapshot) => {
-          downloadUrlPromises.push(this.storageService.getProjectImgDownloadUrl(this.projectUrl, snapshot.ref.name).toPromise());
+          downloadUrlPromises.push(this.storageService.getProjectImgDownloadUrl(projectUrl, snapshot.ref.name).toPromise());
           filenames.push(snapshot.ref.name);
         });
 
         const images: any = {
           downloadUrlPromise: Promise.all(downloadUrlPromises),
-          filenames
+          filenames,
+          imageType
         };
 
         resolve(images);
