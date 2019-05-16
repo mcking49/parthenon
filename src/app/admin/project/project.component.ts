@@ -168,7 +168,6 @@ export class ProjectComponent implements OnInit {
     this.showLogoPlaceholder = true;
     this.logoRequestedForDelete = this.project.logo;
     this.project.logo = null;
-    this.projectForm.get('logo').setValue('');
   }
 
   /**
@@ -208,17 +207,14 @@ export class ProjectComponent implements OnInit {
     if (!this.newProject) {
       const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
 
-      // Delete any images that have been requested for delete.
-      if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
-        const imagesToDeletePromises: Promise<void>[] = [];
-        _.each(this.imagesRequestedForDelete, (image: Image) => {
-          imagesToDeletePromises.push(this.storageService.deleteImage(this.projectUrl, image.filename));
-        });
-        await Promise.all(imagesToDeletePromises);
-      }
-
       // Upload new images then save the project.
       try {
+        // Delete any images that have been requested for delete.
+        if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
+          await Promise.all(this.deleteImages());
+        }
+
+        // Upload and save new images.
         const uploadedImages = await this.uploadImages(this.selectedImages, this.projectUrl, 'project-image');
         const urls = await uploadedImages.downloadUrlPromise;
         const images: Image[] = _.concat(this.project.images, this.generateImages(urls, uploadedImages.filenames));
@@ -231,8 +227,9 @@ export class ProjectComponent implements OnInit {
           'Close',
           {duration: 5000}
         );
-        throw error;
+        console.error(error);
       } finally {
+        this.imagesRequestedForDelete = null;
         loading.close();
       }
     }
@@ -261,7 +258,7 @@ export class ProjectComponent implements OnInit {
           // We don't need to wait for image to delete so let this action happen in the background.
           this.storageService.deleteImage(this.project.url, this.logoRequestedForDelete.filename)
             .catch((error) => {
-              throw error;
+              console.error(error);
             })
             .finally(() => {
               this.logoRequestedForDelete = null;
@@ -283,7 +280,7 @@ export class ProjectComponent implements OnInit {
           'Close',
           {duration: 5000}
         );
-        throw error;
+        console.error(error);
       } finally {
         loading.close();
       }
@@ -339,6 +336,11 @@ export class ProjectComponent implements OnInit {
                 }
               }
             });
+          }
+        } else {
+          // Delete any images that have been requested for delete.
+          if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
+            await Promise.all(this.deleteImages());
           }
         }
 
@@ -451,6 +453,19 @@ export class ProjectComponent implements OnInit {
       ],
       conclusion: this.formBuilder.array([]),
     });
+  }
+
+  /**
+   * Delete images that have been requested for delete, from the database.
+   *
+   * @returns {Promise<void>[]} - A list of delete requests.
+   */
+  private deleteImages(): Promise<void>[] {
+    const imagesToDeletePromises: Promise<void>[] = [];
+    _.each(this.imagesRequestedForDelete, (image: Image) => {
+      imagesToDeletePromises.push(this.storageService.deleteImage(this.projectUrl, image.filename));
+    });
+    return imagesToDeletePromises;
   }
 
   /**
