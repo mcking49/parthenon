@@ -307,52 +307,87 @@ export class ProjectComponent implements OnInit {
         )
       };
 
-      const uploadPromises: Promise<any>[] = [];
-
       // Upload images
       try {
-        if (this.selectedLogo) {
-          uploadPromises.push(this.uploadImages([this.selectedLogo], project.url, 'project-logo'));
-        }
-        if (this.selectedImages) {
-          uploadPromises.push(this.uploadImages(this.selectedImages, project.url, 'project-image'));
+        if (this.newProject) {
+          const uploadPromises: Promise<any>[] = [
+            this.uploadImages([this.selectedLogo], project.url, 'project-logo'),
+            this.uploadImages(this.selectedImages, project.url, 'project-image')
+          ];
+
+          if (uploadPromises.length) {
+            const uploadedImages: any[] = await Promise.all(uploadPromises);
+            const getAllDownloadUrls: Promise<string[]>[] = [];
+            _.each(uploadedImages, (value: any) => {
+              getAllDownloadUrls.push(value.downloadUrlPromise);
+            });
+            const downloadUrls: Array<string[]> = await Promise.all(getAllDownloadUrls);
+            _.each(downloadUrls, (value: string[], index: number) => {
+              switch (uploadedImages[index].imageType) {
+                case 'project-logo': {
+                  const logo = this.generateImages(value, uploadedImages[index].filenames)[0];
+                  this.projectForm.get('logo').setValue(logo);
+                  break;
+                }
+                case 'project-image': {
+                  const images = this.generateImages(value, uploadedImages[index].filenames);
+                  this.projectForm.get('images').setValue(images);
+                  break;
+                }
+                default: {
+                  throw new Error('Unknown project image type.');
+                }
+              }
+            });
+          }
         }
 
-        if (uploadPromises.length) {
-          const uploadedImages: any[] = await Promise.all(uploadPromises);
-          const getAllDownloadUrls: Promise<string[]>[] = [];
-          _.each(uploadedImages, (value: any) => {
-            getAllDownloadUrls.push(value.downloadUrlPromise);
-          });
-          const downloadUrls: Array<string[]> = await Promise.all(getAllDownloadUrls);
-          _.each(downloadUrls, (value: string[], index: number) => {
-            switch (uploadedImages[index].imageType) {
-              case 'project-logo': {
-                const logo = this.generateImages(value, uploadedImages[index].filenames)[0];
-                this.projectForm.get('logo').setValue(logo);
-                break;
-              }
-              case 'project-image': {
-                const images = this.generateImages(value, uploadedImages[index].filenames);
-                this.projectForm.get('images').setValue(images);
-                break;
-              }
-              default: {
-                throw new Error('Unknown project image type.');
-              }
+        _.map(this.projectForm.controls, (formControl: FormControl, key: string) => {
+          switch (key) {
+            case 'brief': {
+              project[key] = _.map(this.brief.controls, 'value');
+              break;
             }
-          });
+            case 'conclusion': {
+              project[key] = _.map(this.conclusion.controls, 'value');
+              break;
+            }
+            default: {
+              project[key] = formControl.value;
+              break;
+            }
+          }
+        });
+
+        await this.projectsService.addOrUpdateProject(project as Project);
+
+        // If the year or title changes, this creates a new project in the database
+        // because the url will be different. This means the old url and now outdated project
+        // still exists in the database so we should delete it. We don't need to wait for this
+        // action to complete so we can ignore waiting for the promise to resolve and let the delete
+        // finish in the background.
+        if (this.projectUrl !== project.url) {
+          this.projectsService.deleteProjects([this.projectUrl]);
         }
 
-        this.saveForm(project, loading);
+        this.resetForm();
+        await this.router.navigate(['../../projects'], {relativeTo: this.activatedRoute});
+        this.snackbar.open(
+          'Your project has been saved',
+          'Close',
+          {
+            duration: 3000,
+          }
+        );
       } catch (error) {
         this.snackbar.open(
           'An error occured. Please refresh and try again.',
           'Close',
           {duration: 5000}
         );
+        console.error(error);
+      } finally {
         loading.close();
-        throw error;
       }
     } else {
       throw new Error('The form is invalid');
@@ -478,58 +513,6 @@ export class ProjectComponent implements OnInit {
         this.project = project;
       }
     });
-  }
-
-  /**
-   * Save the project to the database.
-   *
-   * @param project - A blank project object that contains a url.
-   * @param loading - The loading dialog reference.
-   */
-  private async saveForm(project: any, loading: MatDialogRef<LoadingSpinnerModalComponent, any>) {
-    _.map(this.projectForm.controls, (formControl: FormControl, key: string) => {
-      switch (key) {
-        case 'brief': {
-          project[key] = _.map(this.brief.controls, 'value');
-          break;
-        }
-        case 'conclusion': {
-          project[key] = _.map(this.conclusion.controls, 'value');
-          break;
-        }
-        default: {
-          project[key] = formControl.value;
-          break;
-        }
-      }
-    });
-
-    try {
-      await this.projectsService.addOrUpdateProject(project as Project);
-
-      // If the year or title changes, this creates a new project in the database
-      // because the url will be different. This means the old url and now outdated project
-      // still exists in the database so we should delete it. We don't need to wait for this
-      // action to complete so we can ignore waiting for the promise to resolve and let the delete
-      // finish in the background.
-      if (this.projectUrl !== project.url) {
-        this.projectsService.deleteProjects([this.projectUrl]);
-      }
-
-      this.resetForm();
-      await this.router.navigate(['../../projects'], {relativeTo: this.activatedRoute});
-      this.snackbar.open(
-        'Your project has been saved',
-        'Close',
-        {
-          duration: 3000,
-        }
-      );
-    } catch (error) {
-      throw error;
-    } finally {
-      loading.close();
-    }
   }
 
   /**
