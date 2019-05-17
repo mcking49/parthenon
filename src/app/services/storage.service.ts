@@ -25,13 +25,12 @@ export class StorageService {
   /**
    * Delete an image from the database.
    *
-   * @param {string} url - The project url.
-   * @param {string} filename - The name of the file to be deleted.
+   * @param {string} storageReference - The storage reference for the image to be deleted.
    *
    * @returns {Promise<void>} - A promise that resolves when the image is deleted.
    */
-  public deleteImage(url: string, filename: string): Promise<void> {
-    return this.getProjectImgRef(url, filename).delete().toPromise();
+  public deleteImage(storageReference: string): Promise<void> {
+    return this.storage.ref(storageReference).delete().toPromise();
   }
 
   /**
@@ -44,9 +43,9 @@ export class StorageService {
   public deleteProjects(projects: Projects): Promise<void[]> {
     const deleteRequests: Promise<void>[] = [];
     _.each(projects, (project: Project) => {
-      deleteRequests.push(this.deleteImage(project.url, project.logo.filename));
+      deleteRequests.push(this.deleteImage(project.logo.storageReference));
       _.each(project.images, (image: Image) => {
-        deleteRequests.push(this.deleteImage(project.url, image.filename));
+        deleteRequests.push(this.deleteImage(image.storageReference));
       });
     });
     return Promise.all(deleteRequests);
@@ -167,18 +166,6 @@ export class StorageService {
    */
   private getCvDownloadUrl(language: string): Observable<string> {
     return this.storage.ref(`cv/Dsouza_Austin-CV19-${language}.pdf`).getDownloadURL();
-  }
-
-  /**
-   * Get the storage reference for a project image.
-   *
-   * @param url - The project url.
-   * @param filename - The name of the file to get.
-   *
-   * @returns {AngularFireStorageReference} - The storage reference for the image.
-   */
-  private getProjectImgRef(url: string, filename: string): AngularFireStorageReference {
-    return this.storage.ref(`projects/${url}/${filename}`);
   }
 
   /**
