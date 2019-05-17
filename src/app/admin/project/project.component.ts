@@ -30,12 +30,12 @@ export class ProjectComponent implements OnInit {
   public projectUrl: string;
   public selectedLogo: File;
   public selectedImages: FileList;
-
   public showLogoPlaceholder: boolean;
-  private logoRequestedForDelete: Image;
-  private imagesRequestedForDelete: Image[];
 
   private loadingConfig: MatDialogConfig<any>;
+  private logoRequestedForDelete: Image;
+  private imagesRequestedForDelete: Image[];
+  private projectCopy: Project;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -194,7 +194,10 @@ export class ProjectComponent implements OnInit {
         // Upload and save new images.
         const uploadedImages = await this.uploadImages(this.selectedImages, this.projectUrl, 'project-image');
         const urls = await uploadedImages.downloadUrlPromise;
-        const images: Image[] = _.concat(this.project.images, this.generateImages(urls, uploadedImages.filenames));
+        const images: Image[] = _.concat(
+          this.project.images,
+          this.generateImages(urls, uploadedImages.filenames, this.projectUrl
+        ));
         this.project.images = images;
         await this.projectsService.addOrUpdateProject(this.project);
         this.selectedImages = null;
@@ -222,35 +225,16 @@ export class ProjectComponent implements OnInit {
     if (this.logoRequestedForDelete) {
       const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
 
-      // Delete the old logo from the database if the new logo filename is different to the old logo filename.
-      if (this.selectedLogo.name !== this.logoRequestedForDelete.filename) {
-        // Check filename of old logo doesn't match filename of a project image
-        let isSameFilename = false;
-        _.each(this.project.images, (image) => {
-          if (this.logoRequestedForDelete.filename === image.filename) {
-            isSameFilename = true;
-          }
-        });
-        if (!isSameFilename) {
-          // We don't need to wait for image to delete so let this action happen in the background.
-          this.storageService.deleteImage(this.project.url, this.logoRequestedForDelete.filename)
-            .catch((error) => {
-              console.error(error);
-            })
-            .finally(() => {
-              this.logoRequestedForDelete = null;
-            });
-        }
-      }
-
-      // Upload and save the new logo.
+      // Delete the existing logo then upload the new logo.
       try {
+        await this.storageService.deleteImage(this.logoRequestedForDelete.storageReference);
         const uploadedImages = await this.uploadImages([this.selectedLogo], this.projectUrl, 'project-logo');
         const urls = await uploadedImages.downloadUrlPromise;
-        this.project.logo = this.generateImages(urls, uploadedImages.filenames)[0];
+        this.project.logo = this.generateImages(urls, uploadedImages.filenames, this.projectUrl)[0];
         await this.projectsService.addOrUpdateProject(this.project);
         this.selectedLogo = null;
         this.showLogoPlaceholder = false;
+        this.logoRequestedForDelete = null;
       } catch (error) {
         this.snackbar.open(
           'An error occured. Please refresh and try again.',
@@ -311,11 +295,11 @@ export class ProjectComponent implements OnInit {
       // Upload images
       try {
         if (this.newProject) {
+          // await this.createProjectImages(project.url);
           const uploadPromises: Promise<any>[] = [
             this.uploadImages([this.selectedLogo], project.url, 'project-logo'),
             this.uploadImages(this.selectedImages, project.url, 'project-image')
           ];
-
           if (uploadPromises.length) {
             const uploadedImages: any[] = await Promise.all(uploadPromises);
             const getAllDownloadUrls: Promise<string[]>[] = [];
@@ -326,12 +310,12 @@ export class ProjectComponent implements OnInit {
             _.each(downloadUrls, (value: string[], index: number) => {
               switch (uploadedImages[index].imageType) {
                 case 'project-logo': {
-                  const logo = this.generateImages(value, uploadedImages[index].filenames)[0];
+                  const logo = this.generateImages(value, uploadedImages[index].filenames, project.url)[0];
                   this.projectForm.get('logo').setValue(logo);
                   break;
                 }
                 case 'project-image': {
-                  const images = this.generateImages(value, uploadedImages[index].filenames);
+                  const images = this.generateImages(value, uploadedImages[index].filenames, project.url);
                   this.projectForm.get('images').setValue(images);
                   break;
                 }
@@ -341,6 +325,7 @@ export class ProjectComponent implements OnInit {
               }
             });
           }
+
         } else {
           // Delete any images that have been requested for delete.
           if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
@@ -459,15 +444,55 @@ export class ProjectComponent implements OnInit {
     });
   }
 
+  // private createProjectImages(url: string): Promise<void> {
+  //   return new Promise<void>(async (resolve, reject) => {
+  //     const uploadPromises: Promise<any>[] = [
+  //       this.uploadImages([this.selectedLogo], url, 'project-logo'),
+  //       this.uploadImages(this.selectedImages, url, 'project-image')
+  //     ];
+
+  //     try {
+  //       if (uploadPromises.length) {
+  //         const uploadedImages: any[] = await Promise.all(uploadPromises);
+  //         const getAllDownloadUrls: Promise<string[]>[] = [];
+  //         _.each(uploadedImages, (value: any) => {
+  //           getAllDownloadUrls.push(value.downloadUrlPromise);
+  //         });
+  //         const downloadUrls: Array<string[]> = await Promise.all(getAllDownloadUrls);
+  //         _.each(downloadUrls, (value: string[], index: number) => {
+  //           switch (uploadedImages[index].imageType) {
+  //             case 'project-logo': {
+  //               const logo = this.generateImages(value, uploadedImages[index].filenames, url)[0];
+  //               this.projectForm.get('logo').setValue(logo);
+  //               break;
+  //             }
+  //             case 'project-image': {
+  //               const images = this.generateImages(value, uploadedImages[index].filenames, url);
+  //               this.projectForm.get('images').setValue(images);
+  //               break;
+  //             }
+  //             default: {
+  //               throw new Error('Unknown project image type.');
+  //             }
+  //           }
+  //         });
+  //       }
+  //       resolve();
+  //     } catch (error) {
+  //       reject(error);
+  //     }
+  //   });
+  // }
+
   /**
-   * Delete images that have been requested for delete, from the database.
+   * Delete images that have been requested for deletion, from the database.
    *
-   * @returns {Promise<void>[]} - A list of delete requests.
+   * @returns {Promise<void>[]} - A list of deletion requests.
    */
   private deleteImages(): Promise<void>[] {
     const imagesToDeletePromises: Promise<void>[] = [];
     _.each(this.imagesRequestedForDelete, (image: Image) => {
-      imagesToDeletePromises.push(this.storageService.deleteImage(this.projectUrl, image.filename));
+      imagesToDeletePromises.push(this.storageService.deleteImage(image.storageReference));
     });
     return imagesToDeletePromises;
   }
@@ -530,6 +555,7 @@ export class ProjectComponent implements OnInit {
           }
         });
         this.project = project;
+        this.projectCopy = project;
       }
     });
   }
@@ -537,17 +563,19 @@ export class ProjectComponent implements OnInit {
   /**
    * Generate a list of Images.
    *
-   * @param {string} urls - A list of image download URL's.
+   * @param {string} downloadUrls - A list of image download URL's.
    * @param {string[]} filenames - A list of filenames for each image with the same index.
+   * @param {string} projectUrl - The URL for the project the images belong to.
    *
    * @returns {Image[]} - An Image object array.
    */
-  private generateImages(urls: string[], filenames: string[]): Image[] {
+  private generateImages(downloadUrls: string[], filenames: string[], projectUrl: string): Image[] {
     const images: Image[] = [];
-    _.each(urls, (url: string, index: number) => {
+    _.each(downloadUrls, (url: string, index: number) => {
       const image: Image = {
         filename: filenames[index],
-        url: url
+        url: url,
+        storageReference: this.storageService.generateImageStorageReference(projectUrl, filenames[index])
       };
       images.push(image);
     });
