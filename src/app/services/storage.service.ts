@@ -93,6 +93,18 @@ export class StorageService {
   }
 
   /**
+   * Get the image storage reference of where it is saved in the database.
+   *
+   * @param url - The URL of the project.
+   * @param filename - The filename of the image.
+   *
+   * @returns {string} - The storage reference foe the image.
+   */
+  public generateImageStorageReference(url: string, filename: string): string {
+    return `projects/${url}/${filename}`;
+  }
+
+  /**
    * Get the Image downloadUrl observable.
    *
    * @param {string} projectUrl - The URL of the project.
