@@ -148,29 +148,6 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
-   * Delete an image from the project.
-   *
-   * @param {Image} image - The image to be deleted.
-   */
-  public deleteImage(image: Image): void {
-    this.imagesRequestedForDelete.push(image);
-    this.project.images = _.remove(this.project.images, (data: Image) => {
-      return data !== image;
-    });
-    this.projectForm.get('images').setValue(this.project.images);
-    this.projectForm.markAsDirty();
-  }
-
-  /**
-   * Delete the project logo.
-   */
-  public deleteLogo(): void {
-    this.showLogoPlaceholder = true;
-    this.logoRequestedForDelete = this.project.logo;
-    this.project.logo = null;
-  }
-
-  /**
    * Add a new paragraph for the brief.
    *
    * @param {number} number - The index position of where the paragraph should be added in the array.
@@ -285,6 +262,33 @@ export class ProjectComponent implements OnInit {
         loading.close();
       }
     }
+  }
+
+  /**
+   * Request to delete an image from the project.
+   *
+   * The image will be deleted when the project is saved.
+   *
+   * @param {Image} image - The image to be deleted.
+   */
+  public requestToDeleteImage(image: Image): void {
+    this.imagesRequestedForDelete.push(image);
+    this.project.images = _.remove(this.project.images, (data: Image) => {
+      return data !== image;
+    });
+    this.projectForm.get('images').setValue(this.project.images);
+    this.projectForm.markAsDirty();
+  }
+
+  /**
+   * Request to delete the project logo.
+   *
+   * The logo will be deleted when a new logo has been selected.
+   */
+  public requestToDeleteLogo(): void {
+    this.showLogoPlaceholder = true;
+    this.logoRequestedForDelete = this.project.logo;
+    this.project.logo = null;
   }
 
   /**
