@@ -3,10 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ProjectsService } from 'src/app/services/projects.service';
+import { StorageService } from './../../services/storage.service';
 import { Project } from 'src/app/interfaces/project';
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
 import { ConfirmDeleteComponent } from 'src/app/components/confirm-delete/confirm-delete.component';
 import * as _ from 'lodash';
+import { Projects } from 'src/app/interfaces/projects';
 
 @Component({
   selector: 'app-projects',
@@ -23,11 +25,14 @@ export class ProjectsComponent implements OnInit {
 
   public tableColumns: string[] = ['select', 'year', 'title', 'category'];
 
+  private projects: Projects;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private dialog: MatDialog,
     private router: Router,
-    private projectsService: ProjectsService
+    private projectsService: ProjectsService,
+    private storageService: StorageService
   ) {
     this.selection = new SelectionModel<any>(true, []);
   }
@@ -35,6 +40,7 @@ export class ProjectsComponent implements OnInit {
   ngOnInit() {
     this.projectsService.projects$.subscribe((projects) => {
       if (projects) {
+        this.projects = projects;
         const projectsArray = _.map(projects, (project: Project) => {
           return _.pick(project, ['year', 'title', 'category', 'url']);
         });
@@ -96,7 +102,9 @@ export class ProjectsComponent implements OnInit {
         });
 
         const urls: string[] = _.map(this.selectedProjects, 'url');
+        const projects: Projects = _.pick(this.projects, urls);
         try {
+          this.storageService.deleteProjects(projects);
           await this.projectsService.deleteProjects(urls);
           this.selection.clear();
         } catch (error) {

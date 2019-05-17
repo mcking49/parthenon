@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage, AngularFireUploadTask, AngularFireStorageReference } from '@angular/fire/storage';
 import { Observable } from 'rxjs';
+import { Projects } from '../interfaces/projects';
+import { Project } from '../interfaces/project';
+import * as _ from 'lodash';
+import { Image } from '../interfaces/image';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +32,24 @@ export class StorageService {
    */
   public deleteImage(url: string, filename: string): Promise<void> {
     return this.getProjectImgRef(url, filename).delete().toPromise();
+  }
+
+  /**
+   * Delete all the images for each project being requested for delete.
+   *
+   * @param {Projects} projects - A list of projects that are being deleted from the database.
+   *
+   * @returns {Promise<void[]>} - Resolves when all images for the project has been deleted.
+   */
+  public deleteProjects(projects: Projects): Promise<void[]> {
+    const deleteRequests: Promise<void>[] = [];
+    _.each(projects, (project: Project) => {
+      deleteRequests.push(this.deleteImage(project.url, project.logo.filename));
+      _.each(project.images, (image: Image) => {
+        deleteRequests.push(this.deleteImage(project.url, image.filename));
+      });
+    });
+    return Promise.all(deleteRequests);
   }
 
   /**
