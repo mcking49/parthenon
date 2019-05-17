@@ -109,6 +109,7 @@
             type="button"
             class="delete-img-button"
             color="warn"
+            *ngIf="project?.images.length > 1"
             (click)="requestToDeleteImage(image)"
             matTooltip="Delete image"
             matTooltipClass="delete-btn-tooltip"

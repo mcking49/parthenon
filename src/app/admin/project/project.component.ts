@@ -206,7 +206,7 @@ export class ProjectComponent implements OnInit {
         );
         console.error(error);
       } finally {
-        this.imagesRequestedForDelete = null;
+        this.imagesRequestedForDelete = [];
         loading.close();
       }
     }
