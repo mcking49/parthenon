@@ -35,7 +35,6 @@ export class ProjectComponent implements OnInit {
   private loadingConfig: MatDialogConfig<any>;
   private logoRequestedForDelete: Image;
   private imagesRequestedForDelete: Image[];
-  private projectCopy: Project;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -200,13 +199,10 @@ export class ProjectComponent implements OnInit {
         ));
         this.project.images = images;
         await this.projectsService.addOrUpdateProject(this.project);
+        this.showSavedSnackbar();
         this.selectedImages = null;
       } catch (error) {
-        this.snackbar.open(
-          'An error occured. Please refresh and try again.',
-          'Close',
-          {duration: 5000}
-        );
+        this.showErrorSnackbar();
         console.error(error);
       } finally {
         this.imagesRequestedForDelete = [];
@@ -232,15 +228,12 @@ export class ProjectComponent implements OnInit {
         const urls = await uploadedImages.downloadUrlPromise;
         this.project.logo = this.generateImages(urls, uploadedImages.filenames, this.projectUrl)[0];
         await this.projectsService.addOrUpdateProject(this.project);
+        this.showSavedSnackbar();
         this.selectedLogo = null;
         this.showLogoPlaceholder = false;
         this.logoRequestedForDelete = null;
       } catch (error) {
-        this.snackbar.open(
-          'An error occured. Please refresh and try again.',
-          'Close',
-          {duration: 5000}
-        );
+        this.showErrorSnackbar();
         console.error(error);
       } finally {
         loading.close();
@@ -363,19 +356,9 @@ export class ProjectComponent implements OnInit {
 
         this.resetForm();
         await this.router.navigate(['../../projects'], {relativeTo: this.activatedRoute});
-        this.snackbar.open(
-          'Your project has been saved',
-          'Close',
-          {
-            duration: 3000,
-          }
-        );
+        this.showSavedSnackbar();
       } catch (error) {
-        this.snackbar.open(
-          'An error occured. Please refresh and try again.',
-          'Close',
-          {duration: 5000}
-        );
+        this.showErrorSnackbar();
         console.error(error);
       } finally {
         loading.close();
@@ -443,46 +426,6 @@ export class ProjectComponent implements OnInit {
       conclusion: this.formBuilder.array([]),
     });
   }
-
-  // private createProjectImages(url: string): Promise<void> {
-  //   return new Promise<void>(async (resolve, reject) => {
-  //     const uploadPromises: Promise<any>[] = [
-  //       this.uploadImages([this.selectedLogo], url, 'project-logo'),
-  //       this.uploadImages(this.selectedImages, url, 'project-image')
-  //     ];
-
-  //     try {
-  //       if (uploadPromises.length) {
-  //         const uploadedImages: any[] = await Promise.all(uploadPromises);
-  //         const getAllDownloadUrls: Promise<string[]>[] = [];
-  //         _.each(uploadedImages, (value: any) => {
-  //           getAllDownloadUrls.push(value.downloadUrlPromise);
-  //         });
-  //         const downloadUrls: Array<string[]> = await Promise.all(getAllDownloadUrls);
-  //         _.each(downloadUrls, (value: string[], index: number) => {
-  //           switch (uploadedImages[index].imageType) {
-  //             case 'project-logo': {
-  //               const logo = this.generateImages(value, uploadedImages[index].filenames, url)[0];
-  //               this.projectForm.get('logo').setValue(logo);
-  //               break;
-  //             }
-  //             case 'project-image': {
-  //               const images = this.generateImages(value, uploadedImages[index].filenames, url);
-  //               this.projectForm.get('images').setValue(images);
-  //               break;
-  //             }
-  //             default: {
-  //               throw new Error('Unknown project image type.');
-  //             }
-  //           }
-  //         });
-  //       }
-  //       resolve();
-  //     } catch (error) {
-  //       reject(error);
-  //     }
-  //   });
-  // }
 
   /**
    * Delete images that have been requested for deletion, from the database.
@@ -555,7 +498,6 @@ export class ProjectComponent implements OnInit {
           }
         });
         this.project = project;
-        this.projectCopy = project;
       }
     });
   }
@@ -580,6 +522,28 @@ export class ProjectComponent implements OnInit {
       images.push(image);
     });
     return images;
+  }
+
+  /**
+   * Shows a snackbar informing that an error has occured.
+   */
+  private showErrorSnackbar(): void {
+    this.snackbar.open(
+      'An error occured. Please refresh and try again.',
+      'Close',
+      {duration: 5000}
+    );
+  }
+
+  /**
+   * Shows a snackbar informing the project has been saved.
+   */
+  private showSavedSnackbar(): void {
+    this.snackbar.open(
+      'Your project has been saved',
+      'Close',
+      {duration: 3000,}
+    );
   }
 
   /**
