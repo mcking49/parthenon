@@ -16,7 +16,7 @@ export class AboutComponent implements OnInit {
   ngOnInit() {
     this.aboutService.about$.subscribe((about: About) => {
       this.about = about;
-    })
+    });
   }
 
 }
