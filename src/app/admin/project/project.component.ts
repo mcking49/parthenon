@@ -25,7 +25,7 @@ export class ProjectComponent implements OnInit {
   public isEditingMode: boolean;
   public hasConclusion: boolean;
   public newProject: boolean;
-  public project: Project; // TODO: check if this method can be used for new projects as well.
+  public project: Project;
   public projectForm: FormGroup;
   public projectUrl: string;
   public selectedLogo: File;
