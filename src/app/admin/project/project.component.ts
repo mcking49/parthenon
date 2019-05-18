@@ -593,7 +593,7 @@ export class ProjectComponent implements OnInit {
     this.snackbar.open(
       'Your project has been saved',
       'Close',
-      {duration: 3000,}
+      {duration: 3000}
     );
   }
 
