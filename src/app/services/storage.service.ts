@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage, AngularFireUploadTask, AngularFireStorageReference } from '@angular/fire/storage';
 import { Observable } from 'rxjs';
+import { Projects } from '../interfaces/projects';
+import { Project } from '../interfaces/project';
+import * as _ from 'lodash';
+import { Image } from '../interfaces/image';
 
 @Injectable({
   providedIn: 'root'
@@ -21,13 +25,30 @@ export class StorageService {
   /**
    * Delete an image from the database.
    *
-   * @param {string} url - The project url.
-   * @param {string} filename - The name of the file to be deleted.
+   * @param {string} storageReference - The storage reference for the image to be deleted.
    *
    * @returns {Promise<void>} - A promise that resolves when the image is deleted.
    */
-  public deleteImage(url: string, filename: string): Promise<void> {
-    return this.getProjectImgRef(url, filename).delete().toPromise();
+  public deleteImage(storageReference: string): Promise<void> {
+    return this.storage.ref(storageReference).delete().toPromise();
+  }
+
+  /**
+   * Delete all the images for each project being requested for delete.
+   *
+   * @param {Projects} projects - A list of projects that are being deleted from the database.
+   *
+   * @returns {Promise<void[]>} - Resolves when all images for the project has been deleted.
+   */
+  public deleteProjects(projects: Projects): Promise<void[]> {
+    const deleteRequests: Promise<void>[] = [];
+    _.each(projects, (project: Project) => {
+      deleteRequests.push(this.deleteImage(project.logo.storageReference));
+      _.each(project.images, (image: Image) => {
+        deleteRequests.push(this.deleteImage(image.storageReference));
+      });
+    });
+    return Promise.all(deleteRequests);
   }
 
   /**
@@ -71,22 +92,27 @@ export class StorageService {
   }
 
   /**
-   * Get the Image downloadUrl observable.
+   * Get the image storage reference of where it is saved in the database.
+   *
+   * @param url - The URL of the project.
+   * @param filename - The filename of the image.
+   *
+   * @returns {string} - The storage reference foe the image.
+   */
+  public generateImageStorageReference(url: string, filename: string): string {
+    return `projects/${url}/${filename}`;
+  }
+
+  /**
+   * Get the Image downloadURL observable.
    *
    * @param {string} projectUrl - The URL of the project.
-   * @param {File | string} - File or String that contains the file name.
+   * @param {string} filename - Name of the image file.
    *
    * @returns {Observable<string>} - The downloadURL Observable.
    */
-  public getProjectImgDownloadUrl(projectUrl: string, file: File | string): Observable<string> {
-    // TODO: don't need file, should only pass in filename here.
-    let name: string;
-    if (file instanceof File) {
-      name = file.name;
-    } else {
-      name = file;
-    }
-    return this.storage.ref(`projects/${projectUrl}/${name}`).getDownloadURL();
+  public getProjectImgDownloadUrl(projectUrl: string, filename: string): Observable<string> {
+    return this.storage.ref(`projects/${projectUrl}/${filename}`).getDownloadURL();
   }
 
   /**
@@ -133,18 +159,6 @@ export class StorageService {
    */
   private getCvDownloadUrl(language: string): Observable<string> {
     return this.storage.ref(`cv/Dsouza_Austin-CV19-${language}.pdf`).getDownloadURL();
-  }
-
-  /**
-   * Get the storage reference for a project image.
-   *
-   * @param url - The project url.
-   * @param filename - The name of the file to get.
-   *
-   * @returns {AngularFireStorageReference} - The storage reference for the image.
-   */
-  private getProjectImgRef(url: string, filename: string): AngularFireStorageReference {
-    return this.storage.ref(`projects/${url}/${filename}`);
   }
 
   /**

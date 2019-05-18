@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
-import { finalize } from 'rxjs/operators';
 import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { ProjectsService } from 'src/app/services/projects.service';
-import { StorageService } from './../../services/storage.service';
-import { Image } from './../../interfaces/image';
-import { Project } from './../../interfaces/project';
-import { Projects } from 'src/app/interfaces/projects';
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
+import { Image } from 'src/app/interfaces/image';
+import { Project } from 'src/app/interfaces/project';
+import { Projects } from 'src/app/interfaces/projects';
+import { ProjectsService } from 'src/app/services/projects.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 import * as _ from 'lodash';
+
+type ImageTypes = 'project-image' | 'project-logo';
 
 @Component({
   selector: 'app-project',
@@ -21,18 +22,19 @@ import * as _ from 'lodash';
 })
 export class ProjectComponent implements OnInit {
 
-  public isEditingMode: boolean;
   public hasConclusion: boolean;
+  public isEditingMode: boolean;
   public newProject: boolean;
   public project: Project;
   public projectForm: FormGroup;
   public projectUrl: string;
-  public selectedLogo: File;
   public selectedImages: FileList;
-
+  public selectedLogo: File;
   public showLogoPlaceholder: boolean;
-  private logoRequestedForDelete: Image;
+
   private imagesRequestedForDelete: Image[];
+  private loadingConfig: MatDialogConfig<any>;
+  private logoRequestedForDelete: Image;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -41,91 +43,30 @@ export class ProjectComponent implements OnInit {
     private projectsService: ProjectsService,
     private router: Router,
     private snackbar: MatSnackBar,
-    private storageService: StorageService,
+    private storageService: StorageService
   ) {
     this.isEditingMode = false;
     this.hasConclusion = false;
     this.newProject = false;
     this.showLogoPlaceholder = false;
     this.imagesRequestedForDelete = [];
+    this.loadingConfig = {
+      height: '150px',
+      width: '150px'
+    };
   }
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe((params) => {
-      this.projectUrl = params.url;
-      if (this.projectUrl === 'new') {
-        this.isEditingMode = true;
-        this.newProject = true;
-        this.createForm();
-      } else {
-        this.createForm();
-        this.projectsService.projects$.subscribe((projects: Projects) => {
-          if (projects) {
-            const project: Project = projects[this.projectUrl];
-            _.each(project, (value: any, key: string) => {
-              const needToUpdate: boolean = !this.project || this.project[key] !== project[key];
-              switch (key) {
-                case 'brief': {
-                  if (needToUpdate) {
-                    if (this.project) {
-                      this.brief.controls = [];
-                      this.brief.reset();
-                      this.addBriefParagraph(0);
-                    }
-                    _.each(value, (paragraph: string, index: number) => {
-                      if (index === 0) {
-                        this.brief.controls[0].setValue(paragraph);
-                      } else {
-                        this.addBriefParagraph(index, paragraph);
-                      }
-                    });
-                  }
-                  break;
-                }
-                case 'conclusion': {
-                  if (needToUpdate) {
-                    if (this.project) {
-                      this.conclusion.controls = [];
-                      this.conclusion.reset();
-                    }
-                    if (value.length) {
-                      _.each(value, (paragraph: string, index: number) => {
-                        if (this.hasConclusion) {
-                          this.addConclusionParagraph(index, paragraph);
-                        } else {
-                          this.addConclusionForm();
-                          this.conclusion.controls[0].setValue(paragraph);
-                        }
-                      });
-                    } else {
-                      this.hasConclusion = false;
-                    }
-                  }
-                  break;
-                }
-                case 'url': {
-                  break;
-                }
-                default: {
-                  this.projectForm.controls[key].setValue(value);
-                  break;
-                }
-              }
-            });
-            this.project = project;
-          }
-        });
-      }
-    }).unsubscribe();
-  }
-
-  /**
-   * Get the Conclusion section from the Project form.
-   *
-   * @returns {FormArray} - the Conclusion section from the Project form.
-   */
-  public get conclusion(): FormArray {
-    return this.projectForm.get('conclusion') as FormArray;
+    this.projectUrl = this.activatedRoute.snapshot.paramMap.get('url');
+    if (this.projectUrl === 'new') {
+      this.isEditingMode = true;
+      this.newProject = true;
+      this.createForm();
+    } else {
+      // When editing an already existing project.
+      this.createForm();
+      this.getProject();
+    }
   }
 
   /**
@@ -138,33 +79,57 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
-   * Check if element should be disabled.
+   * Check if the form is in a valid state and can be saved.
    *
-   * @returns {boolean} - Indicates if the element should be disabled or not.
+   * @returns {boolean} - True if the form can be saved.
    */
-  public get isDisabled(): boolean {
+  public get canSave(): boolean {
     if (this.newProject) {
-      return !this.isEditingMode || !this.projectForm.valid || this.projectForm.pristine || !this.selectedImages || !this.selectedLogo;
+      return this.isEditingMode && this.projectForm.valid && this.projectForm.dirty && !!this.selectedImages && !!this.selectedLogo;
     } else {
-      return !this.isEditingMode || !this.projectForm.valid || this.projectForm.pristine;
+      return this.isEditingMode && this.projectForm.valid && this.projectForm.dirty;
     }
   }
 
   /**
-   * Check if the upload button is disabled.
+   * Check if a brief paragraph can be deleted.
    *
-   * @returns {boolean} - Indicates if the upload button is disabled or not.
+   * A project must have a bried which means there must be at least 1
+   * brief paragraph.
+   *
+   * @returns {boolean} - True if the brief paragraph can be deleted.
    */
-  public get isUploadDisabled(): boolean {
-    return !this.isEditingMode;
+  public get canDeleteBriefParagraph(): boolean {
+    return this.brief.length > 1;
   }
 
   /**
-   * Check if the form has a conclusion section.
+   * Get the Conclusion section from the Project form.
    *
-   * @returns {boolean} - true if there is a conclusion.
+   * @returns {FormArray} - the Conclusion section from the Project form.
    */
-  public addConclusionForm() {
+  public get conclusion(): FormArray {
+    return this.projectForm.get('conclusion') as FormArray;
+  }
+
+  /**
+   * Add a new paragraph for the brief.
+   *
+   * @param {number} number - The index position of where the paragraph should be added in the array.
+   * @param {string} paragraph - The new paragraph to be added to the brief.
+   */
+  public addBriefParagraph(index: number, paragraph: string = ''): void {
+    const formControlState: any = {
+      value: paragraph,
+      disabled: !this.isEditingMode
+    };
+    this.brief.insert(index, this.formBuilder.control(formControlState, Validators.required));
+  }
+
+  /**
+   * Add a conclusion section to the form.
+   */
+  public addConclusionForm(): void {
     this.addConclusionParagraph(0);
     this.hasConclusion = true;
   }
@@ -172,6 +137,7 @@ export class ProjectComponent implements OnInit {
   /**
    * Add a new paragraph for the conclusion.
    *
+   * @param {number} number - The index position of where the paragraph should be added in the array.
    * @param {string} paragraph - The new paragraph to be added to the conclusion.
    */
   public addConclusionParagraph(index: number, paragraph: string = ''): void {
@@ -180,6 +146,15 @@ export class ProjectComponent implements OnInit {
       disabled: !this.isEditingMode
     };
     this.conclusion.insert(index, this.formBuilder.control(formControlState, Validators.required));
+  }
+
+  /**
+   * Delete a paragraph from the brief.
+   *
+   * @param {number} index - The index position of the paragraph to be deleted.
+   */
+  public deleteBriefParagraph(index: number): void {
+    this.brief.removeAt(index);
   }
 
   /**
@@ -195,53 +170,10 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
-   * Delete an image from the project.
-   *
-   * @param {Image} image - The image to be deleted.
-   */
-  public deleteImage(image: Image): void {
-    this.imagesRequestedForDelete.push(image);
-    this.project.images = _.remove(this.project.images, (data: Image) => {
-      return data !== image;
-    });
-    this.projectForm.get('images').setValue(this.project.images);
-    this.projectForm.markAsDirty();
-  }
-
-  /**
-   * Delete the project logo.
-   */
-  public deleteLogo(): void {
-    this.showLogoPlaceholder = true;
-    this.logoRequestedForDelete = this.project.logo;
-    this.project.logo = null;
-    this.projectForm.get('logo').setValue('');
-  }
-
-  /**
-   * Add a new paragraph for the brief.
-   *
-   * @param {string} paragraph - The new paragraph to be added to the brief.
-   */
-  public addBriefParagraph(index: number, paragraph: string = ''): void {
-    const formControlState: any = {
-      value: paragraph,
-      disabled: !this.isEditingMode
-    };
-    this.brief.insert(index, this.formBuilder.control(formControlState, Validators.required));
-  }
-
-  /**
-   * Delete a paragraph from the brief.
-   *
-   * @param {number} index - The index position of the paragraph to be deleted.
-   */
-  public deleteBriefParagraph(index: number): void {
-    this.brief.removeAt(index);
-  }
-
-  /**
    * Store the new selected images.
+   *
+   * If you are editing an existing project, the newly selected images will automatically start saving
+   * and the project will be saved as well.
    *
    * @param files - The list of files that have been selected.
    */
@@ -249,53 +181,32 @@ export class ProjectComponent implements OnInit {
     this.selectedImages = files;
 
     if (!this.newProject) {
-      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
-        maxHeight: '150px',
-        height: '150px',
-        width: '150px'
-      });
+      const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
 
-      if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
-        const imagesToDeletePromises: Promise<void>[] = [];
-        _.each(this.imagesRequestedForDelete, (image: Image) => {
-          imagesToDeletePromises.push(this.storageService.deleteImage(this.projectUrl, image.filename));
-        });
-        await Promise.all(imagesToDeletePromises);
-      }
-
-      const uploadPromises: Promise<UploadTaskSnapshot>[] = [];
-      _.each(this.selectedImages, (img: File) => {
-        uploadPromises.push(this.storageService.uploadProjectImg(this.projectUrl, img).snapshotChanges().toPromise());
-      });
-
+      // Upload new images then save the project.
       try {
-        const snapshots: UploadTaskSnapshot[] = await Promise.all(uploadPromises);
-        const downloadUrlPromises: Promise<string>[] = [];
-        const filenames: string[] = [];
-        _.each(snapshots, (snapshot: UploadTaskSnapshot) => {
-          downloadUrlPromises.push(this.storageService.getProjectImgDownloadUrl(this.projectUrl, snapshot.ref.name).toPromise());
-          filenames.push(snapshot.ref.name);
-        });
+        // Delete any images that have been requested for delete.
+        if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
+          await Promise.all(this.deleteImages());
+        }
 
-        const urls: string[] = await Promise.all(downloadUrlPromises);
-        const images: Image[] = this.project.images;
-        _.each(urls, (url: string, index: number) => {
-          const image: Image = {
-            filename: filenames[index],
-            url: url
-          };
-          images.push(image);
-        });
+        // Upload and save new images.
+        const uploadedImages = await this.uploadImages(this.selectedImages, this.projectUrl, 'project-image');
+        const urls = await uploadedImages.downloadUrlPromise;
+        const images: Image[] = _.concat(
+          this.project.images,
+          this.generateImages(urls, uploadedImages.filenames, this.projectUrl
+        ));
         this.project.images = images;
-        this.updateImages(dialogRef);
+        await this.projectsService.addOrUpdateProject(this.project);
+        this.showSavedSnackbar();
+        this.selectedImages = null;
       } catch (error) {
-        this.snackbar.open(
-          'An error occured. Please refresh and try again.',
-          'Close',
-          {duration: 5000}
-        );
-        dialogRef.close();
-        throw error;
+        this.showErrorSnackbar();
+        console.error(error);
+      } finally {
+        this.imagesRequestedForDelete = [];
+        loading.close();
       }
     }
   }
@@ -305,33 +216,68 @@ export class ProjectComponent implements OnInit {
    *
    * @param files - The list of files that have been selected.
    */
-  public newLogoSelected(files: FileList): void {
+  public async newLogoSelected(files: FileList) {
     this.selectedLogo = files.item(0);
     if (this.logoRequestedForDelete) {
-      this.updateLogo();
+      const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
+
+      // Delete the existing logo then upload the new logo.
+      try {
+        await this.storageService.deleteImage(this.logoRequestedForDelete.storageReference);
+        const uploadedImages = await this.uploadImages([this.selectedLogo], this.projectUrl, 'project-logo');
+        const urls = await uploadedImages.downloadUrlPromise;
+        this.project.logo = this.generateImages(urls, uploadedImages.filenames, this.projectUrl)[0];
+        await this.projectsService.addOrUpdateProject(this.project);
+        this.showSavedSnackbar();
+        this.selectedLogo = null;
+        this.showLogoPlaceholder = false;
+        this.logoRequestedForDelete = null;
+      } catch (error) {
+        this.showErrorSnackbar();
+        console.error(error);
+      } finally {
+        loading.close();
+      }
     }
+  }
+
+  /**
+   * Request to delete an image from the project.
+   *
+   * The image will be deleted when the project is saved.
+   *
+   * @param {Image} image - The image to be deleted.
+   */
+  public requestToDeleteImage(image: Image): void {
+    this.imagesRequestedForDelete.push(image);
+    this.project.images = _.remove(this.project.images, (data: Image) => {
+      return data !== image;
+    });
+    this.projectForm.get('images').setValue(this.project.images);
+    this.projectForm.markAsDirty();
+  }
+
+  /**
+   * Request to delete the project logo.
+   *
+   * The logo will be deleted when a new logo has been selected.
+   */
+  public requestToDeleteLogo(): void {
+    this.showLogoPlaceholder = true;
+    this.logoRequestedForDelete = this.project.logo;
+    this.project.logo = null;
   }
 
   /**
    * Save the project to the database.
    */
-  public submitForm(): void {
+  public async submitForm() {
     if (
       (this.selectedLogo || this.projectForm.get('logo').value)
       && (this.selectedImages || this.projectForm.get('images').value.length)
       && this.projectForm.valid
     ) {
-      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
-        maxHeight: '150px',
-        height: '150px',
-        width: '150px'
-      });
-
-      let totalImages = this.selectedImages ? this.selectedImages.length : 0;
-      if (this.selectedLogo) {
-        totalImages++;
-      }
-      let uploadedImages = 0;
+      const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
       const project = {
         url: this.projectsService.generateUrl(
           this.projectForm.get('title').value,
@@ -339,47 +285,83 @@ export class ProjectComponent implements OnInit {
         )
       };
 
-      if (this.selectedLogo || this.selectedImages) {
-        if (this.selectedLogo) {
-          this.storageService.uploadProjectImg(project.url, this.selectedLogo).snapshotChanges().pipe(
-            finalize(async () => {
-              const url: string = await this.storageService.getProjectImgDownloadUrl(project.url, this.selectedLogo).toPromise();
-              const logo: Image = {
-                filename: this.selectedLogo.name,
-                url: url
-              };
-              this.projectForm.get('logo').setValue(logo);
-              uploadedImages++;
-              if (uploadedImages === totalImages) {
-                this.saveForm(project, dialogRef);
+      // Upload images
+      try {
+        if (this.newProject) {
+          // await this.createProjectImages(project.url);
+          const uploadPromises: Promise<any>[] = [
+            this.uploadImages([this.selectedLogo], project.url, 'project-logo'),
+            this.uploadImages(this.selectedImages, project.url, 'project-image')
+          ];
+          if (uploadPromises.length) {
+            const uploadedImages: any[] = await Promise.all(uploadPromises);
+            const getAllDownloadUrls: Promise<string[]>[] = [];
+            _.each(uploadedImages, (value: any) => {
+              getAllDownloadUrls.push(value.downloadUrlPromise);
+            });
+            const downloadUrls: Array<string[]> = await Promise.all(getAllDownloadUrls);
+            _.each(downloadUrls, (value: string[], index: number) => {
+              switch (uploadedImages[index].imageType) {
+                case 'project-logo': {
+                  const logo = this.generateImages(value, uploadedImages[index].filenames, project.url)[0];
+                  this.projectForm.get('logo').setValue(logo);
+                  break;
+                }
+                case 'project-image': {
+                  const images = this.generateImages(value, uploadedImages[index].filenames, project.url);
+                  this.projectForm.get('images').setValue(images);
+                  break;
+                }
+                default: {
+                  throw new Error('Unknown project image type.');
+                }
               }
-            })
-          ).subscribe();
+            });
+          }
+
+        } else {
+          // Delete any images that have been requested for delete.
+          if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
+            await Promise.all(this.deleteImages());
+          }
         }
 
-        if (this.selectedImages) {
-          this.projectForm.get('images').setValue([]);
-          _.each(this.selectedImages, (img: File) => {
-            this.storageService.uploadProjectImg(project.url, img).snapshotChanges().pipe(
-              finalize(async () => {
-                const url: string = await this.storageService.getProjectImgDownloadUrl(project.url, img).toPromise();
-                const images: Image[] = this.projectForm.get('images').value;
-                const image: Image = {
-                  filename: img.name,
-                  url: url
-                };
-                images.push(image);
-                this.projectForm.get('images').setValue(images);
-                uploadedImages++;
-                if (uploadedImages === totalImages) {
-                  this.saveForm(project, dialogRef);
-                }
-              })
-            ).subscribe();
-          });
+        _.map(this.projectForm.controls, (formControl: FormControl, key: string) => {
+          switch (key) {
+            case 'brief': {
+              project[key] = _.map(this.brief.controls, 'value');
+              break;
+            }
+            case 'conclusion': {
+              project[key] = _.map(this.conclusion.controls, 'value');
+              break;
+            }
+            default: {
+              project[key] = formControl.value;
+              break;
+            }
+          }
+        });
+
+        await this.projectsService.addOrUpdateProject(project as Project);
+
+        // If the year or title changes, this creates a new project in the database
+        // because the url will be different. This means the old url and now outdated project
+        // still exists in the database so we should delete it. We don't need to wait for this
+        // action to complete so we can ignore waiting for the promise to resolve and let the delete
+        // finish in the background.
+        if (this.projectUrl !== project.url) {
+          this.projectsService.deleteProjects([this.projectUrl]);
         }
-      } else {
-        this.saveForm(project, dialogRef);
+
+        this.resetForm();
+        await this.router.navigate(['../../projects'], {relativeTo: this.activatedRoute});
+        this.showSavedSnackbar();
+      } catch (error) {
+        this.showErrorSnackbar();
+        console.error(error);
+      } finally {
+        loading.close();
       }
     } else {
       throw new Error('The form is invalid');
@@ -400,6 +382,9 @@ export class ProjectComponent implements OnInit {
     }
   }
 
+  /**
+   * Create the project form with default values.
+   */
   private createForm(): void {
     this.projectForm = this.formBuilder.group({
       title: [
@@ -443,122 +428,100 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
-   * Save the project to the database.
+   * Delete images that have been requested for deletion, from the database.
    *
-   * @param project - A blank project object that contains a url.
-   * @param dialogRef - The loading dialog reference.
+   * @returns {Promise<void>[]} - A list of deletion requests.
    */
-  private async saveForm(project: any, dialogRef: MatDialogRef<LoadingSpinnerModalComponent, any>) {
-    _.map(this.projectForm.controls, (formControl: FormControl, key: string) => {
-      switch (key) {
-        case 'brief': {
-          project[key] = _.map(this.brief.controls, 'value');
-          break;
-        }
-        case 'conclusion': {
-          project[key] = _.map(this.conclusion.controls, 'value');
-          break;
-        }
-        default: {
-          project[key] = formControl.value;
-          break;
-        }
-      }
+  private deleteImages(): Promise<void>[] {
+    const imagesToDeletePromises: Promise<void>[] = [];
+    _.each(this.imagesRequestedForDelete, (image: Image) => {
+      imagesToDeletePromises.push(this.storageService.deleteImage(image.storageReference));
     });
-
-    try {
-      await this.projectsService.addOrUpdateProject(project as Project);
-
-      // If the year or title changes, this creates a new project in the database
-      // because the url will be different. This means the old url and now outdated project
-      // still exists in the database so we should delete it. We don't need to wait for this
-      // action to complete so we can ignore waiting for the promise to resolve and let the delete
-      // finish in the background.
-      if (this.projectUrl !== project.url) {
-        this.projectsService.deleteProjects([this.projectUrl]);
-      }
-
-      this.resetForm();
-      await this.router.navigate(['../../projects'], {relativeTo: this.activatedRoute});
-      this.snackbar.open(
-        'Your project has been saved',
-        'Close',
-        {
-          duration: 3000,
-        }
-      );
-    } catch (error) {
-      console.error(error);
-    } finally {
-      dialogRef.close();
-    }
+    return imagesToDeletePromises;
   }
 
   /**
-   * Update the logo for the project.
+   * Generate a list of Images.
+   *
+   * @param {string} downloadUrls - A list of image download URL's.
+   * @param {string[]} filenames - A list of filenames for each image with the same index.
+   * @param {string} projectUrl - The URL for the project the images belong to.
+   *
+   * @returns {Image[]} - An Image object array.
    */
-  private updateLogo(): void {
-    const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
-      maxHeight: '150px',
-      height: '150px',
-      width: '150px'
+  private generateImages(downloadUrls: string[], filenames: string[], projectUrl: string): Image[] {
+    const images: Image[] = [];
+    _.each(downloadUrls, (url: string, index: number) => {
+      const image: Image = {
+        filename: filenames[index],
+        url: url,
+        storageReference: this.storageService.generateImageStorageReference(projectUrl, filenames[index])
+      };
+      images.push(image);
     });
-
-    // Delete the old logo from the database if the new logo filename is different to the old logo filename.
-    if (this.selectedLogo.name !== this.logoRequestedForDelete.filename) {
-      // Check filename of old logo doesn't match filename of a project image
-      let imageExists = false;
-      _.each(this.project.images, (image) => {
-        if (this.logoRequestedForDelete.filename === image.filename) {
-          imageExists = true;
-        }
-      });
-      if (!imageExists) {
-        // We don't need to wait for image to delete so let this action happen in the background.
-        this.storageService.deleteImage(this.project.url, this.logoRequestedForDelete.filename)
-          .catch((error) => {
-            throw error;
-          })
-          .finally(() => {
-            this.logoRequestedForDelete = null;
-          });
-      }
-    }
-
-    this.storageService.uploadProjectImg(this.project.url, this.selectedLogo).snapshotChanges().pipe(
-      finalize(async () => {
-        try {
-          const url: string = await this.storageService.getProjectImgDownloadUrl(this.project.url, this.selectedLogo).toPromise();
-          const logo: Image = {
-            filename: this.selectedLogo.name,
-            url: url
-          };
-          this.project.logo = logo;
-          await this.projectsService.addOrUpdateProject(this.project);
-          this.showLogoPlaceholder = false;
-        } catch (error) {
-          throw error;
-        } finally {
-          this.selectedLogo = null;
-          dialogRef.close();
-        }
-      })
-    ).subscribe();
+    return images;
   }
 
   /**
-   * Update the images for the project.
-   *
-   * @param {MatDialogRef<LoadingSpinnerModalComponent, any>} dialogRef - The loading component.
+   * Get the project to edit.
    */
-  private async updateImages(dialogRef: MatDialogRef<LoadingSpinnerModalComponent, any>) {
-    try {
-      await this.projectsService.addOrUpdateProject(this.project);
-    } catch (error) {
-      throw error;
-    } finally {
-      dialogRef.close();
-    }
+  private getProject(): void {
+    this.projectsService.projects$.subscribe((projects: Projects) => {
+      if (projects) {
+        const project: Project = projects[this.projectUrl];
+        _.each(project, (value: any, key: string) => {
+          const needToUpdate: boolean = !this.project || this.project[key] !== project[key];
+          switch (key) {
+            case 'brief': {
+              if (needToUpdate) {
+                if (this.project) {
+                  this.brief.controls = [];
+                  this.brief.reset();
+                  this.addBriefParagraph(0);
+                }
+                _.each(value, (paragraph: string, index: number) => {
+                  if (index === 0) {
+                    this.brief.controls[0].setValue(paragraph);
+                  } else {
+                    this.addBriefParagraph(index, paragraph);
+                  }
+                });
+              }
+              break;
+            }
+            case 'conclusion': {
+              if (needToUpdate) {
+                if (this.project) {
+                  this.conclusion.controls = [];
+                  this.conclusion.reset();
+                }
+                if (value.length) {
+                  _.each(value, (paragraph: string, index: number) => {
+                    if (this.hasConclusion) {
+                      this.addConclusionParagraph(index, paragraph);
+                    } else {
+                      this.addConclusionForm();
+                      this.conclusion.controls[0].setValue(paragraph);
+                    }
+                  });
+                } else {
+                  this.hasConclusion = false;
+                }
+              }
+              break;
+            }
+            case 'url': {
+              break;
+            }
+            default: {
+              this.projectForm.controls[key].setValue(value);
+              break;
+            }
+          }
+        });
+        this.project = project;
+      }
+    });
   }
 
   /**
@@ -610,6 +573,67 @@ export class ProjectComponent implements OnInit {
       this.addBriefParagraph(0);
       this.hasConclusion = false;
     }
+  }
+
+  /**
+   * Shows a snackbar informing that an error has occured.
+   */
+  private showErrorSnackbar(): void {
+    this.snackbar.open(
+      'An error occured. Please refresh and try again.',
+      'Close',
+      {duration: 5000}
+    );
+  }
+
+  /**
+   * Shows a snackbar informing the project has been saved.
+   */
+  private showSavedSnackbar(): void {
+    this.snackbar.open(
+      'Your project has been saved',
+      'Close',
+      {duration: 3000}
+    );
+  }
+
+  /**
+   * Upload images to the database.
+   *
+   * @param {FileList | File[]} imagesToUpload - A list of Files (images) to upload.
+   * @param {string} projectUrl - The URL of the project the images will belong to.
+   * @param {ImageTypes} imageType - The type of the image ('project-logo' or 'project-images').
+   *
+   * @returns {Promise<any>} - Resolves when images have been uploaded and returns a promise
+   * that will resolve the download urls for those images, and returns the filenames of those images, in order.
+   */
+  private uploadImages(imagesToUpload: FileList | File[], projectUrl: string, imageType: ImageTypes): Promise<any> {
+    return new Promise<any>(async (resolve, reject) => {
+      const uploadPromises: Promise<UploadTaskSnapshot>[] = [];
+      _.each(imagesToUpload, (image: File) => {
+        uploadPromises.push(this.storageService.uploadProjectImg(projectUrl, image).snapshotChanges().toPromise());
+      });
+
+      try {
+        const snapshots: UploadTaskSnapshot[] = await Promise.all(uploadPromises);
+        const downloadUrlPromises: Promise<string>[] = [];
+        const filenames: string[] = [];
+        _.each(snapshots, (snapshot: UploadTaskSnapshot) => {
+          downloadUrlPromises.push(this.storageService.getProjectImgDownloadUrl(projectUrl, snapshot.ref.name).toPromise());
+          filenames.push(snapshot.ref.name);
+        });
+
+        const images: any = {
+          downloadUrlPromise: Promise.all(downloadUrlPromises),
+          filenames,
+          imageType
+        };
+
+        resolve(images);
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
 }

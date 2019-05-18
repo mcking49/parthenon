@@ -222,6 +222,13 @@ mat-form-field {
       padding: 0 20px !important;
     }
   }
+
+  &.projects-btn-list {
+    > .mat-list-item-content {
+      padding-left: 0 !important;
+    }
+  }
+
 }
 
 .mat-list-text {

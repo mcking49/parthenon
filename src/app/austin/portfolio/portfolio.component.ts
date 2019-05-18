@@ -1,11 +1,14 @@
 import { ResponsiveService } from './../../services/responsive.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { LoadingSpinnerModalComponent } from '../../components/loading-spinner-modal/loading-spinner-modal.component';
 import { MatDialog } from '@angular/material';
-import { ProjectsDeprecatedService, IProjectDeprecated } from 'src/app/services/projects-deprecated.service';
+import { Observable } from 'rxjs';
 import { StorageService } from 'src/app/services/storage.service';
+import { ProjectsService } from 'src/app/services/projects.service';
+import { LoadingSpinnerModalComponent } from '../../components/loading-spinner-modal/loading-spinner-modal.component';
+import { Projects } from 'src/app/interfaces/projects';
+import { Project } from 'src/app/interfaces/project';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-portfolio',
@@ -16,36 +19,46 @@ export class PortfolioComponent implements OnInit {
 
   public showLoading: boolean;
   public isHandset: Observable<boolean>;
-  public projects: IProjectDeprecated[];
+  public projects: Project[];
   public readonly thesisLogoPath = '../../../assets/img/projects/2019-masters-thesis/main-logo.png';
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private dialog: MatDialog,
-    private projectService: ProjectsDeprecatedService,
+    private projectsService: ProjectsService,
     private responsiveService: ResponsiveService,
     private router: Router,
     private storage: StorageService
   ) { }
 
   ngOnInit() {
-    this.projects = [];
     this.initProjects();
     this.showLoading = false;
     this.isHandset = this.responsiveService.isHandset;
   }
 
+  /**
+   * Open the selected project page.
+   *
+   * @param url - The URL of the project to open.
+   */
   public openProject(url: string): void {
     this.router.navigate([`../project/${url}`], {relativeTo: this.activatedRoute});
   }
 
-  public openThesis() {
+  /**
+   * Open the thesis page.
+   */
+  public openThesis(): void {
     this.router.navigate(
       ['../master-thesis/2019-the-togetherness-of-strangers'],
       {relativeTo: this.activatedRoute}
     );
   }
 
+  /**
+   * Download the Thesis from the database.
+   */
   public async downloadThesis() {
     this.showLoading = true;
     const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
@@ -53,13 +66,26 @@ export class PortfolioComponent implements OnInit {
       height: '150px',
       width: '150px',
     });
-    await this.storage.downloadThesis();
-    dialogRef.close();
-    this.showLoading = false;
+
+    try {
+      await this.storage.downloadThesis();
+    } catch (error) {
+      throw error;
+    } finally {
+      dialogRef.close();
+      this.showLoading = false;
+    }
   }
 
-  private initProjects() {
-    this.projects = this.projectService.projects;
+  /**
+   * Initialise the portfolio page.
+   */
+  private initProjects(): void {
+    this.projectsService.projects$.subscribe((projects: Projects) => {
+      if (projects) {
+        this.projects = _.orderBy(_.values(projects), ['year', 'title'], ['desc', 'asc']);
+      }
+    });
   }
 
 }
