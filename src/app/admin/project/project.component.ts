@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef, MatSnackBar, MatDialogConfig } from '@angular/material';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { ProjectsService } from 'src/app/services/projects.service';
-import { StorageService } from './../../services/storage.service';
-import { Image } from './../../interfaces/image';
-import { Project } from './../../interfaces/project';
-import { Projects } from 'src/app/interfaces/projects';
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
+import { Image } from 'src/app/interfaces/image';
+import { Project } from 'src/app/interfaces/project';
+import { Projects } from 'src/app/interfaces/projects';
+import { ProjectsService } from 'src/app/services/projects.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 import * as _ from 'lodash';
 
@@ -22,19 +22,19 @@ type ImageTypes = 'project-image' | 'project-logo';
 })
 export class ProjectComponent implements OnInit {
 
-  public isEditingMode: boolean;
   public hasConclusion: boolean;
+  public isEditingMode: boolean;
   public newProject: boolean;
   public project: Project;
   public projectForm: FormGroup;
   public projectUrl: string;
-  public selectedLogo: File;
   public selectedImages: FileList;
+  public selectedLogo: File;
   public showLogoPlaceholder: boolean;
 
+  private imagesRequestedForDelete: Image[];
   private loadingConfig: MatDialogConfig<any>;
   private logoRequestedForDelete: Image;
-  private imagesRequestedForDelete: Image[];
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -43,7 +43,7 @@ export class ProjectComponent implements OnInit {
     private projectsService: ProjectsService,
     private router: Router,
     private snackbar: MatSnackBar,
-    private storageService: StorageService,
+    private storageService: StorageService
   ) {
     this.isEditingMode = false;
     this.hasConclusion = false;
@@ -79,18 +79,6 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
-   * Check if a brief paragraph can be deleted.
-   *
-   * A project must have a bried which means there must be at least 1
-   * brief paragraph.
-   *
-   * @returns {boolean} - True if the brief paragraph can be deleted.
-   */
-  public get canDeleteBriefParagraph(): boolean {
-    return this.brief.length > 1;
-  }
-
-  /**
    * Check if the form is in a valid state and can be saved.
    *
    * @returns {boolean} - True if the form can be saved.
@@ -104,12 +92,38 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
+   * Check if a brief paragraph can be deleted.
+   *
+   * A project must have a bried which means there must be at least 1
+   * brief paragraph.
+   *
+   * @returns {boolean} - True if the brief paragraph can be deleted.
+   */
+  public get canDeleteBriefParagraph(): boolean {
+    return this.brief.length > 1;
+  }
+
+  /**
    * Get the Conclusion section from the Project form.
    *
    * @returns {FormArray} - the Conclusion section from the Project form.
    */
   public get conclusion(): FormArray {
     return this.projectForm.get('conclusion') as FormArray;
+  }
+
+  /**
+   * Add a new paragraph for the brief.
+   *
+   * @param {number} number - The index position of where the paragraph should be added in the array.
+   * @param {string} paragraph - The new paragraph to be added to the brief.
+   */
+  public addBriefParagraph(index: number, paragraph: string = ''): void {
+    const formControlState: any = {
+      value: paragraph,
+      disabled: !this.isEditingMode
+    };
+    this.brief.insert(index, this.formBuilder.control(formControlState, Validators.required));
   }
 
   /**
@@ -135,6 +149,15 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
+   * Delete a paragraph from the brief.
+   *
+   * @param {number} index - The index position of the paragraph to be deleted.
+   */
+  public deleteBriefParagraph(index: number): void {
+    this.brief.removeAt(index);
+  }
+
+  /**
    * Delete a paragraph from the conclusion.
    *
    * @param {number} index - The index position of the paragraph to be deleted.
@@ -144,29 +167,6 @@ export class ProjectComponent implements OnInit {
     if (!this.conclusion.length) {
       this.hasConclusion = false;
     }
-  }
-
-  /**
-   * Add a new paragraph for the brief.
-   *
-   * @param {number} number - The index position of where the paragraph should be added in the array.
-   * @param {string} paragraph - The new paragraph to be added to the brief.
-   */
-  public addBriefParagraph(index: number, paragraph: string = ''): void {
-    const formControlState: any = {
-      value: paragraph,
-      disabled: !this.isEditingMode
-    };
-    this.brief.insert(index, this.formBuilder.control(formControlState, Validators.required));
-  }
-
-  /**
-   * Delete a paragraph from the brief.
-   *
-   * @param {number} index - The index position of the paragraph to be deleted.
-   */
-  public deleteBriefParagraph(index: number): void {
-    this.brief.removeAt(index);
   }
 
   /**
@@ -441,6 +441,28 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
+   * Generate a list of Images.
+   *
+   * @param {string} downloadUrls - A list of image download URL's.
+   * @param {string[]} filenames - A list of filenames for each image with the same index.
+   * @param {string} projectUrl - The URL for the project the images belong to.
+   *
+   * @returns {Image[]} - An Image object array.
+   */
+  private generateImages(downloadUrls: string[], filenames: string[], projectUrl: string): Image[] {
+    const images: Image[] = [];
+    _.each(downloadUrls, (url: string, index: number) => {
+      const image: Image = {
+        filename: filenames[index],
+        url: url,
+        storageReference: this.storageService.generateImageStorageReference(projectUrl, filenames[index])
+      };
+      images.push(image);
+    });
+    return images;
+  }
+
+  /**
    * Get the project to edit.
    */
   private getProject(): void {
@@ -503,25 +525,54 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
-   * Generate a list of Images.
-   *
-   * @param {string} downloadUrls - A list of image download URL's.
-   * @param {string[]} filenames - A list of filenames for each image with the same index.
-   * @param {string} projectUrl - The URL for the project the images belong to.
-   *
-   * @returns {Image[]} - An Image object array.
+   * Reset the form to it's initial states with default values.
    */
-  private generateImages(downloadUrls: string[], filenames: string[], projectUrl: string): Image[] {
-    const images: Image[] = [];
-    _.each(downloadUrls, (url: string, index: number) => {
-      const image: Image = {
-        filename: filenames[index],
-        url: url,
-        storageReference: this.storageService.generateImageStorageReference(projectUrl, filenames[index])
-      };
-      images.push(image);
+  private resetForm(): void {
+    this.brief.controls = [];
+    this.conclusion.controls = [];
+    this.brief.reset();
+    this.conclusion.reset();
+    this.selectedImages = null;
+    this.selectedLogo = null;
+    this.projectForm.reset({
+      title: {
+        value: this.newProject ? '' : this.project.title,
+        disabled: !this.isEditingMode
+      },
+      category: {
+        value: this.newProject ? '' : this.project.category,
+        disabled: !this.isEditingMode
+      },
+      year: {
+        value: this.newProject ? '' : this.project.year,
+        disabled: !this.isEditingMode
+      },
+      brief: this.formBuilder.array([]),
+      logo: {
+        value: this.newProject ? '' : this.project.logo,
+        disabled: !this.isEditingMode
+      },
+      images: {
+        value: this.newProject ? [] : this.project.images,
+        disabled: !this.isEditingMode
+      },
+      conclusion: this.formBuilder.array([])
     });
-    return images;
+
+    if (!this.newProject) {
+      _.each(this.project.brief, (paragraph: string, index: number) => {
+        this.addBriefParagraph(index, paragraph);
+      });
+      if (this.project.conclusion && this.project.conclusion.length) {
+        this.hasConclusion = true;
+        _.each(this.project.conclusion, (paragraph: string, index: number) => {
+          this.addConclusionParagraph(index, paragraph);
+        });
+      }
+    } else {
+      this.addBriefParagraph(0);
+      this.hasConclusion = false;
+    }
   }
 
   /**
@@ -583,57 +634,6 @@ export class ProjectComponent implements OnInit {
         reject(error);
       }
     });
-  }
-
-  /**
-   * Reset the form to it's initial states with default values.
-   */
-  private resetForm(): void {
-    this.brief.controls = [];
-    this.conclusion.controls = [];
-    this.brief.reset();
-    this.conclusion.reset();
-    this.selectedImages = null;
-    this.selectedLogo = null;
-    this.projectForm.reset({
-      title: {
-        value: this.newProject ? '' : this.project.title,
-        disabled: !this.isEditingMode
-      },
-      category: {
-        value: this.newProject ? '' : this.project.category,
-        disabled: !this.isEditingMode
-      },
-      year: {
-        value: this.newProject ? '' : this.project.year,
-        disabled: !this.isEditingMode
-      },
-      brief: this.formBuilder.array([]),
-      logo: {
-        value: this.newProject ? '' : this.project.logo,
-        disabled: !this.isEditingMode
-      },
-      images: {
-        value: this.newProject ? [] : this.project.images,
-        disabled: !this.isEditingMode
-      },
-      conclusion: this.formBuilder.array([])
-    });
-
-    if (!this.newProject) {
-      _.each(this.project.brief, (paragraph: string, index: number) => {
-        this.addBriefParagraph(index, paragraph);
-      });
-      if (this.project.conclusion && this.project.conclusion.length) {
-        this.hasConclusion = true;
-        _.each(this.project.conclusion, (paragraph: string, index: number) => {
-          this.addConclusionParagraph(index, paragraph);
-        });
-      }
-    } else {
-      this.addBriefParagraph(0);
-      this.hasConclusion = false;
-    }
   }
 
 }
