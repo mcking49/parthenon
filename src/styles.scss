@@ -275,6 +275,10 @@ mat-spinner {
     }
   }
 
+  &.spinner {
+    margin: 0 auto;
+  }
+
   circle {
     stroke: black !important;
   }
