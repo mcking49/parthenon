@@ -13,15 +13,11 @@ export class TrackingService {
   private buttonTrackingDoc: AngularFirestoreDocument<ButtonTracker>;
   private buttonTracking: BehaviorSubject<ButtonTracker> = new BehaviorSubject<ButtonTracker>(null);
   private buttonTracking$: Observable<ButtonTracker> = this.buttonTracking.asObservable();
-  private buttonTrackers: ButtonTracker;
 
   constructor(private afStore: AngularFirestore) {
     this.buttonTrackingDoc = this.afStore.doc<ButtonTracker>('tracking/button');
     this.buttonTrackingDoc.valueChanges().subscribe((buttonTrackers: ButtonTracker) => {
       this.buttonTracking.next(buttonTrackers);
-    });
-    this.buttonTracking$.subscribe((buttonTrackers: ButtonTracker) => {
-      this.buttonTrackers = buttonTrackers;
     });
   }
 
@@ -36,7 +32,17 @@ export class TrackingService {
    * @returns {Promise<void>} - Resolves when the tracking data has been saved to the database.
    */
   public trackButton(buttonName: ButtonName): Promise<void> {
-    this.buttonTrackers[buttonName]++;
-    return this.buttonTrackingDoc.update(this.buttonTrackers);
+    const buttonTrackers: ButtonTracker = this.buttonTrackers;
+    buttonTrackers[buttonName]++;
+    return this.buttonTrackingDoc.update(buttonTrackers);
+  }
+
+  /**
+   * Get the current value of the button trackers.
+   *
+   * @returns {ButtonTracker} - The current button tracker values.
+   */
+  private get buttonTrackers(): ButtonTracker {
+    return this.buttonTracking.getValue();
   }
 }
