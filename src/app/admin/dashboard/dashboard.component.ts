@@ -54,19 +54,4 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  public async logout() {
-    const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
-      height: '150px',
-      width: '150px'
-    });
-    try {
-      await this.authService.logout();
-      this.router.navigate(['../login'], {relativeTo: this.activatedRoute});
-    } catch (error) {
-      console.error(error);
-    } finally {
-      dialogRef.close();
-    }
-  }
-
 }

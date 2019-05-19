@@ -8,7 +8,15 @@
     *ngIf="isHandset$ | async">
     <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
   </button>
-  Austin D'Souza: <span class="admin-title">Admin</span>
+  <div class="toolbar-title">
+    Austin D'Souza: <span class="admin-title">Admin</span>
+  </div>
+  <button type="button"
+    (click)="logout()"
+    matTooltip="Logout"
+    mat-icon-button>
+    <mat-icon>input</mat-icon>
+  </button>
 </mat-toolbar>
 <mat-sidenav-container class="sidenav-container" *ngIf="!isLoginPage">
   <mat-sidenav #drawer class="sidenav-admin" fixedInViewport="true"
