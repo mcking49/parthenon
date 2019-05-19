@@ -1,17 +1,24 @@
 #about {
   display: flex;
   flex-direction: column;
-  margin: 10px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 40px;
+  margin: 10px auto 40px;
 
-  > .paragraph-container {
-    .paragraph {
-      margin: 0;
-      margin-bottom: 24px;
-      line-height: 24px;
+  > .about-content {
+    > .paragraph-container {
+      .paragraph {
+        margin: 0;
+        margin-bottom: 24px;
+        line-height: 24px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
+  }
+
+  > .spinner {
+    margin: 0 auto;
   }
 
   > .title {
@@ -24,5 +31,4 @@
     margin-top: 20px;
     margin-bottom: 20px;
   }
-
 }

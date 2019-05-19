@@ -2,9 +2,13 @@
   <h1 class="title">About</h1>
   <hr class="underline">
 
-  <div class="paragraph-container">
-    <p *ngFor="let paragraph of about?.paragraphs" class="paragraph">
-      {{paragraph}}
-    </p>
+  <mat-spinner diameter="50" class="spinner" *ngIf="isLoading"></mat-spinner>
+
+  <div class="about-content" *ngIf="!isLoading">
+    <div class="paragraph-container">
+      <p *ngFor="let paragraph of about?.paragraphs" class="paragraph">
+        {{paragraph}}
+      </p>
+    </div>
   </div>
 </div>
