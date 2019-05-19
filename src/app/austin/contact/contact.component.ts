@@ -1,7 +1,7 @@
 import { Profile } from './../../interfaces/profile';
 import { ProfileService } from './../../services/profile.service';
 import { Component, OnInit } from '@angular/core';
-import { StorageService } from '../../services/storage.service';
+import { CvLanguage, StorageService } from '../../services/storage.service';
 import { MatDialog } from '@angular/material';
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
 
@@ -32,7 +32,21 @@ export class ContactComponent implements OnInit {
     });
   }
 
-  public async downloadCv(language: string): Promise<void> {
+  /**
+   * Check if the contact details are still loading.
+   *
+   * @returns {boolean} - Returns true if the contact details haven't been loaded yet.
+   */
+  public get isLoading(): boolean {
+    return !this.email && !this.phone && !this.linkedInUrl;
+  }
+
+  /**
+   * Download the CV from the database.
+   *
+   * @param language - The language of the CV to download
+   */
+  public async downloadCv(language: CvLanguage) {
     this.showLoading = true;
     const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
       maxHeight: '150px',

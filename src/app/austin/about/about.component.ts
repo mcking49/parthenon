@@ -19,4 +19,13 @@ export class AboutComponent implements OnInit {
     });
   }
 
+  /**
+   * Check if the about content is still loading.
+   *
+   * @returns {boolean} - Returns true if the about content hasn't been loaded yet.
+   */
+  public get isLoading(): boolean {
+    return !this.about;
+  }
+
 }

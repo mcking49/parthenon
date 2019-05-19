@@ -19,6 +19,7 @@ import {
   MatIconModule,
   MatListModule,
   MatMenuModule,
+  MatProgressSpinnerModule,
   MatToolbarModule
 } from '@angular/material';
 import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
@@ -45,6 +46,7 @@ import { AustinRoutingModule } from './austin-routing.module';
     MatIconModule,
     MatListModule,
     MatMenuModule,
+    MatProgressSpinnerModule,
     MatToolbarModule,
     NgbCarouselModule,
     AustinRoutingModule

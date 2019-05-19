@@ -6,6 +6,8 @@ import { Project } from '../interfaces/project';
 import * as _ from 'lodash';
 import { Image } from '../interfaces/image';
 
+export type CvLanguage = 'en' | 'de';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -54,11 +56,11 @@ export class StorageService {
   /**
    * Download the CV.
    *
-   * @param {string} language - The language of the CV to download. Only accepts 'en' or 'de'.
+   * @param {CvLanguage} language - The language of the CV to download. Only accepts 'en' or 'de'.
    *
    * @returns {Promise<boolean>} - A promise that resolves after the action is completed.
    */
-  public downloadCv(language: string): Promise<boolean> {
+  public downloadCv(language: CvLanguage): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
       this.getCvDownloadUrl(language).subscribe(
         (url: string) => {
