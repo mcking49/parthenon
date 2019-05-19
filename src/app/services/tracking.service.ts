@@ -12,7 +12,7 @@ export class TrackingService {
 
   private buttonTrackingDoc: AngularFirestoreDocument<ButtonTracker>;
   private buttonTracking: BehaviorSubject<ButtonTracker> = new BehaviorSubject<ButtonTracker>(null);
-  private buttonTracking$: Observable<ButtonTracker> = this.buttonTracking.asObservable();
+  public buttonTracking$: Observable<ButtonTracker> = this.buttonTracking.asObservable();
 
   constructor(private afStore: AngularFirestore) {
     this.buttonTrackingDoc = this.afStore.doc<ButtonTracker>('tracking/button');

@@ -29,7 +29,7 @@ $parthenon-theme: mat-light-theme($parthenon-primary, $parthenon-accent, $parthe
 @include angular-material-theme($parthenon-theme);
 
 // Google Fonts
-@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:300');
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:300|700');
 
 /* You can add global styles to this file, and also import other style files */
 @import './styles/variables.scss';

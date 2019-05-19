@@ -1,5 +1,10 @@
-<p>
-  dashboard works!
-</p>
+<div id="dashboard">
+  <div class="download-stats">
+    <div class="stat" *ngFor="let tracker of buttonTrackers | keyvalue">
+      <div class="stat-label">{{getStatLabel(tracker.key)}}</div>
+      <div class="stat-value">{{tracker.value}}</div>
+    </div>
+  </div>
 
-<button (click)="logout()" class="download-btn" mat-raised-button>Logout</button>
+  <button (click)="logout()" class="download-btn" mat-raised-button>Logout</button>
+</div>
