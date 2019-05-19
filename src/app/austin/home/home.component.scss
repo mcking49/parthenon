@@ -6,7 +6,7 @@
   justify-content: center;
   align-items: center;
   color: white;
-  
+
   > .home-content {
     display: flex;
     flex-direction: column;
@@ -19,24 +19,24 @@
       overflow: hidden;
       border-radius: 50%;
       border: 5px solid white;
-  
+
       > img {
         height: 100%;
         margin-left: -25%;
         filter: grayscale(100%);
       }
     }
-  
+
     > .subtitle {
       font-size: 36px;
       margin: 20px 0;
     }
-  
+
     > .title {
       font-weight: bold;
       margin: 40px 0 20px;
     }
-  
+
     > .underline {
       background-color: white;
       margin: 0;

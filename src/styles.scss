@@ -266,6 +266,20 @@ mat-form-field {
   }
 }
 
+// Progress Spinner
+// ========================================================================= //
+mat-spinner {
+  &.home-spinner {
+    circle {
+      stroke: white !important;
+    }
+  }
+
+  circle {
+    stroke: black !important;
+  }
+}
+
 // Radio Group
 // ========================================================================= //
 .mat-radio-label {
