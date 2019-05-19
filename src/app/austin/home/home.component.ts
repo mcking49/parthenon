@@ -19,4 +19,13 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  /**
+   * Check if the profile content is still loading.
+   *
+   * @returns {boolean} - Returns true if the profile content hasn't been loaded yet.
+   */
+  public get isLoading(): boolean {
+    return !this.profile;
+  }
+
 }
