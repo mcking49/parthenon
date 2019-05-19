@@ -4,6 +4,8 @@ import { Component, OnInit } from '@angular/core';
 import { CvLanguage, StorageService } from '../../services/storage.service';
 import { MatDialog } from '@angular/material';
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
+import { TrackingService, ButtonName } from 'src/app/services/tracking.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-contact',
@@ -20,7 +22,9 @@ export class ContactComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private profileService: ProfileService,
-    private storage: StorageService) { }
+    private storageService: StorageService,
+    private trackingService: TrackingService
+  ) { }
 
   ngOnInit() {
     this.profileService.profile$.subscribe((profile: Profile) => {
@@ -54,7 +58,8 @@ export class ContactComponent implements OnInit {
       width: '150px'
     });
     try {
-      await this.storage.downloadCv(language);
+      await this.storageService.downloadCv(language);
+      this.trackingService.trackButton(`downloadCv${_.capitalize(language)}` as ButtonName);
     } catch (error) {
       console.error(error);
     } finally {
