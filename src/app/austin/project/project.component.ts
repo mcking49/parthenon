@@ -42,6 +42,15 @@ export class ProjectComponent implements OnInit {
   }
 
   /**
+   * Check if the project is still loading.
+   *
+   * @returns {boolean} - Returns true if the project hasn't been loaded yet.
+   */
+  public get isLoading(): boolean {
+    return !this.project;
+  }
+
+  /**
    * Initialise the project component and get the Project data
    * from the server.
    */
