@@ -202,8 +202,14 @@ export class ProjectComponent implements OnInit {
         this.showSavedSnackbar();
         this.selectedImages = null;
       } catch (error) {
-        this.showErrorSnackbar();
-        console.error(error);
+        let message: string;
+        if (error.code === 'permission-denied') {
+          message = `Authentication error: ${error.message}`;
+        } else {
+          message = 'ERROR: An error has occured. Please refresh and try again.';
+          console.error(error);
+        }
+        this.showErrorSnackbar(message);
       } finally {
         this.imagesRequestedForDelete = [];
         loading.close();
@@ -233,8 +239,14 @@ export class ProjectComponent implements OnInit {
         this.showLogoPlaceholder = false;
         this.logoRequestedForDelete = null;
       } catch (error) {
-        this.showErrorSnackbar();
-        console.error(error);
+        let message: string;
+        if (error.code === 'permission-denied') {
+          message = `Authentication error: ${error.message}`;
+        } else {
+          message = 'ERROR: An error has occured. Please refresh and try again.';
+          console.error(error);
+        }
+        this.showErrorSnackbar(message);
       } finally {
         loading.close();
       }
@@ -358,8 +370,14 @@ export class ProjectComponent implements OnInit {
         await this.router.navigate(['../../projects'], {relativeTo: this.activatedRoute});
         this.showSavedSnackbar();
       } catch (error) {
-        this.showErrorSnackbar();
-        console.error(error);
+        let message: string;
+        if (error.code === 'permission-denied') {
+          message = `Authentication error: ${error.message}`;
+        } else {
+          message = 'ERROR: An error has occured. Please refresh and try again.';
+          console.error(error);
+        }
+        this.showErrorSnackbar(message);
       } finally {
         loading.close();
       }
@@ -577,10 +595,12 @@ export class ProjectComponent implements OnInit {
 
   /**
    * Shows a snackbar informing that an error has occured.
+   *
+   * @param {string} message - The error message to display.
    */
-  private showErrorSnackbar(): void {
+  private showErrorSnackbar(message: string): void {
     this.snackbar.open(
-      'An error occured. Please refresh and try again.',
+      message,
       'Close',
       {duration: 5000}
     );

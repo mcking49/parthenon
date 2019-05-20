@@ -15,7 +15,7 @@ import * as _ from 'lodash';
 })
 export class ProfileComponent implements OnInit {
 
-  public isEditingMode: boolean = false;
+  public isEditingMode: boolean;
   public profile: Profile;
   public profileForm: FormGroup;
   public selectedFile: File;
@@ -26,7 +26,9 @@ export class ProfileComponent implements OnInit {
     private profileService: ProfileService,
     private snackbar: MatSnackBar,
     private storageService: StorageService
-  ) { }
+  ) {
+    this.isEditingMode = false;
+  }
 
   ngOnInit() {
     this.initialiseForm();
@@ -72,7 +74,6 @@ export class ProfileComponent implements OnInit {
 
     try {
       await this.profileService.updateProfile(updatedProfile as Profile);
-      this.toggleEditingState();
       this.snackbar.open(
         'The changes have been saved',
         'Close',
@@ -81,8 +82,17 @@ export class ProfileComponent implements OnInit {
         }
       );
     } catch (error) {
-      console.error(error);
+      if (error.code === 'permission-denied') {
+        this.snackbar.open(
+          `Authentication error: ${error.message}`,
+          'Close',
+          {duration: 5000}
+        );
+      } else {
+        console.error(error);
+      }
     } finally {
+      this.toggleEditingState();
       dialogRef.close();
     }
   }

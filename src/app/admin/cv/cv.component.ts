@@ -14,14 +14,16 @@ export class CvComponent implements OnInit {
 
   public selectedFile: File;
   public cvForm: FormGroup;
-  public isEditingMode: boolean = false;
+  public isEditingMode: boolean;
 
   constructor(
     private dialog: MatDialog,
     private formBuilder: FormBuilder,
     private snackbar: MatSnackBar,
     private storageService: StorageService
-  ) { }
+  ) {
+    this.isEditingMode = false;
+  }
 
   ngOnInit() {
     this.initialiseForm();
@@ -50,7 +52,7 @@ export class CvComponent implements OnInit {
     }
   }
 
-  public uploadCv() {
+  public async uploadCv() {
     if (this.selectedFile && this.cvForm.valid) {
       const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
         maxHeight: '150px',
@@ -58,18 +60,27 @@ export class CvComponent implements OnInit {
         width: '150px'
       });
 
-      const uploadTask = this.storageService.uploadCv(this.cvForm.controls.language.value, this.selectedFile);
-      uploadTask.percentageChanges().subscribe((percentage) => {
-        if (percentage === 100) {
-          dialogRef.close();
-          this.toggleEditingState();
+      try {
+        await this.storageService.uploadCv(this.cvForm.controls.language.value, this.selectedFile);
+        this.snackbar.open(
+          'Your CV has been uploaded',
+          'Close',
+          {duration: 3000}
+        );
+      } catch (error) {
+        if (error.code === 'storage/unauthorized') {
           this.snackbar.open(
-            'Your CV has been uploaded',
+            error.message,
             'Close',
-            {duration: 3000}
+            {duration: 5000}
           );
+        } else {
+          console.error(error);
         }
-      });
+      } finally {
+        this.toggleEditingState();
+        dialogRef.close();
+      }
     } else {
       throw new Error('Please select a file');
     }
