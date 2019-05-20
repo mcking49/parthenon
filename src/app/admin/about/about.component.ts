@@ -14,7 +14,6 @@ import * as _ from 'lodash';
 export class AboutComponent implements OnInit {
 
   public isEditingMode: boolean;
-  private isFirstTimeLoad: boolean;
 
   public aboutForm: FormGroup;
   // Keep a reference of the about content to make reseting the form easier.
@@ -27,7 +26,6 @@ export class AboutComponent implements OnInit {
     private snackbar: MatSnackBar
   ) {
     this.isEditingMode = false;
-    this.isFirstTimeLoad = true;
   }
 
   ngOnInit() {
@@ -36,17 +34,6 @@ export class AboutComponent implements OnInit {
     });
     this.aboutService.about$.subscribe((about: About) => {
       if (about) {
-        if (this.isFirstTimeLoad) {
-          this.isFirstTimeLoad = false;
-        } else {
-          this.snackbar.open(
-            'The about content has been refreshed',
-            'Close',
-            {
-              duration: 3000,
-            }
-          );
-        }
         this.defaultParagraphs = about.paragraphs;
         this.resetForm();
       }
@@ -88,9 +75,7 @@ export class AboutComponent implements OnInit {
       };
 
       try {
-        this.isFirstTimeLoad = true;
         await this.aboutService.updateAbout(updatedAbout);
-        this.toggleEditingState();
         this.snackbar.open(
           'The changes have been saved',
           'Close',
@@ -99,8 +84,17 @@ export class AboutComponent implements OnInit {
           }
         );
       } catch (error) {
-        console.error(error);
+        if (error.code === 'permission-denied') {
+          this.snackbar.open(
+            `Authentication error: ${error.message}`,
+            'Close',
+            {duration: 5000}
+          );
+        } else {
+          console.error(error);
+        }
       } finally {
+        this.toggleEditingState();
         dialogRef.close();
       }
     } else {
