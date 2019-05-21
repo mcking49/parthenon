@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase/app';
-import { first } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -55,5 +54,16 @@ export class AuthenticationService {
    */
   public logout(): Promise<void> {
     return this.auth.auth.signOut();
+  }
+
+  /**
+   * Update the password for the current user.
+   *
+   * @param {string} newPassword - The new password for the current user.
+   *
+   * @returns {Promise<void>} - Resolves when the password has been updated.
+   */
+  public updatePassword(newPassword: string): Promise<void> {
+    return this.auth.auth.currentUser.updatePassword(newPassword);
   }
 }

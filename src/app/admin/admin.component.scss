@@ -14,6 +14,18 @@
   width: 200px;
   top: $toolbar-height !important;
   height: calc(100% - #{$toolbar-height});
+
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    > .admin-links {
+      &:last-child {
+        margin-top: auto;
+      }
+    }
+  }
 }
 
 .sidenav .mat-toolbar {

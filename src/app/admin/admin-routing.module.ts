@@ -1,16 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AdminComponent } from './admin.component';
+import { AuthGuard } from './../guards/auth.guard';
+
+import { AccountComponent } from './account/account.component';
 import { AboutComponent } from './about/about.component';
-import { ProfileComponent } from './profile/profile.component';
+import { AdminComponent } from './admin.component';
+import { CvComponent } from './cv/cv.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component';
 import { ProjectComponent } from './project/project.component';
 import { ProjectsComponent } from './projects/projects.component';
-
-import { AuthGuard } from './../guards/auth.guard';
-import { CvComponent } from './cv/cv.component';
 
 const routes: Routes = [
   {
@@ -57,6 +58,11 @@ const routes: Routes = [
         component: CvComponent,
         canActivate: [AuthGuard]
       },
+      {
+        path: 'account',
+        component: AccountComponent,
+        canActivate: [AuthGuard]
+      }
     ]
   }
 ];

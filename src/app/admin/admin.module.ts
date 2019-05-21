@@ -35,6 +35,7 @@ import {
 // Other
 import { AdminRoutingModule } from './admin-routing.module';
 import { CvComponent } from './cv/cv.component';
+import { AccountComponent } from './account/account.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { CvComponent } from './cv/cv.component';
     LoginComponent,
     ProjectComponent,
     ProjectsComponent,
-    CvComponent
+    CvComponent,
+    AccountComponent
   ],
   imports: [
     CommonModule,
