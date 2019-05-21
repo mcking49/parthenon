@@ -1,3 +1,29 @@
-<p>
-  account works!
-</p>
+<div id="account">
+
+  <div class="accountCard">
+    <div class="header">
+      <h1 class="title">Change Password</h1>
+    </div>
+
+    <form [formGroup]="changePasswordForm" (ngSubmit)="changePassword()" class="accountForm">
+      <mat-form-field appearance="outline">
+        <mat-label>New Password</mat-label>
+        <input matInput type="password" placeholder="Password" formControlName="password">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Confirm Password</mat-label>
+        <input matInput type="password" placeholder="Confirm Password" formControlName="confirmPassword">
+      </mat-form-field>
+
+      <button type="submit"
+        class="change-pwd-btn"
+        [disabled]="!changePasswordForm.valid"
+        [class.disabled]="!changePasswordForm.valid"
+        mat-raised-button>
+        Change Password
+      </button>
+    </form>
+  </div>
+
+</div>
