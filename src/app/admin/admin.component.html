@@ -23,7 +23,7 @@
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
     [opened]="!(isHandset$ | async)">
-    <mat-nav-list>
+    <mat-nav-list class="nav-links">
       <a mat-list-item class="admin-links" routerLink="dashboard">
         <mat-icon>dashboard</mat-icon>
         Dashboard
@@ -43,6 +43,10 @@
       <a mat-list-item class="admin-links" routerLink="cv">
         <mat-icon>card_travel</mat-icon>
         CV
+      </a>
+      <a mat-list-item class="admin-links" routerLink="account">
+        <mat-icon>settings</mat-icon>
+        Account
       </a>
     </mat-nav-list>
   </mat-sidenav>
