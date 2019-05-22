@@ -1,0 +1,58 @@
+<mat-toolbar class="main-toolbar" *ngIf="!isLoginPage">
+  <button
+    type="button"
+    aria-label="Toggle sidenav"
+    mat-icon-button
+    (click)="drawer.toggle()"
+    *ngIf="isHandset$ | async">
+    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+  </button>
+  <div class="toolbar-title">
+    Austin D'Souza: <span class="admin-title">Admin</span>
+  </div>
+  <button type="button"
+    (click)="logout()"
+    matTooltip="Logout"
+    mat-icon-button>
+    <mat-icon>input</mat-icon>
+  </button>
+</mat-toolbar>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav class="sidenav-admin"
+    fixedInViewport="true"
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="!(isHandset$ | async)"
+    *ngIf="!isLoginPage"
+    #drawer>
+    <mat-nav-list class="nav-links">
+      <a mat-list-item class="admin-links" routerLink="dashboard">
+        <mat-icon>dashboard</mat-icon>
+        Dashboard
+      </a>
+      <a mat-list-item class="admin-links" routerLink="profile">
+        <mat-icon>person</mat-icon>
+        Profile
+      </a>
+      <a mat-list-item class="admin-links" routerLink="about">
+        <mat-icon>chat_bubble</mat-icon>
+        About
+      </a>
+      <a mat-list-item class="admin-links" routerLink="projects">
+        <mat-icon>library_books</mat-icon>
+        Projects
+      </a>
+      <a mat-list-item class="admin-links" routerLink="cv">
+        <mat-icon>card_travel</mat-icon>
+        CV
+      </a>
+      <a mat-list-item class="admin-links" routerLink="account">
+        <mat-icon>settings</mat-icon>
+        Account
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content class="main-content">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

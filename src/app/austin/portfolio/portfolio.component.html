@@ -1,0 +1,57 @@
+<div id="portfolio" class="responsive-width">
+  <h1 class="title">Portfolio</h1>
+
+  <mat-spinner diameter="50" class="spinner" *ngIf="isLoading"></mat-spinner>
+
+  <div class="portfolio-content" *ngIf="!isLoading">
+    <!-- Desktop design -->
+    <a (click)="openThesis()" class="thesis-logo-button" *ngIf="!(isHandset | async)">
+      <img [src]="thesisLogoPath" class="project-logo"/>
+      <div class="hover-overlay">
+        <p class="project-title" mat-line>The Togetherness of Strangers</p>
+        <p class="project-year" mat-line>2019</p>
+        <p class="project-category" mat-line>Master Thesis</p>
+      </div>
+    </a>
+  
+    <mat-grid-list class="grid" cols="4" gutterSize="50px" *ngIf="!(isHandset | async)">
+      <mat-grid-tile class="project-tile" *ngFor="let project of projects">
+        <a (click)="openProject(project.url)">
+          <div class="titles">
+            <p class="project-title">{{project.title}}</p>
+            <hr class="underline">
+            <p class="project-year project-subtitle">{{project.year}}</p>
+            <p class="project-category project-subtitle">{{project.category}}</p>
+          </div>
+          <img [attr.src]="project?.logo?.url" class="project-logo">
+        </a>
+      </mat-grid-tile>
+    </mat-grid-list>
+  
+    <!-- Mobile Design -->
+    <mat-card class="thesis-card" *ngIf="isHandset | async">
+      <button (click)="openThesis()" mat-item>
+        <mat-card-header>
+          <mat-card-title>The Togetherness of Strangers</mat-card-title>
+          <mat-card-subtitle>Master Thesis</mat-card-subtitle>
+        </mat-card-header>
+        <img mat-card-image [src]="thesisLogoPath">
+        <mat-card-content>
+          <p>
+            A 120-point thesis submitted to the Victoria University of Wellington in partial fulfilment of the requirements for the
+            degree of Master of Architecture (Professional).
+          </p>
+        </mat-card-content>
+      </button>
+    </mat-card>
+  
+    <mat-action-list *ngIf="isHandset | async">
+      <button class="projects-btn-list" *ngFor="let project of projects" (click)="openProject(project.url)" mat-list-item>
+        <img [attr.src]="project?.logo?.url" class="project-logo"/>
+        <p class="project-title" mat-line>{{project.title}}</p>
+        <p class="project-year project-subtitle" mat-line>{{project.year}}</p>
+        <p class="project-category project-subtitle" mat-line>{{project.category}}</p>
+      </button>
+    </mat-action-list>
+  </div>
+</div>

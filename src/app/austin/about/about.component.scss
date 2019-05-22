@@ -1,0 +1,30 @@
+#about {
+  display: flex;
+  flex-direction: column;
+  margin: 10px auto 40px;
+
+  > .about-content {
+    > .paragraph-container {
+      .paragraph {
+        margin: 0;
+        margin-bottom: 24px;
+        line-height: 24px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  > .title {
+    text-align: center;
+    margin: 40px 0 0;
+  }
+
+  > .underline {
+    width: 20%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+}

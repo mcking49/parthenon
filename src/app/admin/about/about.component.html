@@ -1,0 +1,53 @@
+<div id="about">
+
+    <div class="lock-toggle">
+      <span class="label">Edit About</span>
+      <mat-slide-toggle [checked]="isEditingMode" (change)="toggleEditingState()"></mat-slide-toggle>
+    </div>
+
+    <div class="form-card">
+      <div class="header">
+        <h1 class="title">About</h1>
+      </div>
+
+      <form [formGroup]="aboutForm" (ngSubmit)="submitForm()" class="form-container">
+        <div formArrayName="paragraphs">
+          <div class="paragraphs" *ngFor="let paragraph of paragraphs.controls; let i = index">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Paragraph</mat-label>
+              <textarea
+                placeholder="e.g. Welcome to my website. This is a new paragraph"
+                [formControlName]="i"
+                cdkTextareaAutosize
+                matInput>
+              </textarea>
+            </mat-form-field>
+            <button
+              type="button"
+              class="delete-btn"
+              (click)="deleteParagraph(i)"
+              *ngIf="paragraphs.length > 1"
+              color="warn"
+              [disabled]="!isEditingMode"
+              [class.disabled]="!isEditingMode"
+              mat-mini-fab>
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="add-paragraph-btn"
+          (click)="addParagraph()"
+          [disabled]="!isEditingMode"
+          [class.disabled]="!isEditingMode"
+          mat-raised-button>
+          Add new paragraph
+        </button>
+
+        <button type="submit" class="submit-btn" [disabled]="isDisabled" [class.disabled]="isDisabled" mat-raised-button>Save Changes</button>
+      </form>
+    </div>
+
+  </div>

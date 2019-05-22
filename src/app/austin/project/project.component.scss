@@ -1,0 +1,85 @@
+@import '../../../styles/variables.scss';
+
+#project {
+  min-height: 100%;
+  padding-top: 64px;
+  margin-bottom: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  > .project-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    > .project-header {
+      text-align: center;
+  
+      > .project-title {
+        margin-bottom: 10px;
+        margin-top: 40px;
+      }
+    }
+
+    > .section-container {
+      width: 100%;
+
+      > .section-title {
+        text-align: center;
+        margin: 20px 0;
+        font-size: 24px;
+
+        > .paragraph {
+          margin: 0;
+          margin-bottom: 24px;
+          line-height: 24px;
+        }
+      }
+    }
+
+    .slide-image {
+      display: block;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .slide-size {
+      max-height: 1080px;
+      height: 500px;
+      max-width: 900px;
+  
+      @media screen and (max-width: $mobile-screen-large) {
+        height: 190px;
+        max-width: 338px;
+      }
+  
+      @media screen and (min-width: $mobile-screen-large) and (max-width: $tablet-screen-normal) {
+        height: 211px;
+        max-width: 375px;
+      }
+  
+      @media screen and (min-width: $tablet-screen-normal + 1) and (max-width: $laptop-screen-normal) {
+        height: 304px;
+        max-width: 540px;
+      }
+  
+      @media screen and (min-width: $laptop-screen-normal + 1) and (max-width: $laptop-screen-large) {
+        height: 402px;
+        max-width: 715px;
+      }
+  
+      @media screen and (min-width: $laptop-screen-large + 1) and (max-width: $desktop-screen-4k) {
+        height: 506px;
+        max-width: 900px;
+      }
+    }
+
+    .slideshow {
+      margin: 25px;
+    }
+  }
+}

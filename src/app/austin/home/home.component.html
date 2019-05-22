@@ -1,0 +1,19 @@
+<div id="home">
+  <mat-spinner diameter="50" class="home-spinner" *ngIf="isLoading"></mat-spinner>
+
+  <div class="home-content" *ngIf="!isLoading">
+    <div class="image-container">
+      <img [attr.src]="profile?.profileImgUrl">
+    </div>
+  
+    <h1 class="title">{{profile?.firstName | uppercase}} {{profile?.lastName | uppercase}}</h1>
+  
+    <hr class="underline">
+  
+    <div class="subtitle">{{profile?.jobTitle}}</div>
+  </div>
+</div>
+
+<app-about></app-about>
+<app-portfolio></app-portfolio>
+<app-contact></app-contact>

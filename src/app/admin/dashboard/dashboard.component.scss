@@ -1,0 +1,25 @@
+#dashboard {
+  > .download-stats {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 24px;
+
+    > .stat {
+      background-color: white;
+      padding: 24px;
+      border-radius: 4px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      min-width: 200px;
+
+      > .stat-label {
+        font-size: 16px;
+        margin-bottom: 8px;
+      }
+
+      > .stat-value {
+        font-weight: 700;
+        font-size: 32px;
+      }
+    }
+  }
+}

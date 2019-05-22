@@ -29,10 +29,11 @@ $parthenon-theme: mat-light-theme($parthenon-primary, $parthenon-accent, $parthe
 @include angular-material-theme($parthenon-theme);
 
 // Google Fonts
-@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:300');
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:300|700');
 
 /* You can add global styles to this file, and also import other style files */
 @import './styles/variables.scss';
+@import './styles/form.scss';
 
 html, body {
   height: 100%;
@@ -62,6 +63,10 @@ a {
 
 button {
   font-weight: 300;
+}
+
+input {
+  font-family: 'Josefin Sans', sans-serif !important;
 }
 
 .responsive-width {
@@ -198,10 +203,31 @@ ngb-carousel {
   }
 }
 
+// Form
+// ======================================================================== //
+mat-form-field {
+  .mat-form-field-infix {
+    font-family: 'Josefin Sans', sans-serif;
+  }
+}
+
 // List
 // ========================================================================= //
-.mat-list-item-content {
+.mat-list-item {
   padding: 0 !important;
+
+  &.admin-links {
+    .mat-list-item-content {
+      padding: 0 20px !important;
+    }
+  }
+
+  &.projects-btn-list {
+    > .mat-list-item-content {
+      padding-left: 0 !important;
+    }
+  }
+
 }
 
 .mat-list-text {
@@ -215,32 +241,70 @@ ngb-carousel {
 // Menu
 // ========================================================================= //
 .menu-custom-backdrop {
-  background-color: black !important;
+  background-color: black;
   opacity: 0.4 !important;
-  transition: opacity 4s ease-in-out !important;
-}
 
-.cdk-overlay-pane {
-  height: 100% !important;
-  top: 0 !important;
-  right: 0 !important;
+  + .cdk-overlay-connected-position-bounding-box {
+    .cdk-overlay-pane {
+      height: 100%;
+      top: 0 !important;
+      right: 0 !important;
 
-  .menu-custom-container {
-    max-height: 100% !important;
-    width: 100% !important;
-    border-radius: 0 !important;
+      .menu-custom-container {
+        max-height: 100%;
+        width: 100%;
+        border-radius: 0;
 
-    button {
-      font-weight: 300;
-      &:focus {
-        outline: none;
+        button {
+          font-weight: 300;
+          &:focus {
+            outline: none;
+          }
+        }
       }
     }
   }
+}
+
+// Progress Spinner
+// ========================================================================= //
+mat-spinner {
+  &.home-spinner {
+    circle {
+      stroke: white !important;
+    }
+  }
+
+  &.spinner {
+    margin: 0 auto;
+  }
+
+  circle {
+    stroke: black !important;
+  }
+}
+
+// Radio Group
+// ========================================================================= //
+.mat-radio-label {
+  margin-bottom: 0;
+}
+
+// Snackbar
+// ========================================================================= //
+snack-bar-container {
+  height: fit-content;
 }
 
 // Toolbar
 // ========================================================================= //
 mat-toolbar {
   font-weight: 300 !important;
+}
+
+// Tooltip
+// ========================================================================= //
+.delete-btn-tooltip {
+  background-color: #f44336; // "warn"
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4);
 }

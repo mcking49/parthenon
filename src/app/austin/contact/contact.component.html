@@ -1,0 +1,26 @@
+<div id="contact" class="responsive-width">
+  <h1 class="title">Contact & CV</h1>
+  <hr class="underline">
+
+  <mat-spinner diameter="50" class="spinner" *ngIf="isLoading"></mat-spinner>
+
+  <div class="contact-content" *ngIf="!isLoading">
+    <div class="contact-item">
+      <i class="material-icons contact-logo">email</i>
+      <a href="mailto:{{email}}">{{email}}</a>
+    </div>
+  
+    <div class="contact-item">
+      <i class="material-icons contact-logo">phone</i>
+      <a href="tel:{{phone}}">{{phone}}</a>
+    </div>
+  
+    <div class="contact-item">
+      <img src="../../../assets/img/linkedin-logo.svg" class="contact-logo"/>
+      <a href="{{linkedInUrl}}">LinkedIn</a>
+    </div>
+  
+    <button (click)="downloadCv('en')" class="download-btn" mat-raised-button>Download CV (English)</button>
+    <button (click)="downloadCv('de')" class="download-btn" mat-raised-button>Download CV (German)</button>
+  </div>
+</div>

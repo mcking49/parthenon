@@ -1,0 +1,8 @@
+<div id="dashboard">
+  <div class="download-stats">
+    <div class="stat" *ngFor="let tracker of buttonTrackers | keyvalue">
+      <div class="stat-label">{{getStatLabel(tracker.key)}}</div>
+      <div class="stat-value">{{tracker.value}}</div>
+    </div>
+  </div>
+</div>

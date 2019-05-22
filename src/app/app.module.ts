@@ -1,68 +1,50 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
+// Components
 import { AppComponent } from './app.component';
+import { LoadingSpinnerModalComponent } from './components/loading-spinner-modal/loading-spinner-modal.component';
 
+// AngularFire
 import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { firebaseConfig } from './config/firebase';
 
+// Angular Material
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AboutComponent } from './components/about/about.component';
-import { NavigationComponent } from './components/navigation/navigation.component';
-import { PortfolioComponent } from './components/portfolio/portfolio.component';
-import { ContactComponent } from './components/contact/contact.component';
-import { HomeComponent } from './components/home/home.component';
-import { ThesisComponent } from './components/thesis/thesis.component';
 import {
   MatButtonModule,
-  MatCardModule,
   MatDialogModule,
-  MatGridListModule,
-  MatIconModule,
-  MatListModule,
-  MatMenuModule,
-  MatProgressSpinnerModule,
-  MatToolbarModule,
+  MatProgressSpinnerModule
 } from '@angular/material';
-import { ProjectComponent } from './components/project/project.component';
 
-import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
-import { DownloadSpinnerModalComponent } from './components/download-spinner-modal/download-spinner-modal.component';
+// Other
+import { AppRoutingModule } from './app-routing.module';
+import { ConfirmDeleteComponent } from './components/confirm-delete/confirm-delete.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AboutComponent,
-    NavigationComponent,
-    PortfolioComponent,
-    ContactComponent,
-    HomeComponent,
-    ProjectComponent,
-    DownloadSpinnerModalComponent,
-    ThesisComponent
+    LoadingSpinnerModalComponent,
+    ConfirmDeleteComponent
   ],
   imports: [
     AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireAuthModule,
     AngularFireStorageModule,
+    AngularFirestoreModule,
     BrowserModule,
     BrowserAnimationsModule,
     MatButtonModule,
-    MatCardModule,
     MatDialogModule,
-    MatGridListModule,
-    MatIconModule,
-    MatListModule,
-    MatMenuModule,
     MatProgressSpinnerModule,
-    MatToolbarModule,
-    NgbCarouselModule,
     AppRoutingModule
   ],
   providers: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent],
-  entryComponents: [DownloadSpinnerModalComponent]
+  entryComponents: [LoadingSpinnerModalComponent, ConfirmDeleteComponent]
 })
 export class AppModule { }

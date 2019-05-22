@@ -1,0 +1,23 @@
+<div id="login">
+
+  <div class="loginCard">
+    <div class="header">
+      <h1 class="title">Welcome</h1>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="loginForm">
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput placeholder="Username" formControlName="username">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" placeholder="Password" formControlName="password">
+      </mat-form-field>
+
+      <button type="submit" class="login-btn" [disabled]="!loginForm.valid" [class.disabled]="!loginForm.valid" mat-raised-button>Login</button>
+    </form>
+  </div>
+
+</div>

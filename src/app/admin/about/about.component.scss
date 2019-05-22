@@ -1,0 +1,50 @@
+#about {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  > .form-card {
+    width: 800px;
+
+    .add-paragraph-btn {
+      color: white;
+      background-color: #11DC60;
+      margin: 0 auto 30px auto;
+      width: 160px;
+
+      &.disabled {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    .paragraphs {
+      display: flex;
+      align-items: center;
+
+      > .delete-btn {
+        margin: 0 0 20px 20px;
+
+        &.disabled {
+          background-color: rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      > .form-field {
+        flex-grow: 1;
+      }
+    }
+  }
+
+  > .lock-toggle {
+    display: flex;
+    align-content: center;
+    margin-bottom: 20px;
+
+    > .label {
+      margin-right: 5px;
+    }
+  }
+}

@@ -1,0 +1,43 @@
+#profile {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  > .form-card {
+    width: 600px;
+
+    .file-input-container {
+      display: flex;
+      flex-direction: row;
+
+      > .select-file-button {
+        height: 65px;
+        width: 65px;
+        margin: 5px 0 0 30px;
+        background-color: black;
+        transition: .2s;
+
+        &.disabled {
+          background-color: rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      > .selected-file {
+        flex-grow: 1;
+      }
+    }
+  }
+
+  > .lock-toggle {
+    display: flex;
+    align-content: center;
+    margin-bottom: 20px;
+
+    > .label {
+      margin-right: 5px;
+    }
+  }
+}
