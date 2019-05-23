@@ -47,6 +47,9 @@ export class DashboardComponent implements OnInit {
       case 'downloadThesis': {
         return 'Thesis Downloads';
       }
+      case 'linkedIn': {
+        return 'LinkedIn Profile Opens';
+      }
       default: {
         console.error(`Unknown button name: ${buttonName}`);
         return 'Unknown';
