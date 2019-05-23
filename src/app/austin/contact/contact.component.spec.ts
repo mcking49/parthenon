@@ -1,4 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { MatProgressSpinnerModule, MatDialogModule } from '@angular/material';
+import { firebaseConfig } from 'src/app/config/firebase';
 
 import { ContactComponent } from './contact.component';
 
@@ -8,7 +13,14 @@ describe('ContactComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContactComponent ]
+      declarations: [ ContactComponent ],
+      imports: [
+        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFirestoreModule,
+        AngularFireStorageModule,
+        MatDialogModule,
+        MatProgressSpinnerModule
+      ]
     })
     .compileComponents();
   }));
