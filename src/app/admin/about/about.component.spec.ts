@@ -1,5 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { ReactiveFormsModule } from '@angular/forms';
+import {
+  MatDialogModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatSlideToggleModule,
+  MatSnackBarModule
+} from '@angular/material';
 
+import { firebaseConfig } from 'src/app/config/firebase';
 import { AboutComponent } from './about.component';
 
 describe('AboutComponent', () => {
@@ -8,7 +19,17 @@ describe('AboutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AboutComponent ]
+      declarations: [ AboutComponent ],
+      imports: [
+        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFirestoreModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatSlideToggleModule,
+        MatSnackBarModule,
+        ReactiveFormsModule
+      ]
     })
     .compileComponents();
   }));
