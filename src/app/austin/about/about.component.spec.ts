@@ -1,6 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import {
+  MatIconModule,
+  MatMenuModule,
+  MatProgressSpinnerModule,
+  MatToolbarModule
+} from '@angular/material';
 
 import { AboutComponent } from './about.component';
+import { NavigationComponent } from '../navigation/navigation.component';
+import { firebaseConfig } from 'src/app/config/firebase';
 
 describe('AboutComponent', () => {
   let component: AboutComponent;
@@ -8,7 +18,18 @@ describe('AboutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AboutComponent ]
+      declarations: [
+        AboutComponent,
+        NavigationComponent
+      ],
+      imports: [
+        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFirestoreModule,
+        MatIconModule,
+        MatMenuModule,
+        MatProgressSpinnerModule,
+        MatToolbarModule
+      ]
     })
     .compileComponents();
   }));
