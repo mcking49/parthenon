@@ -5,7 +5,7 @@ import { AngularFireModule } from '@angular/fire';
 import { firebaseConfig } from '../config/firebase';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 
-fdescribe('AboutService', () => {
+describe('AboutService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       AngularFireModule.initializeApp(firebaseConfig),
