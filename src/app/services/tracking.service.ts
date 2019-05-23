@@ -3,7 +3,7 @@ import { AngularFirestoreDocument, AngularFirestore } from '@angular/fire/firest
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ButtonTracker } from '../interfaces/button-tracker';
 
-export type ButtonName = 'downloadCvDe' | 'downloadCvEn' | 'downloadThesis';
+export type ButtonName = 'downloadCvDe' | 'downloadCvEn' | 'downloadThesis' | 'linkedIn';
 
 @Injectable({
   providedIn: 'root'
