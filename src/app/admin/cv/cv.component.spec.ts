@@ -1,4 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { ReactiveFormsModule } from '@angular/forms';
+import {
+  MatDialogModule,
+  MatIconModule,
+  MatRadioModule,
+  MatSlideToggleModule,
+  MatSnackBarModule
+} from '@angular/material';
+import { firebaseConfig } from 'src/app/config/firebase';
 
 import { CvComponent } from './cv.component';
 
@@ -8,7 +19,17 @@ describe('CvComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CvComponent ]
+      declarations: [ CvComponent ],
+      imports: [
+        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireStorageModule,
+        MatDialogModule,
+        MatIconModule,
+        MatRadioModule,
+        MatSlideToggleModule,
+        MatSnackBarModule,
+        ReactiveFormsModule,
+      ]
     })
     .compileComponents();
   }));
