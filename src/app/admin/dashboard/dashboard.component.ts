@@ -1,10 +1,6 @@
-import { MatDialog } from '@angular/material';
 import { Component, OnInit } from '@angular/core';
-import { AuthenticationService } from 'src/app/services/authentication.service';
-import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
-import { ActivatedRoute, Router } from '@angular/router';
-import { TrackingService, ButtonName } from 'src/app/services/tracking.service';
 import { ButtonTracker } from 'src/app/interfaces/button-tracker';
+import { TrackingService, ButtonName } from 'src/app/services/tracking.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,13 +11,7 @@ export class DashboardComponent implements OnInit {
 
   public buttonTrackers: ButtonTracker;
 
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private authService: AuthenticationService,
-    private dialog: MatDialog,
-    private router: Router,
-    private trackingService: TrackingService
-  ) { }
+  constructor(private trackingService: TrackingService) { }
 
   ngOnInit() {
     this.trackingService.buttonTracking$.subscribe((buttonTrackers: ButtonTracker) => {
@@ -46,6 +36,9 @@ export class DashboardComponent implements OnInit {
       }
       case 'downloadThesis': {
         return 'Thesis Downloads';
+      }
+      case 'linkedIn': {
+        return 'LinkedIn Profile Opens';
       }
       default: {
         console.error(`Unknown button name: ${buttonName}`);

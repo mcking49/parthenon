@@ -68,4 +68,11 @@ export class ContactComponent implements OnInit {
     }
   }
 
+  /**
+   * Track the click of the linkedin button.
+   */
+  public trackLinkedIn(): void {
+    this.trackingService.trackButton('linkedIn');
+  }
+
 }
