@@ -126,7 +126,7 @@ export class StorageService {
    * @returns {AngularFireUploadTask} - Can be used to monitor the upload status.
    */
   public uploadCv(language: string, file: File): AngularFireUploadTask {
-    return this.storage.ref(`cv/Dsouza_Austin-CV19-${language}.pdf`).put(file);
+    return this.storage.ref(`cv/Dsouza_Austin-CV-${language}.pdf`).put(file);
   }
 
   /**
@@ -160,7 +160,7 @@ export class StorageService {
    * @returns {Observable<string>} - The downloadURL Observable.
    */
   private getCvDownloadUrl(language: string): Observable<string> {
-    return this.storage.ref(`cv/Dsouza_Austin-CV19-${language}.pdf`).getDownloadURL();
+    return this.storage.ref(`cv/Dsouza_Austin-CV-${language}.pdf`).getDownloadURL();
   }
 
   /**
