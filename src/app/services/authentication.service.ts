@@ -19,6 +19,16 @@ export class AuthenticationService {
   }
 
   /**
+   * Create an anonymous login for each site visitor.
+   *
+   * This will allow securing the database to visitors of the website only as opposed
+   * to letting it be public to other Google API's
+   */
+  public anonymousLogin(): Promise<firebase.auth.UserCredential> {
+    return this.auth.auth.signInAnonymously();
+  }
+
+  /**
    * Checks if there is a user currently logged in.
    *
    * @returns {Promise<boolean>} - Indicates if the user is logged in or not.

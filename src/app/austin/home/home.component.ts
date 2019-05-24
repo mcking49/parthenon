@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Profile } from './../../interfaces/profile';
-import { ProfileService } from './../../services/profile.service';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Profile } from 'src/app/interfaces/profile';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { ProfileService } from 'src/app/services/profile.service';
 
 @Component({
   selector: 'app-home',
@@ -11,11 +12,20 @@ export class HomeComponent implements OnInit {
 
   public profile: Profile;
 
-  constructor(private profileService: ProfileService) { }
+  constructor(
+    private authService: AuthenticationService,
+    private changeDetector: ChangeDetectorRef,
+    private profileService: ProfileService
+  ) { }
 
   ngOnInit() {
-    this.profileService.profile$.subscribe((profile: Profile) => {
-      this.profile = profile;
+    this.authService.anonymousLogin().then(() => {
+      this.profileService.profile$.subscribe((profile: Profile) => {
+        if (profile) {
+          this.profile = profile;
+          this.changeDetector.detectChanges();
+        }
+      });
     });
   }
 

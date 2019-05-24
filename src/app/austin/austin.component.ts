@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-austin',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AustinComponent implements OnInit {
 
-  constructor() { }
+  constructor(private authService: AuthenticationService) { }
 
   ngOnInit() {
+    this.authService.anonymousLogin();
   }
 
 }
