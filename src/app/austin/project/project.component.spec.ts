@@ -1,12 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { MatProgressSpinnerModule } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
+import { firebaseConfig } from 'src/app/config/firebase';
 
 import { ProjectComponent } from './project.component';
-import { MatProgressSpinnerModule } from '@angular/material';
-import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireModule } from '@angular/fire';
-import { firebaseConfig } from 'src/app/config/firebase';
-import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ProjectComponent', () => {
   let component: ProjectComponent;
@@ -17,6 +18,7 @@ describe('ProjectComponent', () => {
       declarations: [ ProjectComponent ],
       imports: [
         AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireAuthModule,
         AngularFirestoreModule,
         MatProgressSpinnerModule,
         NgbCarouselModule,

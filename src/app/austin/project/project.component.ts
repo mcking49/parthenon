@@ -1,10 +1,11 @@
-import { ResponsiveService } from './../../services/responsive.service';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ProjectsService } from 'src/app/services/projects.service';
 import { Project } from 'src/app/interfaces/project';
 import { Projects } from 'src/app/interfaces/projects';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { ProjectsService } from 'src/app/services/projects.service';
+import { ResponsiveService } from 'src/app/services/responsive.service';
 
 @Component({
   selector: 'app-project',
@@ -17,13 +18,17 @@ export class ProjectComponent implements OnInit {
   public project: Project;
 
   constructor(
+    private authService: AuthenticationService,
+    private changeDetector: ChangeDetectorRef,
     private projectsService: ProjectsService,
     private responsiveService: ResponsiveService,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
-    this.initProjects();
+    this.authService.anonymousLogin().then(() => {
+      this.initProjects();
+    });
     this.isHandset = this.responsiveService.isHandset;
   }
 
@@ -59,6 +64,7 @@ export class ProjectComponent implements OnInit {
     this.projectsService.projects$.subscribe((projects: Projects) => {
       if (projects) {
         this.project = projects[url];
+        this.changeDetector.detectChanges();
       }
     });
   }
