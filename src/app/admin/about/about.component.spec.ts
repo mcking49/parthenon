@@ -10,7 +10,7 @@ import {
   MatSnackBarModule
 } from '@angular/material';
 
-import { firebaseConfig } from 'src/app/config/firebase';
+import { environment } from 'src/environments/environment';
 import { AboutComponent } from './about.component';
 
 describe('AboutComponent', () => {
@@ -21,7 +21,7 @@ describe('AboutComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ AboutComponent ],
       imports: [
-        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireModule.initializeApp(environment.firebase),
         AngularFirestoreModule,
         MatDialogModule,
         MatFormFieldModule,

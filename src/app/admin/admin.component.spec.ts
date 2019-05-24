@@ -13,7 +13,7 @@ import {
 } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { firebaseConfig } from '../config/firebase';
+import { environment } from 'src/environments/environment';
 
 import { AdminComponent } from './admin.component';
 
@@ -25,7 +25,7 @@ describe('AdminComponent', () => {
     TestBed.configureTestingModule({
       declarations: [AdminComponent],
       imports: [
-        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,
         LayoutModule,
         MatButtonModule,

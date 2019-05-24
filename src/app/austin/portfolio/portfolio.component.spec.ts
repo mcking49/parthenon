@@ -10,7 +10,7 @@ import {
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { PortfolioComponent } from './portfolio.component';
-import { firebaseConfig } from 'src/app/config/firebase';
+import { environment } from 'src/environments/environment';
 
 describe('PortfolioComponent', () => {
   let component: PortfolioComponent;
@@ -20,7 +20,7 @@ describe('PortfolioComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ PortfolioComponent ],
       imports: [
-        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireModule.initializeApp(environment.firebase),
         AngularFirestoreModule,
         MatCardModule,
         MatGridListModule,

@@ -3,7 +3,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { MatDialogModule } from '@angular/material';
-import { firebaseConfig } from 'src/app/config/firebase';
+import { environment } from 'src/environments/environment';
 
 import { ThesisComponent } from './thesis.component';
 
@@ -15,7 +15,7 @@ describe('ThesisComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ThesisComponent ],
       imports: [
-        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireModule.initializeApp(environment.firebase),
         AngularFirestoreModule,
         AngularFireStorageModule,
         MatDialogModule
