@@ -1,7 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { About } from 'src/app/interfaces/about';
 import { AboutService } from 'src/app/services/about.service';
-import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-about',
@@ -12,20 +11,13 @@ export class AboutComponent implements OnInit {
 
   public about: About;
 
-  constructor(
-    private aboutService: AboutService,
-    private authService: AuthenticationService,
-    private changeDetector: ChangeDetectorRef
-  ) { }
+  constructor(private aboutService: AboutService) { }
 
   ngOnInit() {
-    this.authService.anonymousLogin().then(() => {
-      this.aboutService.about$.subscribe((about: About) => {
-        if (about) {
-          this.about = about;
-          this.changeDetector.detectChanges();
-        }
-      });
+    this.aboutService.about$.subscribe((about: About) => {
+      if (about) {
+        this.about = about;
+      }
     });
   }
 

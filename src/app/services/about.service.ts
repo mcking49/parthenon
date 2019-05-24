@@ -1,7 +1,8 @@
-import { About } from './../interfaces/about';
 import { Injectable } from '@angular/core';
 import { AngularFirestoreDocument, AngularFirestore } from '@angular/fire/firestore';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { AuthenticationService } from './authentication.service';
+import { About } from './../interfaces/about';
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +14,17 @@ export class AboutService {
   public about$: Observable<About> = this.about.asObservable();
 
   constructor(
-    private afStore: AngularFirestore
+    private afStore: AngularFirestore,
+    private authService: AuthenticationService
   ) {
-    this.aboutDoc = this.afStore.doc<About>('website/about');
-    this.aboutDoc.valueChanges().subscribe((about: About) => {
-      // Updates the local copy.
-      this.about.next(about);
+    this.authService.ensureAuthenticated().then(() => {
+      this.aboutDoc = this.afStore.doc<About>('website/about');
+      this.aboutDoc.valueChanges().subscribe((about: About) => {
+        // Updates the local copy.
+        this.about.next(about);
+      });
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
