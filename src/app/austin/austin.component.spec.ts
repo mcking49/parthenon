@@ -1,9 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { MatMenuModule, MatIconModule, MatToolbarModule } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
+import { firebaseConfig } from '../config/firebase';
 
 import { AustinComponent } from './austin.component';
 import { NavigationComponent } from './navigation/navigation.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MatMenuModule, MatIconModule, MatToolbarModule } from '@angular/material';
 
 describe('AustinComponent', () => {
   let component: AustinComponent;
@@ -16,6 +19,8 @@ describe('AustinComponent', () => {
         NavigationComponent
       ],
       imports: [
+        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireAuthModule,
         MatIconModule,
         MatMenuModule,
         MatToolbarModule,
