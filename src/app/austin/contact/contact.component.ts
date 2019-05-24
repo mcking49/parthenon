@@ -1,8 +1,7 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
 import { Profile } from 'src/app/interfaces/profile';
-import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ProfileService } from 'src/app/services/profile.service';
 import { CvLanguage, StorageService } from 'src/app/services/storage.service';
 import { ButtonName, TrackingService } from 'src/app/services/tracking.service';
@@ -21,8 +20,6 @@ export class ContactComponent implements OnInit {
   public linkedInUrl: string;
 
   constructor(
-    private authService: AuthenticationService,
-    private changeDetector: ChangeDetectorRef,
     private dialog: MatDialog,
     private profileService: ProfileService,
     private storageService: StorageService,
@@ -30,15 +27,12 @@ export class ContactComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.authService.anonymousLogin().then(() => {
-      this.profileService.profile$.subscribe((profile: Profile) => {
-        if (profile) {
-          this.email = profile.email;
-          this.phone = profile.phone;
-          this.linkedInUrl = profile.linkedInUrl;
-          this.changeDetector.detectChanges();
-        }
-      });
+    this.profileService.profile$.subscribe((profile: Profile) => {
+      if (profile) {
+        this.email = profile.email;
+        this.phone = profile.phone;
+        this.linkedInUrl = profile.linkedInUrl;
+      }
     });
   }
 

@@ -5,6 +5,7 @@ import {
 } from '@angular/fire/firestore';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Profile } from 'src/app/interfaces/profile';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +17,15 @@ export class ProfileService {
   public profile$: Observable<Profile> = this.profile.asObservable();
 
   constructor(
-    private afStore: AngularFirestore
+    private afStore: AngularFirestore,
+    private authService: AuthenticationService
   ) {
-    this.profileDoc = this.afStore.doc<Profile>('profile/1');
-    this.profileDoc.valueChanges().subscribe((profile) => {
-      // Updates the local copy.
-      this.profile.next(profile);
+    this.authService.ensureAuthenticated().then(() => {
+      this.profileDoc = this.afStore.doc<Profile>('profile/1');
+      this.profileDoc.valueChanges().subscribe((profile: Profile) => {
+        // Updates the local copy.
+        this.profile.next(profile);
+      });
     });
   }
 

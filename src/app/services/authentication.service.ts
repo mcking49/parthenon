@@ -19,13 +19,29 @@ export class AuthenticationService {
   }
 
   /**
-   * Create an anonymous login for each site visitor.
+   * Ensure's the user is authenticated.
+   *
+   * If the user hasn't logged in, an anonymous login is created for them.
    *
    * This will allow securing the database to visitors of the website only as opposed
    * to letting it be public to other Google API's
+   *
+   * @returns {Promise<boolean>} - Resolves when the user is logged in.
    */
-  public anonymousLogin(): Promise<firebase.auth.UserCredential> {
-    return this.auth.auth.signInAnonymously();
+  public ensureAuthenticated(): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+      try {
+        const isLoggedIn: boolean = await this.isLoggedIn();
+        if (isLoggedIn) {
+          resolve(true);
+        } else {
+          await this.auth.auth.signInAnonymously();
+          resolve(true);
+        }
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   /**

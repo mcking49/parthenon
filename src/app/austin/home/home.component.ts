@@ -1,6 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Profile } from 'src/app/interfaces/profile';
-import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ProfileService } from 'src/app/services/profile.service';
 
 @Component({
@@ -12,20 +11,13 @@ export class HomeComponent implements OnInit {
 
   public profile: Profile;
 
-  constructor(
-    private authService: AuthenticationService,
-    private changeDetector: ChangeDetectorRef,
-    private profileService: ProfileService
-  ) { }
+  constructor(private profileService: ProfileService) { }
 
   ngOnInit() {
-    this.authService.anonymousLogin().then(() => {
-      this.profileService.profile$.subscribe((profile: Profile) => {
-        if (profile) {
-          this.profile = profile;
-          this.changeDetector.detectChanges();
-        }
-      });
+    this.profileService.profile$.subscribe((profile: Profile) => {
+      if (profile) {
+        this.profile = profile;
+      }
     });
   }
 
