@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase/app';
+import {interval} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor(private auth: AngularFireAuth) { }
+  private isLoggingIn: boolean;
+
+  constructor(private auth: AngularFireAuth) {
+    this.isLoggingIn = false;
+  }
 
   /**
    * The current firebase User logged into the app.
@@ -35,8 +40,19 @@ export class AuthenticationService {
         if (isLoggedIn) {
           resolve(true);
         } else {
-          await this.auth.auth.signInAnonymously();
-          resolve(true);
+          if (this.isLoggingIn) {
+            await this.waitForPreviousLoginAttempt();
+            if (this.currentUser) {
+              resolve(true);
+            } else {
+              reject(new Error('failed to login'));
+            }
+          } else {
+            this.isLoggingIn = true;
+            await this.auth.auth.signInAnonymously();
+            this.isLoggingIn = false;
+            resolve(true);
+          }
         }
       } catch (error) {
         reject(error);
@@ -91,5 +107,25 @@ export class AuthenticationService {
    */
   public updatePassword(newPassword: string): Promise<void> {
     return this.auth.auth.currentUser.updatePassword(newPassword);
+  }
+
+  /**
+   * Wait for any previous call to ensureAuthenticated() to finish.
+   *
+   * This function will prevent multiple anonymous logins from being created
+   * as ensureAuthentication() can be called from numerous services.
+   *
+   * @returns {Promise<boolean>} - Resolves once the user is logged in.
+   */
+  private waitForPreviousLoginAttempt(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      const timer = interval(1000);
+      const retries = timer.subscribe((n) => {
+        if (this.currentUser) {
+          resolve(true);
+          retries.unsubscribe();
+        }
+      });
+    });
   }
 }
