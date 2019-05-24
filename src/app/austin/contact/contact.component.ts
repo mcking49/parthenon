@@ -1,10 +1,11 @@
-import { Profile } from './../../interfaces/profile';
-import { ProfileService } from './../../services/profile.service';
-import { Component, OnInit } from '@angular/core';
-import { CvLanguage, StorageService } from '../../services/storage.service';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
-import { TrackingService, ButtonName } from 'src/app/services/tracking.service';
+import { Profile } from 'src/app/interfaces/profile';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { ProfileService } from 'src/app/services/profile.service';
+import { CvLanguage, StorageService } from 'src/app/services/storage.service';
+import { ButtonName, TrackingService } from 'src/app/services/tracking.service';
 import * as _ from 'lodash';
 
 @Component({
@@ -20,6 +21,8 @@ export class ContactComponent implements OnInit {
   public linkedInUrl: string;
 
   constructor(
+    private authService: AuthenticationService,
+    private changeDetector: ChangeDetectorRef,
     private dialog: MatDialog,
     private profileService: ProfileService,
     private storageService: StorageService,
@@ -27,12 +30,15 @@ export class ContactComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.profileService.profile$.subscribe((profile: Profile) => {
-      if (profile) {
-        this.email = profile.email;
-        this.phone = profile.phone;
-        this.linkedInUrl = profile.linkedInUrl;
-      }
+    this.authService.anonymousLogin().then(() => {
+      this.profileService.profile$.subscribe((profile: Profile) => {
+        if (profile) {
+          this.email = profile.email;
+          this.phone = profile.phone;
+          this.linkedInUrl = profile.linkedInUrl;
+          this.changeDetector.detectChanges();
+        }
+      });
     });
   }
 
