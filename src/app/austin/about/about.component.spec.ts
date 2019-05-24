@@ -9,9 +9,9 @@ import {
   MatToolbarModule
 } from '@angular/material';
 
+import { environment } from 'src/environments/environment';
 import { AboutComponent } from './about.component';
 import { NavigationComponent } from '../navigation/navigation.component';
-import { firebaseConfig } from 'src/app/config/firebase';
 
 describe('AboutComponent', () => {
   let component: AboutComponent;
@@ -24,7 +24,7 @@ describe('AboutComponent', () => {
         NavigationComponent
       ],
       imports: [
-        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,
         AngularFirestoreModule,
         MatIconModule,

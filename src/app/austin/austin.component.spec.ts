@@ -3,8 +3,8 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { MatMenuModule, MatIconModule, MatToolbarModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
-import { firebaseConfig } from '../config/firebase';
 
+import { environment } from 'src/environments/environment';
 import { AustinComponent } from './austin.component';
 import { NavigationComponent } from './navigation/navigation.component';
 
@@ -19,7 +19,7 @@ describe('AustinComponent', () => {
         NavigationComponent
       ],
       imports: [
-        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,
         MatIconModule,
         MatMenuModule,

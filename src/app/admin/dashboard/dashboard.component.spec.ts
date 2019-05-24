@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DashboardComponent } from './dashboard.component';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
-import { firebaseConfig } from 'src/app/config/firebase';
+import { environment } from 'src/environments/environment';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -13,7 +13,7 @@ describe('DashboardComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ DashboardComponent ],
       imports: [
-        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireModule.initializeApp(environment.firebase),
         AngularFirestoreModule
       ]
     })

@@ -11,8 +11,8 @@ import {
   MatProgressSpinnerModule
 } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
-import { firebaseConfig } from 'src/app/config/firebase';
 
+import { environment } from 'src/environments/environment';
 import { AboutComponent } from '../about/about.component';
 import { ContactComponent } from '../contact/contact.component';
 import { HomeComponent } from './home.component';
@@ -31,7 +31,7 @@ describe('HomeComponent', () => {
         PortfolioComponent
       ],
       imports: [
-        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,
         AngularFirestoreModule,
         AngularFireStorageModule,

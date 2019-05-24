@@ -5,8 +5,8 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { MatProgressSpinnerModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
-import { firebaseConfig } from 'src/app/config/firebase';
 
+import { environment } from 'src/environments/environment';
 import { ProjectComponent } from './project.component';
 
 describe('ProjectComponent', () => {
@@ -17,7 +17,7 @@ describe('ProjectComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ProjectComponent ],
       imports: [
-        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,
         AngularFirestoreModule,
         MatProgressSpinnerModule,

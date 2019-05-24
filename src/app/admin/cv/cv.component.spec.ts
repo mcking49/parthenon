@@ -9,8 +9,8 @@ import {
   MatSlideToggleModule,
   MatSnackBarModule
 } from '@angular/material';
-import { firebaseConfig } from 'src/app/config/firebase';
 
+import { environment } from 'src/environments/environment';
 import { CvComponent } from './cv.component';
 
 describe('CvComponent', () => {
@@ -21,7 +21,7 @@ describe('CvComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ CvComponent ],
       imports: [
-        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireModule.initializeApp(environment.firebase),
         AngularFireStorageModule,
         MatDialogModule,
         MatIconModule,
