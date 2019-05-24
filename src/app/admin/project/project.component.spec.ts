@@ -14,7 +14,7 @@ import {
 } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { firebaseConfig } from 'src/app/config/firebase';
+import { environment } from 'src/environments/environment';
 
 import { ProjectComponent } from './project.component';
 
@@ -26,7 +26,7 @@ describe('ProjectComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ProjectComponent ],
       imports: [
-        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireModule.initializeApp(environment.firebase),
         AngularFirestoreModule,
         AngularFireStorageModule,
         BrowserAnimationsModule,

@@ -10,7 +10,7 @@ import {
 
 import { AboutComponent } from './about.component';
 import { NavigationComponent } from '../navigation/navigation.component';
-import { firebaseConfig } from 'src/app/config/firebase';
+import { environment } from 'src/environments/environment';
 
 describe('AboutComponent', () => {
   let component: AboutComponent;
@@ -23,7 +23,7 @@ describe('AboutComponent', () => {
         NavigationComponent
       ],
       imports: [
-        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFireModule.initializeApp(environment.firebase),
         AngularFirestoreModule,
         MatIconModule,
         MatMenuModule,
