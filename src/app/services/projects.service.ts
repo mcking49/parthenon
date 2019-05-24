@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestoreDocument, AngularFirestore } from '@angular/fire/firestore';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { AuthenticationService } from './authentication.service';
 import { Project } from './../interfaces/project';
 import { Projects } from './../interfaces/projects';
+
 import * as firebase from 'firebase/app';
 import * as _ from 'lodash';
 
@@ -15,11 +17,18 @@ export class ProjectsService {
   private projects: BehaviorSubject<Projects> = new BehaviorSubject<Projects>(null);
   public projects$: Observable<Projects> = this.projects.asObservable();
 
-  constructor(private afStore: AngularFirestore) {
-    this.projectsDoc = this.afStore.doc<Projects>('website/projects');
-    this.projectsDoc.valueChanges().subscribe((projects: Projects) => {
-      // Updates the local copy.
-      this.projects.next(projects);
+  constructor(
+    private afStore: AngularFirestore,
+    private authService: AuthenticationService
+  ) {
+    this.authService.ensureAuthenticated().then((authenticated) => {
+      this.projectsDoc = this.afStore.doc<Projects>('website/projects');
+      this.projectsDoc.valueChanges().subscribe((projects: Projects) => {
+        // Updates the local copy.
+        this.projects.next(projects);
+      });
+    }).catch((error) => {
+      console.error(error);
     });
   }
 

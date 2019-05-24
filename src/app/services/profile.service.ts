@@ -26,6 +26,8 @@ export class ProfileService {
         // Updates the local copy.
         this.profile.next(profile);
       });
+    }).catch((error) => {
+      console.error(error);
     });
   }
 

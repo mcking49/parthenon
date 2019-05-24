@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestoreDocument, AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ButtonTracker } from '../interfaces/button-tracker';
 
 export type ButtonName = 'downloadCvDe' | 'downloadCvEn' | 'downloadThesis' | 'linkedIn';
@@ -14,10 +15,17 @@ export class TrackingService {
   private buttonTracking: BehaviorSubject<ButtonTracker> = new BehaviorSubject<ButtonTracker>(null);
   public buttonTracking$: Observable<ButtonTracker> = this.buttonTracking.asObservable();
 
-  constructor(private afStore: AngularFirestore) {
-    this.buttonTrackingDoc = this.afStore.doc<ButtonTracker>('tracking/button');
-    this.buttonTrackingDoc.valueChanges().subscribe((buttonTrackers: ButtonTracker) => {
-      this.buttonTracking.next(buttonTrackers);
+  constructor(
+    private afStore: AngularFirestore,
+    private authService: AuthenticationService
+  ) {
+    this.authService.ensureAuthenticated().then(() => {
+      this.buttonTrackingDoc = this.afStore.doc<ButtonTracker>('tracking/button');
+      this.buttonTrackingDoc.valueChanges().subscribe((buttonTrackers: ButtonTracker) => {
+        this.buttonTracking.next(buttonTrackers);
+      });
+    }).catch((error) => {
+      console.error(error);
     });
   }
 

@@ -1,9 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Project } from 'src/app/interfaces/project';
 import { Projects } from 'src/app/interfaces/projects';
-import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { ResponsiveService } from 'src/app/services/responsive.service';
 import * as _ from 'lodash';
@@ -22,17 +21,13 @@ export class PortfolioComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private authService: AuthenticationService,
-    private changeDetector: ChangeDetectorRef,
     private projectsService: ProjectsService,
     private responsiveService: ResponsiveService,
     private router: Router
   ) { }
 
   ngOnInit() {
-    this.authService.anonymousLogin().then(() => {
-      this.initProjects();
-    });
+    this.initProjects();
     this.isHandset = this.responsiveService.isHandset;
   }
 
@@ -71,7 +66,6 @@ export class PortfolioComponent implements OnInit {
     this.projectsService.projects$.subscribe((projects: Projects) => {
       if (projects) {
         this.projects = _.orderBy(_.values(projects), ['year', 'title'], ['desc', 'asc']);
-        this.changeDetector.detectChanges();
       }
     });
   }
