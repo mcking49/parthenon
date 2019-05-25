@@ -10,3 +10,9 @@ if (environment.production) {
 
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.error(err));
+
+const trackingId: string = environment.googleAnalytics.trackingId;
+const script: HTMLScriptElement = document.createElement('script');
+script.async = true;
+script.src = `https://www.googletagmanager.com/gtag/js?id=${trackingId}`;
+document.head.prepend(script);

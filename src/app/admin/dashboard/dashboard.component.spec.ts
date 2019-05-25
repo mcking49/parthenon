@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 
 import { DashboardComponent } from './dashboard.component';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 
 describe('DashboardComponent', () => {
@@ -14,7 +15,8 @@ describe('DashboardComponent', () => {
       declarations: [ DashboardComponent ],
       imports: [
         AngularFireModule.initializeApp(environment.firebase),
-        AngularFirestoreModule
+        AngularFirestoreModule,
+        RouterTestingModule
       ]
     })
     .compileComponents();

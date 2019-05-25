@@ -3,6 +3,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { MatProgressSpinnerModule, MatDialogModule } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
 import { environment } from 'src/environments/environment';
 
 import { ContactComponent } from './contact.component';
@@ -19,7 +20,8 @@ describe('ContactComponent', () => {
         AngularFirestoreModule,
         AngularFireStorageModule,
         MatDialogModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        RouterTestingModule
       ]
     })
     .compileComponents();

@@ -1,15 +1,17 @@
 import { TestBed } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { TrackingService } from './tracking.service';
-import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
 
 describe('TrackingService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       AngularFireModule.initializeApp(environment.firebase),
-      AngularFirestoreModule
+      AngularFirestoreModule,
+      RouterTestingModule
     ]
   }));
 

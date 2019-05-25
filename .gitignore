@@ -6,8 +6,8 @@
 /out-tsc
 
 # config files
-/src/app/config/firebase-production.ts
-/src/app/config/firebase-staging.ts
+/src/app/config/config-production.ts
+/src/app/config/config-staging.ts
 
 # dependencies
 /node_modules
