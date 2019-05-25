@@ -223,33 +223,39 @@ export class ProjectComponent implements OnInit {
    * @param files - The list of files that have been selected.
    */
   public async newLogoSelected(files: FileList) {
-    this.selectedLogo = files.item(0);
-    if (this.logoRequestedForDelete) {
-      const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
+    const file: File = files.item(0);
+    const fileTypeValidator: RegExp = /^(image)\/((png)|(jpg)|(jpeg))$/;
+    if (fileTypeValidator.test(file.type)) {
+      this.selectedLogo = file;
+      if (this.logoRequestedForDelete) {
+        const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
 
-      // Delete the existing logo then upload the new logo.
-      try {
-        await this.storageService.deleteImage(this.logoRequestedForDelete.storageReference);
-        const uploadedImages = await this.uploadImages([this.selectedLogo], this.projectUrl, 'project-logo');
-        const urls = await uploadedImages.downloadUrlPromise;
-        this.project.logo = this.generateImages(urls, uploadedImages.filenames, this.projectUrl)[0];
-        await this.projectsService.addOrUpdateProject(this.project);
-        this.showSavedSnackbar();
-        this.selectedLogo = null;
-        this.showLogoPlaceholder = false;
-        this.logoRequestedForDelete = null;
-      } catch (error) {
-        let message: string;
-        if (error.code === 'permission-denied') {
-          message = `Authentication error: ${error.message}`;
-        } else {
-          message = 'ERROR: An error has occured. Please refresh and try again.';
-          console.error(error);
+        // Delete the existing logo then upload the new logo.
+        try {
+          await this.storageService.deleteImage(this.logoRequestedForDelete.storageReference);
+          const uploadedImages = await this.uploadImages([this.selectedLogo], this.projectUrl, 'project-logo');
+          const urls = await uploadedImages.downloadUrlPromise;
+          this.project.logo = this.generateImages(urls, uploadedImages.filenames, this.projectUrl)[0];
+          await this.projectsService.addOrUpdateProject(this.project);
+          this.showSavedSnackbar();
+          this.selectedLogo = null;
+          this.showLogoPlaceholder = false;
+          this.logoRequestedForDelete = null;
+        } catch (error) {
+          let message: string;
+          if (error.code === 'permission-denied') {
+            message = `Authentication error: ${error.message}`;
+          } else {
+            message = 'ERROR: An error has occured. Please refresh and try again.';
+            console.error(error);
+          }
+          this.showErrorSnackbar(message);
+        } finally {
+          loading.close();
         }
-        this.showErrorSnackbar(message);
-      } finally {
-        loading.close();
       }
+    } else {
+      this.showErrorSnackbar('Invalid file type. Please select a new file');
     }
   }
 
