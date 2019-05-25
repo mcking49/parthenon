@@ -46,6 +46,7 @@
           placeholder="Select a profile image"
           (change)="newImageSelected($event.target.files)"
           type="file"
+          accept=".png, .jpeg, .jpg"
           #fileInput
           hidden>
         <mat-form-field appearance="outline" class="selected-file">

@@ -100,13 +100,19 @@ export class ProfileComponent implements OnInit {
   }
 
   /**
-   * Save the newly selected files.
+   * Validate the newly selected file is the correct type and save it.
    *
    * @param {FileList} files - The list of files that have been selected.
    */
   public newImageSelected(files: FileList): void {
-    this.selectedFile = files.item(0);
-    this.profileForm.markAsDirty();
+    const file: File = files.item(0);
+    const fileTypeValidator: RegExp = /^(image)\/((png)|(jpg)|(jpeg))$/;
+    if (fileTypeValidator.test(file.type)) {
+      this.selectedFile = file;
+      this.profileForm.markAsDirty();
+    } else {
+      this.showSnackbar('Invalid file type. Please select a new file', 5000);
+    }
   }
 
   /**
