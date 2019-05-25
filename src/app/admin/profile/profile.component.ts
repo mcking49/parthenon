@@ -111,7 +111,7 @@ export class ProfileComponent implements OnInit {
       this.selectedFile = file;
       this.profileForm.markAsDirty();
     } else {
-      this.showSnackbar('Invalid file type. Please select a new file', 5000);
+      this.showSnackbar('Invalid file type. Please select a .png, .jpg or .jpeg image', 5000);
     }
   }
 

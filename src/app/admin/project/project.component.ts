@@ -178,42 +178,54 @@ export class ProjectComponent implements OnInit {
    * @param files - The list of files that have been selected.
    */
   public async newImagesSelected(files: FileList) {
-    this.selectedImages = files;
+    // Validate all the files that have been selected.
+    const fileTypeValidator: RegExp = /^(image)\/((png)|(jpg)|(jpeg))$/;
+    const validatedFiles = _.mapValues(files, (file: File) => {
+      return fileTypeValidator.test(file.type);
+    });
+    const filesFailedValidaton: boolean[] = _.filter(validatedFiles, (filePassedValidation: boolean) => {
+      return !filePassedValidation;
+    });
 
-    if (!this.newProject) {
-      const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
+    if (!filesFailedValidaton.length) {
+      this.selectedImages = files;
+      if (!this.newProject) {
+        const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
 
-      // Upload new images then save the project.
-      try {
-        // Delete any images that have been requested for delete.
-        if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
-          await Promise.all(this.deleteImages());
+        // Upload new images then save the project.
+        try {
+          // Delete any images that have been requested for delete.
+          if (this.imagesRequestedForDelete && this.imagesRequestedForDelete.length) {
+            await Promise.all(this.deleteImages());
+          }
+
+          // Upload and save new images.
+          const uploadedImages = await this.uploadImages(this.selectedImages, this.projectUrl, 'project-image');
+          const urls = await uploadedImages.downloadUrlPromise;
+          const images: Image[] = _.concat(
+            this.project.images,
+            this.generateImages(urls, uploadedImages.filenames, this.projectUrl
+          ));
+          this.project.images = images;
+          await this.projectsService.addOrUpdateProject(this.project);
+          this.showSavedSnackbar();
+          this.selectedImages = null;
+        } catch (error) {
+          let message: string;
+          if (error.code === 'permission-denied') {
+            message = `Authentication error: ${error.message}`;
+          } else {
+            message = 'ERROR: An error has occured. Please refresh and try again.';
+            console.error(error);
+          }
+          this.showErrorSnackbar(message);
+        } finally {
+          this.imagesRequestedForDelete = [];
+          loading.close();
         }
-
-        // Upload and save new images.
-        const uploadedImages = await this.uploadImages(this.selectedImages, this.projectUrl, 'project-image');
-        const urls = await uploadedImages.downloadUrlPromise;
-        const images: Image[] = _.concat(
-          this.project.images,
-          this.generateImages(urls, uploadedImages.filenames, this.projectUrl
-        ));
-        this.project.images = images;
-        await this.projectsService.addOrUpdateProject(this.project);
-        this.showSavedSnackbar();
-        this.selectedImages = null;
-      } catch (error) {
-        let message: string;
-        if (error.code === 'permission-denied') {
-          message = `Authentication error: ${error.message}`;
-        } else {
-          message = 'ERROR: An error has occured. Please refresh and try again.';
-          console.error(error);
-        }
-        this.showErrorSnackbar(message);
-      } finally {
-        this.imagesRequestedForDelete = [];
-        loading.close();
       }
+    } else {
+      this.showErrorSnackbar('Some invalid files selected. Please only select .png, .jpg or .jpeg images');
     }
   }
 
@@ -255,7 +267,7 @@ export class ProjectComponent implements OnInit {
         }
       }
     } else {
-      this.showErrorSnackbar('Invalid file type. Please select a new file');
+      this.showErrorSnackbar('Invalid file type. Please select a .png, .jpg or .jpeg image');
     }
   }
 
