@@ -3,7 +3,7 @@
 
   <div class="home-content" *ngIf="!isLoading">
     <div class="image-container">
-      <img [attr.src]="profile?.profileImgUrl">
+      <img [attr.src]="profile?.profileImg?.url">
     </div>
   
     <h1 class="title">{{profile?.firstName | uppercase}} {{profile?.lastName | uppercase}}</h1>

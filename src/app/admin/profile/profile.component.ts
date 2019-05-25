@@ -188,8 +188,7 @@ export class ProfileComponent implements OnInit {
           disabled: !this.isEditingMode
         },
       ],
-      // TODO: update below label.
-      profileImgUrl: [
+      profileImg: [
         {
           value: '',
           disabled: !this.isEditingMode
