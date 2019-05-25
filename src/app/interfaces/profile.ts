@@ -1,3 +1,5 @@
+import { Image } from './image';
+
 export interface Profile {
   firstName: string;
   lastName: string;
@@ -5,5 +7,5 @@ export interface Profile {
   email: string;
   phone: string;
   linkedInUrl: string;
-  profileImgUrl: string;
+  profileImg: Image;
 }
