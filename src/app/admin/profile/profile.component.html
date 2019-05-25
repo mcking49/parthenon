@@ -10,7 +10,7 @@
       <h1 class="title">Profile</h1>
     </div>
 
-    <form [formGroup]="profileForm" (ngSubmit)="submitForm()" class="form-container">
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="form-container">
       <mat-form-field appearance="outline">
         <mat-label>First Name</mat-label>
         <input matInput placeholder="e.g. Austin" formControlName="firstName">
@@ -46,6 +46,7 @@
           placeholder="Select a profile image"
           (change)="newImageSelected($event.target.files)"
           type="file"
+          accept=".png, .jpeg, .jpg"
           #fileInput
           hidden>
         <mat-form-field appearance="outline" class="selected-file">
@@ -57,7 +58,7 @@
         </button>
       </div>
 
-      <button type="submit" class="submit-btn" [disabled]="isDisabled" [class.disabled]="isDisabled" mat-raised-button>Save Changes</button>
+      <button type="submit" class="submit-btn" [disabled]="isSaveDisabled" [class.disabled]="isSaveDisabled" mat-raised-button>Save Changes</button>
     </form>
   </div>
 

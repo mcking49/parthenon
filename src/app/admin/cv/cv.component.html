@@ -11,7 +11,7 @@
 
     <form [formGroup]="cvForm" (ngSubmit)="uploadCv()" class="form-container">
       <div class="file-input-container">
-        <input placeholder="Select a CV" (change)="newCvSelected($event.target.files)" type="file" formControlName="cv" #fileInput hidden>
+        <input placeholder="Select a CV" (change)="newCvSelected($event.target.files)" type="file" formControlName="cv" accept=".pdf" #fileInput hidden>
         <button type="button" (click)="fileInput.click()" class="select-file-button" [disabled]="isUploadDisabled" [class.disabled]="isUploadDisabled" mat-fab>
           <mat-icon>arrow_upward</mat-icon>
         </button>

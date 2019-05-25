@@ -38,7 +38,17 @@ export class CvComponent implements OnInit {
   }
 
   public newCvSelected(files: FileList) {
-    this.selectedFile = files.item(0);
+    const file: File = files.item(0);
+    const fileTypeValidator: RegExp = /^(application\/pdf)$/;
+    if (fileTypeValidator.test(file.type)) {
+      this.selectedFile = file;
+    } else {
+      this.snackbar.open(
+        'Invalid file type. Please select a .pdf file',
+        'Close',
+        {duration: 5000}
+      );
+    }
   }
 
   public toggleEditingState() {

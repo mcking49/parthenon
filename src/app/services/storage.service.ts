@@ -106,6 +106,28 @@ export class StorageService {
   }
 
   /**
+   * The the download URL for the profile image.
+   *
+   * @param {string} storageRef - The storage reference of where the profile image is saved.
+   *
+   * @returns {Promise<string>} - Resolves when the download URL is available.
+   */
+  public getProfileImgDownloadUrl(storageRef: string): Promise<string> {
+    return this.storage.ref(storageRef).getDownloadURL().toPromise();
+  }
+
+  /**
+   * Get the storage reference for where the profile image is saved.
+   *
+   * @param {string} filename - The filename of the profile image.
+   *
+   * @returns {string} - Returns the storage reference.
+   */
+  public getProfileImgStorageReference(filename: string): string {
+    return `profile/${filename}`;
+  }
+
+  /**
    * Get the Image downloadURL observable.
    *
    * @param {string} projectUrl - The URL of the project.
@@ -144,12 +166,12 @@ export class StorageService {
   /**
    * Upload a new profile image to be used on the home page of the main website.
    *
-   * @param {File} file - the new profile image to be uploaded.
+   * @param {File} file - The new profile image to be uploaded.
    *
    * @returns {AngularFireUploadTask} - The upload status.
    */
   public uploadProfileImg(file: File): AngularFireUploadTask {
-    return this.storage.upload('profile/profile-img.jpg', file);
+    return this.storage.upload(`profile/${file.name}`, file);
   }
 
   /**

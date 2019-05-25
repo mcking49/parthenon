@@ -1,12 +1,17 @@
-import { TrackingService } from 'src/app/services/tracking.service';
-import { StorageService } from 'src/app/services/storage.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { MatDialog, MatSnackBar, MatDialogRef } from '@angular/material';
+import { MatDialog, MatSnackBar, MatDialogRef, MatDialogConfig } from '@angular/material';
 import { finalize } from 'rxjs/operators';
-import { ProfileService } from './../../services/profile.service';
-import { Profile } from 'src/app/interfaces/profile';
+
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
+
+import { Image } from 'src/app/interfaces/image';
+import { Profile } from 'src/app/interfaces/profile';
+
+import { ProfileService } from 'src/app/services/profile.service';
+import { StorageService } from 'src/app/services/storage.service';
+import { TrackingService } from 'src/app/services/tracking.service';
+
 import * as _ from 'lodash';
 
 @Component({
@@ -21,6 +26,8 @@ export class ProfileComponent implements OnInit {
   public profileForm: FormGroup;
   public selectedFile: File;
 
+  private loadingConfig: MatDialogConfig<any>;
+
   constructor(
     private dialog: MatDialog,
     private formBuilder: FormBuilder,
@@ -30,6 +37,10 @@ export class ProfileComponent implements OnInit {
     private trackingService: TrackingService
   ) {
     this.isEditingMode = false;
+    this.loadingConfig = {
+      height: '150px',
+      width: '150px'
+    };
   }
 
   ngOnInit() {
@@ -40,72 +51,74 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  public get isDisabled(): boolean {
+  /**
+   * Check if the save button should be disabled.
+   *
+   * @returns {boolean} - Returns trus if the save button should be disabled.
+   */
+  public get isSaveDisabled(): boolean {
     return !this.isEditingMode || !this.profileForm.valid || this.profileForm.pristine;
   }
 
-  public submitForm() {
+  /**
+   * Save the profile.
+   */
+  public async saveProfile(): Promise<void> {
     if (this.profileForm.valid) {
-      const dialogRef = this.dialog.open(LoadingSpinnerModalComponent, {
-        maxHeight: '150px',
-        height: '150px',
-        width: '150px'
-      });
-      if (this.selectedFile) {
-        this.storageService.uploadProfileImg(this.selectedFile).snapshotChanges().pipe(
-          finalize(() => {
-            this.storageService.profileImgRef.getDownloadURL().subscribe((url: string) => {
-              this.profileForm.controls['profileImgUrl'].setValue(url);
-              this.saveForm(dialogRef);
-            });
-          })
-        ).subscribe();
-      } else {
-        this.saveForm(dialogRef);
+      const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
+      try {
+        if (this.selectedFile) {
+          // First clean the storage and delete the old profile image.
+          await this.storageService.deleteImage(this.profile.profileImg.storageReference);
+          // Upload the new image.
+          await this.storageService.uploadProfileImg(this.selectedFile);
+
+          // Create profile image object.
+          const profileImgStorageRef: string = this.storageService.getProfileImgStorageReference(this.selectedFile.name);
+          const profileImgUrl: string = await this.storageService.getProfileImgDownloadUrl(profileImgStorageRef);
+          const profileImg: Image = {
+            filename: this.selectedFile.name,
+            storageReference: profileImgStorageRef,
+            url: profileImgUrl
+          };
+          this.profileForm.controls['profileImg'].setValue(profileImg);
+        }
+
+        // Save the profile.
+        const updatedProfile: Profile = _.mapValues(this.profileForm.controls, 'value') as Profile;
+        await this.profileService.updateProfile(updatedProfile);
+        this.showSnackbar('The profile has been saved');
+        this.toggleEditingState();
+      } catch (error) {
+        this.showSnackbar(error, 5000);
+      } finally {
+        loading.close();
       }
     } else {
-      console.error('Form is invalid');
+      this.showSnackbar('The form is invalid');
     }
   }
 
-  private async saveForm(dialogRef: MatDialogRef<LoadingSpinnerModalComponent, any>) {
-    const updatedProfile = {};
-    _.each(this.profileForm.controls, (formControl: FormControl, key: string) => {
-      updatedProfile[key] = formControl.value;
-    });
-
-    try {
-      await this.profileService.updateProfile(updatedProfile as Profile);
-      this.snackbar.open(
-        'The changes have been saved',
-        'Close',
-        {
-          duration: 3000,
-        }
-      );
-    } catch (error) {
-      if (error.code === 'permission-denied') {
-        this.snackbar.open(
-          `Authentication error: ${error.message}`,
-          'Close',
-          {duration: 5000}
-        );
-      } else {
-        console.error(error);
-        this.trackingService.trackError('buttonClickException', error);
-      }
-    } finally {
-      this.toggleEditingState();
-      dialogRef.close();
+  /**
+   * Validate the newly selected file is the correct type and save it.
+   *
+   * @param {FileList} files - The list of files that have been selected.
+   */
+  public newImageSelected(files: FileList): void {
+    const file: File = files.item(0);
+    const fileTypeValidator: RegExp = /^(image)\/((png)|(jpg)|(jpeg))$/;
+    if (fileTypeValidator.test(file.type)) {
+      this.selectedFile = file;
+      this.profileForm.markAsDirty();
+    } else {
+      this.showSnackbar('Invalid file type. Please select a .png, .jpg or .jpeg image', 5000);
     }
   }
 
-  public newImageSelected(files: FileList) {
-    this.selectedFile = files.item(0);
-    this.profileForm.markAsDirty();
-  }
-
-  public toggleEditingState() {
+  /**
+   * Toggle the editing state of the form.
+   */
+  public toggleEditingState(): void {
     this.isEditingMode = !this.isEditingMode;
     if (this.isEditingMode) {
       _.each(this.profileForm.controls, (value: any, key: string) => {
@@ -116,6 +129,9 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  /**
+   * Initialise the profile form.
+   */
   private initialiseForm(): void {
     this.profileForm = this.formBuilder.group({
       firstName: [
@@ -159,7 +175,7 @@ export class ProfileComponent implements OnInit {
           disabled: !this.isEditingMode
         },
       ],
-      profileImgUrl: [
+      profileImg: [
         {
           value: '',
           disabled: !this.isEditingMode
@@ -182,6 +198,16 @@ export class ProfileComponent implements OnInit {
         this.profileForm.controls[key].disable();
       }
     });
+  }
+
+  /**
+   * Show a snackbar with a custom message.
+   *
+   * @param {string} message - The message to show in the snackbar.
+   * @param {number} duration - The duration to display the snackbar for. Default = 3000 (3 seconds).
+   */
+  private showSnackbar(message: string, duration: number = 3000): void {
+    this.snackbar.open(message, 'Close', {duration});
   }
 
 }
