@@ -1,3 +1,4 @@
+import { TrackingService } from 'src/app/services/tracking.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
@@ -25,7 +26,8 @@ export class ProfileComponent implements OnInit {
     private formBuilder: FormBuilder,
     private profileService: ProfileService,
     private snackbar: MatSnackBar,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private trackingService: TrackingService
   ) {
     this.isEditingMode = false;
   }
@@ -90,6 +92,7 @@ export class ProfileComponent implements OnInit {
         );
       } else {
         console.error(error);
+        this.trackingService.trackError('buttonClickException', error);
       }
     } finally {
       this.toggleEditingState();

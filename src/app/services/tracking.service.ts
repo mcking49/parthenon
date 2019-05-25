@@ -83,6 +83,14 @@ export class TrackingService {
     return this.buttonTrackingDoc.update(buttonTrackers);
   }
 
+  // TODO: Improve this feature.
+  public trackError(exceptionType: string, error: any): void {
+    gtag('event', exceptionType, {
+      'event_category': 'Exception',
+      'event_label': error,
+    });
+  }
+
   /**
    * Get the current value of the button trackers.
    *
