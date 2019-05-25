@@ -5,6 +5,7 @@ import { finalize } from 'rxjs/operators';
 
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
 
+import { Image } from 'src/app/interfaces/image';
 import { Profile } from 'src/app/interfaces/profile';
 
 import { ProfileService } from 'src/app/services/profile.service';
@@ -60,61 +61,41 @@ export class ProfileComponent implements OnInit {
   }
 
   /**
-   * Submit the profile form.
+   * Save the profile.
    */
-  public submitForm(): void {
+  public async saveProfile(): Promise<void> {
     if (this.profileForm.valid) {
       const loading = this.dialog.open(LoadingSpinnerModalComponent, this.loadingConfig);
-      if (this.selectedFile) {
-        // TODO: Fix saving profile image.
-        this.storageService.uploadProfileImg(this.selectedFile).snapshotChanges().pipe(
-          finalize(() => {
-            this.storageService.profileImgRef.getDownloadURL().subscribe((url: string) => {
-              this.profileForm.controls['profileImgUrl'].setValue(url);
-              this.saveForm(loading);
-            });
-          })
-        ).subscribe();
-      } else {
-        this.saveForm(loading);
+      try {
+        if (this.selectedFile) {
+          // First clean the storage and delete the old profile image.
+          await this.storageService.deleteImage(this.profile.profileImg.storageReference);
+          // Upload the new image.
+          await this.storageService.uploadProfileImg(this.selectedFile);
+
+          // Create profile image object.
+          const profileImgStorageRef: string = this.storageService.getProfileImgStorageReference(this.selectedFile.name);
+          const profileImgUrl: string = await this.storageService.getProfileImgDownloadUrl(profileImgStorageRef);
+          const profileImg: Image = {
+            filename: this.selectedFile.name,
+            storageReference: profileImgStorageRef,
+            url: profileImgUrl
+          };
+          this.profileForm.controls['profileImg'].setValue(profileImg);
+        }
+
+        // Save the profile.
+        const updatedProfile: Profile = _.mapValues(this.profileForm.controls, 'value') as Profile;
+        await this.profileService.updateProfile(updatedProfile);
+        this.showSnackbar('The profile has been saved');
+        this.toggleEditingState();
+      } catch (error) {
+        this.showSnackbar(error, 5000);
+      } finally {
+        loading.close();
       }
     } else {
-      // TODO: Show toast.
-      console.error('Form is invalid');
-    }
-  }
-
-  // TODO: Merge this method with this.submitForm();
-  private async saveForm(loading: MatDialogRef<LoadingSpinnerModalComponent, any>) {
-    const updatedProfile = {};
-    _.each(this.profileForm.controls, (formControl: FormControl, key: string) => {
-      updatedProfile[key] = formControl.value;
-    });
-
-    try {
-      await this.profileService.updateProfile(updatedProfile as Profile);
-      // TODO: create snackbar method.
-      this.snackbar.open(
-        'The changes have been saved',
-        'Close',
-        {
-          duration: 3000,
-        }
-      );
-    } catch (error) {
-      if (error.code === 'permission-denied') {
-        this.snackbar.open(
-          `Authentication error: ${error.message}`,
-          'Close',
-          {duration: 5000}
-        );
-      } else {
-        console.error(error);
-        this.trackingService.trackError('buttonClickException', error);
-      }
-    } finally {
-      this.toggleEditingState();
-      loading.close();
+      this.showSnackbar('The form is invalid');
     }
   }
 
@@ -211,6 +192,16 @@ export class ProfileComponent implements OnInit {
         this.profileForm.controls[key].disable();
       }
     });
+  }
+
+  /**
+   * Show a snackbar with a custom message.
+   *
+   * @param {string} message - The message to show in the snackbar.
+   * @param {number} duration - The duration to display the snackbar for. Default = 3000 (3 seconds).
+   */
+  private showSnackbar(message: string, duration: number = 3000): void {
+    this.snackbar.open(message, 'Close', {duration});
   }
 
 }

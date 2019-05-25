@@ -10,7 +10,7 @@
       <h1 class="title">Profile</h1>
     </div>
 
-    <form [formGroup]="profileForm" (ngSubmit)="submitForm()" class="form-container">
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="form-container">
       <mat-form-field appearance="outline">
         <mat-label>First Name</mat-label>
         <input matInput placeholder="e.g. Austin" formControlName="firstName">
