@@ -12,6 +12,7 @@ import {
   MatSnackBarModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
 import { environment } from 'src/environments/environment';
 
 import { ProfileComponent } from './profile.component';
@@ -34,7 +35,8 @@ describe('ProfileComponent', () => {
         MatInputModule,
         MatSlideToggleModule,
         MatSnackBarModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        RouterTestingModule
       ]
     })
     .compileComponents();
