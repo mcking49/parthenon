@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestoreDocument, AngularFirestore } from '@angular/fire/firestore';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { Project } from './../interfaces/project';
 import { Projects } from './../interfaces/projects';
+
 import * as firebase from 'firebase/app';
 import * as _ from 'lodash';
 
@@ -73,5 +76,18 @@ export class ProjectsService {
    */
   public generateUrl(title: string, year: number): string {
     return `${year}-${title.toLowerCase().trim().replace(/\s/g, '-')}`;
+  }
+
+  /**
+   * Get a project.
+   *
+   * @param url - The `url` of the project to get.
+   *
+   * @returns {Observable<Project>} - Returns an observable of the project.
+   */
+  public getProject(url: string): Observable<Project> {
+    return this.projects$.pipe(
+      map((projects: Projects) => _.get(projects, url, null)) // TODO: after removing behaviour subject, won't need this _.get(...).
+    );
   }
 }

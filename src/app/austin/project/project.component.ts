@@ -65,19 +65,9 @@ export class ProjectComponent implements OnDestroy, OnInit {
    */
   private initProjects(): void {
     const url = this.route.snapshot.paramMap.get('url');
-    this.projectSubscription = this.projectsService.projects$
-      .pipe(
-        map((projects: Projects) => {
-          if (projects) {
-            return projects[url];
-          }
-          return projects;
-        })
-      )
+    this.projectSubscription = this.projectsService.getProject(url)
       .subscribe((project: Project) => {
-        if (project) {
-          this.project = project;
-        }
+        this.project = project;
       });
   }
 
