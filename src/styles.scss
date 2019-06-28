@@ -34,10 +34,12 @@ $parthenon-theme: mat-light-theme($parthenon-primary, $parthenon-accent, $parthe
 /* You can add global styles to this file, and also import other style files */
 @import './styles/variables.scss';
 @import './styles/form.scss';
+@import './styles/animations.scss';
 
 html, body {
   height: 100%;
   min-width: $mobile-screen-medium;
+  scroll-behavior: smooth;
 }
 
 body {

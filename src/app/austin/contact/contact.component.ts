@@ -1,10 +1,15 @@
-import { Profile } from './../../interfaces/profile';
-import { ProfileService } from './../../services/profile.service';
-import { Component, OnInit } from '@angular/core';
-import { CvLanguage, StorageService } from '../../services/storage.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { Subscription } from 'rxjs';
+
 import { LoadingSpinnerModalComponent } from 'src/app/components/loading-spinner-modal/loading-spinner-modal.component';
+
+import { Profile } from './../../interfaces/profile';
+
+import { ProfileService } from './../../services/profile.service';
+import { CvLanguage, StorageService } from '../../services/storage.service';
 import { TrackingService, ButtonName } from 'src/app/services/tracking.service';
+
 import * as _ from 'lodash';
 
 @Component({
@@ -12,12 +17,14 @@ import * as _ from 'lodash';
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss']
 })
-export class ContactComponent implements OnInit {
+export class ContactComponent implements OnDestroy, OnInit {
 
   public showLoading = false;
   public email: string;
   public phone: string;
   public linkedInUrl: string;
+
+  private profileSubscription: Subscription;
 
   constructor(
     private dialog: MatDialog,
@@ -26,14 +33,21 @@ export class ContactComponent implements OnInit {
     private trackingService: TrackingService
   ) { }
 
+  ngOnDestroy() {
+    if (this.profileSubscription) {
+      this.profileSubscription.unsubscribe();
+    }
+  }
+
   ngOnInit() {
-    this.profileService.profile$.subscribe((profile: Profile) => {
-      if (profile) {
-        this.email = profile.email;
-        this.phone = profile.phone;
-        this.linkedInUrl = profile.linkedInUrl;
-      }
-    });
+    this.profileSubscription = this.profileService.profile$
+      .subscribe((profile: Profile) => {
+        if (profile) {
+          this.email = profile.email;
+          this.phone = profile.phone;
+          this.linkedInUrl = profile.linkedInUrl;
+        }
+      });
   }
 
   /**

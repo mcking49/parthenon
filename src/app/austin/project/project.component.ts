@@ -1,26 +1,35 @@
-import { ResponsiveService } from './../../services/responsive.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ProjectsService } from 'src/app/services/projects.service';
+import { Observable, Subscription } from 'rxjs';
+
 import { Project } from 'src/app/interfaces/project';
-import { Projects } from 'src/app/interfaces/projects';
+
+import { ProjectsService } from 'src/app/services/projects.service';
+import { ResponsiveService } from './../../services/responsive.service';
 
 @Component({
   selector: 'app-project',
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.scss']
 })
-export class ProjectComponent implements OnInit {
+export class ProjectComponent implements OnDestroy, OnInit {
 
   public isHandset: Observable<boolean>;
   public project: Project;
+
+  private projectSubscription: Subscription;
 
   constructor(
     private projectsService: ProjectsService,
     private responsiveService: ResponsiveService,
     private route: ActivatedRoute
   ) { }
+
+  ngOnDestroy() {
+    if (this.projectSubscription) {
+      this.projectSubscription.unsubscribe();
+    }
+  }
 
   ngOnInit() {
     this.initProjects();
@@ -56,11 +65,10 @@ export class ProjectComponent implements OnInit {
    */
   private initProjects(): void {
     const url = this.route.snapshot.paramMap.get('url');
-    this.projectsService.projects$.subscribe((projects: Projects) => {
-      if (projects) {
-        this.project = projects[url];
-      }
-    });
+    this.projectSubscription = this.projectsService.getProject(url)
+      .subscribe((project: Project) => {
+        this.project = project;
+      });
   }
 
 }

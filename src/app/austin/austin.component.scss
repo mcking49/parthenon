@@ -3,4 +3,16 @@
   height: 50px;
   margin-top: 20px;
   background-color: black;
+  color: white;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 16px;
+  font-size: 12px;
+
+  > a {
+    color: white;
+    padding-left: 4px;
+    font-weight: bold;
+  }
 }
