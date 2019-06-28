@@ -1,11 +1,14 @@
-import { ResponsiveService } from './../../services/responsive.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
-import { Observable } from 'rxjs';
-import { ProjectsService } from 'src/app/services/projects.service';
+import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { Projects } from 'src/app/interfaces/projects';
 import { Project } from 'src/app/interfaces/project';
+
+import { ResponsiveService } from './../../services/responsive.service';
+import { ProjectsService } from 'src/app/services/projects.service';
+
 import * as _ from 'lodash';
 
 @Component({
@@ -13,12 +16,14 @@ import * as _ from 'lodash';
   templateUrl: './portfolio.component.html',
   styleUrls: ['./portfolio.component.scss']
 })
-export class PortfolioComponent implements OnInit {
+export class PortfolioComponent implements OnDestroy, OnInit {
 
   public showLoading: boolean;
   public isHandset: Observable<boolean>;
   public projects: Project[];
   public readonly thesisLogoPath = '../../../assets/img/projects/2019-masters-thesis/main-logo.png';
+
+  private projectsSubscription: Subscription;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -26,6 +31,12 @@ export class PortfolioComponent implements OnInit {
     private responsiveService: ResponsiveService,
     private router: Router
   ) { }
+
+  ngOnDestroy() {
+    if (this.projectsSubscription) {
+      this.projectsSubscription.unsubscribe();
+    }
+  }
 
   ngOnInit() {
     this.initProjects();
@@ -64,11 +75,19 @@ export class PortfolioComponent implements OnInit {
    * Initialise the portfolio page.
    */
   private initProjects(): void {
-    this.projectsService.projects$.subscribe((projects: Projects) => {
-      if (projects) {
-        this.projects = _.orderBy(_.values(projects), ['year', 'title'], ['desc', 'asc']);
-      }
-    });
+    this.projectsSubscription = this.projectsService.projects$
+      .pipe(
+        map(
+          (projects: Projects) => _.orderBy(_.values(projects), ['year', 'title'], ['desc', 'asc'])
+        )
+      )
+      .subscribe(
+        (projects: Project[]) => {
+          if (projects) {
+            this.projects = projects;
+          }
+        }
+      );
   }
 
 }
