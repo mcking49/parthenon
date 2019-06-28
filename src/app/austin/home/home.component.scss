@@ -11,7 +11,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    animation: fade-in-long 2s ease-in-out;
+    animation: fade-in 2s ease-in-out;
 
     > .image-container {
       $image-size: 350px;
@@ -20,7 +20,7 @@
       overflow: hidden;
       border-radius: 50%;
       border: 5px solid white;
-      animation: fade-in-long 1s ease-in-out;
+      animation: fade-in 1s ease-in-out;
 
       > img {
         height: 100%;

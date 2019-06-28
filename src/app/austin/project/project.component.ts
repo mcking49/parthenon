@@ -1,11 +1,11 @@
-import { ResponsiveService } from './../../services/responsive.service';
-import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { ProjectsService } from 'src/app/services/projects.service';
+
 import { Project } from 'src/app/interfaces/project';
-import { Projects } from 'src/app/interfaces/projects';
-import { map } from 'rxjs/operators';
+
+import { ProjectsService } from 'src/app/services/projects.service';
+import { ResponsiveService } from './../../services/responsive.service';
 
 @Component({
   selector: 'app-project',
