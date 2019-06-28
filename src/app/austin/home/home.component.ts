@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+
 import { Profile } from './../../interfaces/profile';
 import { ProfileService } from './../../services/profile.service';
 
@@ -7,14 +9,22 @@ import { ProfileService } from './../../services/profile.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnDestroy, OnInit {
 
   public profile: Profile;
 
+  private profileSubscription: Subscription;
+
   constructor(private profileService: ProfileService) { }
 
+  ngOnDestroy() {
+    if (this.profileSubscription) {
+      this.profileSubscription.unsubscribe();
+    }
+  }
+
   ngOnInit() {
-    this.profileService.profile$.subscribe((profile: Profile) => {
+    this.profileSubscription = this.profileService.profile$.subscribe((profile: Profile) => {
       this.profile = profile;
     });
   }
