@@ -39,6 +39,7 @@ $parthenon-theme: mat-light-theme($parthenon-primary, $parthenon-accent, $parthe
 html, body {
   height: 100%;
   min-width: $mobile-screen-medium;
+  scroll-behavior: smooth;
 }
 
 body {
